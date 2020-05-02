@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import socket
+import sys
+
+from pathlib import Path
+
+import yaml
+
+from jinja2 import Environment, FileSystemLoader
+
+
+def get_parsed_args(argv):
+    """Create argument parser and return cli args.
+    """
+    parser = argparse.ArgumentParser(
+        description="Create SLURM Config"
+    )
+    parser.add_argument(
+        "-t",
+        "--node-type",
+        type=str,
+        dest="slurm_node_type",
+        choices=[
+            'slurmdbd',
+            'slurm',
+        ],
+        required=True,
+        help="Slurm node type."
+    )
+    return parser.parse_args(argv)
+
+
+def render_slurm_conf(ctxt: 'dict' = None):
+
+    if not ctxt:
+        ctxt = {}
+
+    templates_path = os.path.join(
+        os.getenv('SNAP_COMMON'),
+        'etc',
+        'slurm-configurator'
+    )
+    env = Environment(loader=FileSystemLoader(templates_path))
+    return env.get_template('slurm.conf.tmpl').render(ctxt=ctxt)
+
+
+def main(argv=sys.argv[1:]):
+    slurm_conf_str = ""
+
+    args = get_parsed_args(argv)
+
+    hostname = socket.gethostname().split(".")[0]
+
+    # Base path where the slurm yaml config live.
+    slurm_configurator_templates_base_path = Path(
+        f"{os.environ['SNAP_COMMON']}/etc/slurm-configurator"
+    )
+
+    # Determine any node type specific config that need to make
+    # it into the slurm config ctxt.
+    #
+    # This allows the snap to run in "all" mode where we don't have
+    # juju to configure us.
+    ctxt = {}
+    slurm_config_template = str()
+    if args.slurm_node_type == "slurmdbd":
+        # The file where mysql writes the slurm user password
+        #slurmdb_password_file = Path(
+        #    f"{os.environ['SNAP_DATA']}/mysql/slurmdb_password"
+        #)
+
+        #if slurmdb_password_file.exists():
+        #    slurmdb_password = slurmdb_password_file.read_text()
+        ctxt['DbdHost'] = hostname
+        ctxt['DbdAddr'] = hostname
+        ctxt['StorageHost'] = "127.0.0.1"
+        ctxt['StoragePass'] = "changeme"
+
+    else:
+        # Slurmd and slurmctld need identical config.
+        # Thus we only render a single config file to be
+        # used by both daemons.
+        cores_per_socket = 6
+
+        # Define slurm configs specific to slurmd and slurmctld.
+        ctxt = {}
+        ctxt['AccountingStorageHost'] = hostname
+        ctxt['SlurmctldHost'] = hostname
+        ctxt['NodeName'] = (
+            f"{hostname} NodeAddr={hostname} Weight=16 "
+            "State=UNKNOWN CPUs=1 Boards=1 SocketsPerBoard=1 "
+            f"CoresPerSocket={cores_per_socket} ThreadsPerCore=1"
+        )
+        ctxt['PartitionName'] = (
+            f"debug Nodes={hostname} "
+            "Default=YES State=UP"
+        )
+
+    # Load, merge and render the yaml and ctxt into the slurmdbd.conf.
+    f = slurm_configurator_templates_base_path / f"{args.slurm_node_type}.yaml"
+    yaml_ctxt = yaml.load(f.read_text()).items()
+    ctxt = {**ctxt, **dict(yaml_ctxt)}
+    slurm_conf_str = render_slurm_conf(ctxt=ctxt)
+
+    print(render_slurm_conf(ctxt=ctxt))
+
+
+if __name__ == "__main__":
+    main()

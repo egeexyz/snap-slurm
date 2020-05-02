@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+export PATH=$SNAP/bin:$PATH
+export SLURM_CONF=/var/snap/slurm/common/etc/slurm/slurmctld.conf
+
+exec "$SNAP/usr/sbin/nhc" "-D" "$SNAP_COMMON/etc/nhc" "-c" "nhc.conf" "-l" "/tmp/nhc.log" "$@"

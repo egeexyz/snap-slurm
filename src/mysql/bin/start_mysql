@@ -1,0 +1,108 @@
+#!/bin/bash
+
+set -e
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/
+
+
+# Check to see if we should even start
+snap_mode=$(cat $SNAP_COMMON/snap_mode)
+if ! [[ $snap_mode == "slurmdbd" || $snap_mode = "all" ]]; then
+        exit 1
+fi
+
+# shellcheck source=src/mysql/utilities/mysql-utilities
+. "$SNAP/utilities/mysql-utilities"
+
+root_option_file="$SNAP_DATA/mysql/root.ini"
+new_install=false
+
+# Make sure the database is initialized (this is safe to run if already
+# initialized)
+if $SNAP/bin/mysqld --initialize-insecure --basedir="$SNAP" --datadir="$SNAP_DATA/mysql" --lc-messages-dir="$SNAP/share"; then
+	new_install=true
+	printf "NEW INSTALL\n"
+else
+	printf "NOT NEW INSTALL\n"
+fi
+
+set_mysql_setup_running
+
+# Start mysql
+"$SNAP/support-files/mysql.server" start
+
+# Initialize new installation if necessary.
+if [ $new_install = true ]; then
+	# Generate a password for the root mysql user.
+	printf "Generating root mysql password... "
+	root_password="$(tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c64)"
+	printf "done\n"
+
+	# Generate a password for the slurm mysql user.
+	printf "Generating slurm mysql password... "
+	#slurm_password="$(tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c64)"
+	# @jamesbeedy temp fix for configurator rework
+	slurm_password="changeme"
+	printf "done\n"
+
+	# Save root user information
+	cat <<-EOF > "$root_option_file"
+		[client]
+		user=root
+                host=localhost
+                port=3306
+	EOF
+	chmod 600 "$root_option_file"
+
+	# Now set everything up in one step:
+	# 1) Set the root user's password
+	# 2) Create the slurm user
+	# 3) Create the slurmdb database
+	# 4) Grant the slurm user privileges on the slurmdb database
+	printf "Setting up users and slurmdb database... "
+	if "$SNAP/bin/mysql" --defaults-file="$root_option_file" <<-SQL
+		ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
+		CREATE USER 'slurm'@'localhost' IDENTIFIED BY '$slurm_password';
+		CREATE DATABASE slurmdb;
+		GRANT ALL PRIVILEGES ON slurmdb.* TO 'slurm'@'localhost' IDENTIFIED BY '$slurm_password';
+		SQL
+	then
+		# Now the root mysql user has a password. Save that as well.
+		echo "password=$root_password" >> "$root_option_file"
+		printf "done\n"
+	else
+		echo "Failed to initialize-- reverting..."
+		"$SNAP/support-files/mysql.server" stop
+		rm -rf "$SNAP_DATA"/mysql/*
+	fi
+fi
+
+# Wait here until mysql is running
+wait_for_mysql -f
+
+# Check and upgrade mysql tables if necessary. This will return 0 if the upgrade
+# succeeded, in which case we need to restart mysql.
+echo "Checking/upgrading mysql tables if necessary..."
+if "$SNAP/bin/mysql_upgrade" --defaults-file="$root_option_file"; then
+	echo "Restarting mysql server after upgrade..."
+	"$SNAP/support-files/mysql.server" restart
+
+	# Wait for server to come back after upgrade
+	wait_for_mysql -f
+fi
+
+# If this was a new installation, wait until the server is all up and running
+# before saving off the slurm user's password. This way the presence of the
+# file can be used as a signal that mysql is ready to be used.
+if [ $new_install = true ]; then
+	mysql_set_slurm_password "$slurm_password"
+fi
+
+set_mysql_setup_not_running
+
+# Wait here until mysql exits (turn a forking service into simple). This is
+# only needed for Ubuntu Core 15.04, as 16.04 supports forking services.
+pid=$(mysql_pid)
+while kill -0 "$pid" 2>/dev/null; do
+	sleep 1
+done

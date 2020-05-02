@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+exec "$SNAP/bin/mysql" --defaults-file="$SNAP_DATA/mysql/root.ini" "$@"

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+
+exec "$SNAP/usr/local/bin/remunge" "--socket=$SNAP_DATA/munge.socket.2" "$@"

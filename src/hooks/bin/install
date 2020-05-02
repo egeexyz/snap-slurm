@@ -1,0 +1,74 @@
+#!/bin/bash
+
+set -eux
+
+################################## Set initial snap.mode ##############################
+initial_snap_mode="none"
+snapctl set snap.mode=$initial_snap_mode
+echo $initial_snap_mode > $SNAP_COMMON/snap_mode
+
+################################### Create log and cache Dirs ##################
+mkdir -p "$SNAP_COMMON/log/"{proxy,http}
+mkdir -p "$SNAP_COMMON/proxy/"{cache,spool}
+mkdir -p "$SNAP_DATA/syslog"
+
+################################### Create SLURM Dirs ###################################
+mkdir -p "$SNAP_COMMON/log/"{proxy,http}
+# SLURM logging dir
+mkdir -p $SNAP_COMMON/log
+chmod -R 755 $SNAP_COMMON/log
+
+# SLURM plugin dir
+mkdir -p $SNAP_COMMON/plugins
+chmod -R 755 $SNAP_COMMON/plugins
+
+# Make /var dirs
+mkdir -p $SNAP_COMMON/var/run
+mkdir -p $SNAP_COMMON/var/spool/slurm/{ctld,d}
+chmod -R 755 $SNAP_COMMON/var
+
+# SLURM config dir
+mkdir -p $SNAP_COMMON/etc/slurm
+mkdir -p $SNAP_COMMON/etc/slurm/plugstack.conf.d
+mkdir -p $SNAP_COMMON/etc/slurm/epilog.d/
+mkdir -p $SNAP_COMMON/etc/slurm/prolog.d/
+chmod -R 755 $SNAP_COMMON/etc/slurm
+
+# slurm-configurator dir
+mkdir -p $SNAP_COMMON/etc/slurm-configurator
+chmod -R 755 $SNAP_COMMON/etc/slurm-configurator
+
+################################### Copy Configs ########################################
+cp $SNAP/templates/slurmdbd.yaml $SNAP_COMMON/etc/slurm-configurator/
+cp $SNAP/templates/slurm.yaml $SNAP_COMMON/etc/slurm-configurator/
+cp $SNAP/templates/slurm.conf.tmpl $SNAP_COMMON/etc/slurm-configurator/
+cp $SNAP/templates/plugstack.conf $SNAP_COMMON/etc/slurm/plugstack.conf.d/
+
+
+################################### Create Munge Dirs ###################################
+# This directory contains the daemon's secret key. The recommended permissions for it are 0700.
+mkdir -p $SNAP_COMMON/etc/munge
+chmod -R 0700 $SNAP_COMMON/etc/munge
+
+# This directory contains the daemon's PRNG seed file. It is also where the daemon
+# creates pipes for authenticating clients via file-descriptor-passing. If the
+# file-descriptor-passing authentication method is being used, this directory must
+# allow execute permissions for all; however, it should not expose read permissions.
+# The recommended permissions for it are 0711.
+mkdir -p $SNAP_COMMON/var/lib/munge
+chmod -R 0711 $SNAP_COMMON/var/lib/munge
+
+# This directory contains the daemon's log file. The recommended permissions for it are 0700.
+mkdir -p $SNAP_COMMON/var/log/munge
+chmod -R 0700 $SNAP_COMMON/var/log/munge
+
+# This directory contains the Unix domain socket for clients to communicate with the daemon.
+# It also contains the daemon's pid file. This directory must allow execute permissions for all.
+# The recommended permissions for it are 0755.
+mkdir -p $SNAP_COMMON/var/run/munge
+chmod -R 0755 $SNAP_COMMON/var/run/munge
+
+# Nhc things
+mkdir -p "$SNAP_COMMON/etc/nhc/"
+mkdir -p "$SNAP_COMMON/var/log/"
+cp $SNAP/nhc.conf $SNAP_COMMON/etc/nhc/

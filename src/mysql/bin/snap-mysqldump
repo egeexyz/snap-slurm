@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eux
+
+
+exec "$SNAP/bin/mysqldump" "--defaults-file=$SNAP_DATA/mysql/root.ini" "--lock-tables" "slurmdb"
