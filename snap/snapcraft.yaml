@@ -20,19 +20,17 @@ apps:
     stop-command: support-files/mysql.server stop
     daemon: simple
     restart-condition: never
-    plugs: [network, network-bind]
+
   mysql-client:
     command: bin/run-mysql
-    plugs: [network, network-bind]
+
   snap-mysqldump:
     command: bin/snap-mysqldump
-    plugs: [network, network-bind]
 
   munged:
     daemon: simple
     command: bin/munged
     restart-condition: always
-    plugs: [network, network-bind]
 
   munge:
     command: bin/munge
