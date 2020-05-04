@@ -1,7 +1,6 @@
 <h1 align="center">
   <img src="https://www.massey.ac.nz/~theochem/simurg/lib/exe/fetch.php/images/software/slurm.png" alt="Slurm">
   <br />
-  Slurm
 </h1>
 
 <p align="center"><b>This is the snap for the Slurm Workload Manager</b>, <i>"The Slurm Workload Manager (formerly known as Simple Linux Utility for Resource Management or SLURM), or Slurm, is a free and open-source job scheduler for Linux and Unix-like kernels, used by many of the world's supercomputers and computer clusters."</i></p>
