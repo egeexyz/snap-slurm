@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Slurm_logo.svg/1200px-Slurm_logo.svg.png" alt="Slurm">
+  <img src="https://www.massey.ac.nz/~theochem/simurg/lib/exe/fetch.php/images/software/slurm.png" alt="Slurm">
   <br />
   Slurm
 </h1>
