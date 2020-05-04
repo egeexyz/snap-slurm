@@ -8,7 +8,7 @@
 
 # Install
 
-    sudo snap install scummvm
+    sudo snap install slurm
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 
