@@ -5,15 +5,16 @@
 
 <p align="center"><b>This is the snap for the Slurm Workload Manager</b>, <i>"The Slurm Workload Manager (formerly known as Simple Linux Utility for Resource Management or SLURM), or Slurm, is a free and open-source job scheduler for Linux and Unix-like kernels, used by many of the world's supercomputers and computer clusters."</i></p>
 
-# Install
+<!-- Re-add the section below once we have a delivery method -->
+<!-- # Install
 
     sudo snap install slurm
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 
-<p align="center">Built & Published with 💝 by <a href="https://www.omnivector.solutions">OmniVector Solutions</a>.</p>
+<p align="center">Built & Published with 💝 by <a href="https://www.omnivector.solutions">OmniVector Solutions</a>.</p> -->
 
-## Usage
+# Usage
 
 Upon installation this snap only runs munged until configured to run in a supported `snap.mode`.
 
@@ -84,4 +85,4 @@ The above command configures this snap to run in `all` mode (this runs all of th
 * [ ] Publish to Snap Store
 
 #### Copyright
-* Omnivector Solutions <admin@omnivector.solutions>
+* OmniVector Solutions <admin@omnivector.solutions>
