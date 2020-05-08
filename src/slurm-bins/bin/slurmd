@@ -9,7 +9,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$
 
 
 SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
-SLURMD_LOG=$SNAP_COMMON/log/slurmd.log
+SLURMD_LOG=$SNAP_COMMON/var/log/slurm/slurmd.log
 SLURMCTLD_INIT=$SNAP_COMMON/slurmctld-init-complete
 
 # Check to see if we should even start

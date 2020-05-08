@@ -6,7 +6,8 @@ PlugStackConfig: "/var/snap/slurm/common/etc/slurm/plugstack.conf"
 SlurmdPort: 6818
 SlurmctldPort: 6817
 
-SlurmUser: "root"
+SlurmUser: "snap_daemon"
+SlurmdUser: "snap_daemon"
 
 
 #AuthType: "auth/none"
@@ -24,8 +25,8 @@ AccountingStoragePort: 6819
 JobAcctGatherType: "jobacct_gather/linux"
 JobAcctGatherFrequency: 30
 
-SlurmdLogFile: "/var/snap/slurm/common/log/slurmd.log"
-SlurmctldLogFile: "/var/snap/slurm/common/log/slurmctld.log"
+SlurmdLogFile: "/var/snap/slurm/common/var/log/slurm/slurmd.log"
+SlurmctldLogFile: "/var/snap/slurm/common/var/log/slurm/slurmctld.log"
 
 
 SlurmdSpoolDir: "/var/snap/slurm/common/var/spool/slurm/d"

@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -e
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm
-export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
-
-
-exec "$SNAP/bin/$1" "$@"

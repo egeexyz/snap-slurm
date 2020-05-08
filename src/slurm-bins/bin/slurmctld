@@ -13,7 +13,7 @@ fi
 . "$SNAP/utilities/common-utilities"
 
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
-export SLURMCTLD_LOG=$SNAP_COMMON/log/slurmctld.log
+export SLURMCTLD_LOG=$SNAP_COMMON/var/log/slurm/slurmctld.log
 export SLURMDBD_INIT=$SNAP_COMMON/slurmdbd-init-complete
 
 

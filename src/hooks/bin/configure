@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 import os
 import sys
+import shutil
 import subprocess
+
 from pathlib import Path
 from time import sleep
+
+
+LD_LIBRARY_PATH = f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+                  ":"\
+                  f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 def snapctl_get(snap_config_value):
@@ -125,29 +133,31 @@ def configure_snap_mode_and_start_restart():
         #
         # slurmdbd.conf for slurmdbd
         # slurm.conf for any other snap.mode configuration
-        def render_slurm_config_files(snap_mode):
-            slurm_configs = []
-            # Find out what config files we need to write
-            if snap_mode_from_snap_config == "none":
-                pass
-            elif snap_mode_from_snap_config == "all":
-                slurm_configs.append("slurm")
-                slurm_configs.append("slurmdbd")
-            elif snap_mode_from_snap_config == "slurmdbd":
-                slurm_configs.append("slurmdbd")
-            else:
-                slurm_configs.append("slurm")
-            # Write the slurm config files
-            for config in slurm_configs:
-                out = subprocess.check_output([
-                    f"{os.environ['SNAP']}/bin/slurm-configurator",
-                    "-t",
-                    config,
-                ]).decode().rstrip()
-                Path(
-                    f"{os.environ['SNAP_COMMON']}/etc/slurm/{config}.conf"
-                ).write_text(out)
-        render_slurm_config_files(snap_mode_from_snap_config)
+        slurm_configs = []
+        # Find out what config files we need to write
+        if snap_mode_from_snap_config == "none":
+            pass
+        elif snap_mode_from_snap_config == "all":
+            slurm_configs.append("slurm")
+            slurm_configs.append("slurmdbd")
+        elif snap_mode_from_snap_config == "slurmdbd":
+            slurm_configs.append("slurmdbd")
+        else:
+            slurm_configs.append("slurm")
+        # Write the slurm config files
+        for config in slurm_configs:
+            out = subprocess.check_output([
+                f"{os.environ['SNAP']}/bin/slurm-configurator",
+                "-t",
+                config,
+            ]).decode().rstrip()
+            slurm_conf_file = Path(
+                f"{os.environ['SNAP_COMMON']}/etc/slurm/{config}.conf"
+            )
+            slurm_conf_file.write_text(out)
+            slurm_conf_file.chmod(0o777)
+            shutil.chown(str(slurm_conf_file), user="snap_daemon")
+
 
         # Start the processes used by the newly configured snap mode,
         # throw exception and exit with error code 1 if we cannot start the process.

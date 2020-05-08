@@ -7,7 +7,7 @@ description: |
 adopt-info: slurm
 
 grade: stable
-confinement: classic
+confinement: strict
 
 base: core18
 
@@ -16,140 +16,178 @@ system-usernames:
 
 apps:
   mysql:
+    environment: &ld-environment
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
     command: bin/start_mysql
     stop-command: support-files/mysql.server stop
     daemon: simple
     restart-condition: never
+    plugs:
+      - network
+      - network-bind
+      - process-control
 
   mysql-client:
     command: bin/run-mysql
+    plugs: [network, network-bind]
+    environment: *ld-environment
 
   snap-mysqldump:
     command: bin/snap-mysqldump
+    plugs: [network, network-bind]
+    environment: *ld-environment
 
   munged:
     daemon: simple
     command: bin/munged
     restart-condition: always
+    plugs: [network, network-bind]
 
   munge:
     command: bin/munge
+    environment: *ld-environment
   unmunge:
     command: bin/unmunge
+    environment: *ld-environment
   remunged:
     command: bin/remunge
+    environment: *ld-environment
   mungekey:
     command: bin/mungekey
+    environment: *ld-environment
 
   slurmdbd:
-    command: bin/slurmdbd
+    command: drop-user $SNAP/bin/slurmdbd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment:
+      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurmdbd.conf
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/
+
 
   slurmctld:
-    command: bin/slurmctld
+    command: drop-user $SNAP/bin/slurmctld
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment: &environment
+      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/
+
 
   slurmd:
-    command: bin/slurmd
+    command: drop-user $SNAP/bin/slurmd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment: *environment
+
 
   slurmrestd:
     command: bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind, network-control]
+    environment: *environment
 
 
   sacct:
     command: slurm-bins/sacct
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sacctmgr:
     command: slurm-bins/sacctmgr
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   salloc:
     command: slurm-bins/salloc
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sattach:
     command: slurm-bins/sattach
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sbatch:
     command: slurm-bins/sbatch
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sbcast:
     command: slurm-bins/sbcast
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   scancel:
     command: slurm-bins/scancel
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   scontrol:
     command: slurm-bins/scontrol
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sdiag:
     command: slurm-bins/sdiag
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sinfo:
     command: slurm-bins/sinfo
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sprio:
     command: slurm-bins/sprio
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   squeue:
     command: slurm-bins/squeue
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sreport:
     command: slurm-bins/sreport
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   srun:
     command: slurm-bins/srun
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sshare:
     command: slurm-bins/sshare
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sstat:
     command: slurm-bins/sstat
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   strigger:
     command: slurm-bins/strigger
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   version:
     command: bin/slurm-version
 
+
+hooks:
+  configure:
+    plugs: [network, network-bind]
+  pre-refresh:
+    plugs: [network, network-bind]
+  post-refresh:
+    plugs: [network, network-bind]
 
 parts:
   munge:
@@ -166,10 +204,15 @@ parts:
       - libtool
       - zlib1g-dev
       - libbz2-dev
+    stage-packages:
+      - libc6
+      - libbz2-1.0
     stage:
       - usr/
+      - lib/
     prime:
       - usr/
+      - lib/
     override-build: |
       snapcraftctl build
       ./bootstrap
@@ -229,6 +272,7 @@ parts:
       - pkg-config
     stage-packages:
       - libaio1
+      - libgcc1
     stage:
       # Remove scripts that we'll be replacing with our own
       - -support-files/mysql.server
@@ -309,6 +353,7 @@ parts:
       - libaec-dev
       - libhdf5-100
       - mailutils
+      - util-linux
     stage:
       - bin/
       - share/
@@ -480,3 +525,7 @@ parts:
     plugin: dump
     source: src/nhc/
     source-type: local
+
+  drop-user:
+    plugin: make
+    source: src/drop_user
