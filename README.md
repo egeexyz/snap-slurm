@@ -11,7 +11,7 @@
 
 <p align="center">Built & Published with 💝 by <a href="https://www.omnivector.solutions">OmniVector Solutions</a>.</p> -->
 
-# Usage
+# Usage [![Build Status](https://travis-ci.com/omnivector-solutions/snap-slurm.svg?token=TjVzfAmHA9856Y9KtAsg&branch=master)](https://travis-ci.com/omnivector-solutions/snap-slurm)
 
 Upon installation this snap only runs munged until configured to run in a supported `snap.mode`.
 
