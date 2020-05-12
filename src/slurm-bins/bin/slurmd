@@ -1,16 +1,7 @@
 #!/bin/bash
 
+
 set -e
-
-. "$SNAP/utilities/common-utilities"
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm
-
-
-
-SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
-SLURMD_LOG=$SNAP_COMMON/log/slurmd.log
-SLURMCTLD_INIT=$SNAP_COMMON/slurmctld-init-complete
 
 # Check to see if we should even start
 snap_mode=$(cat $SNAP_COMMON/snap_mode)
@@ -18,27 +9,28 @@ if ! [[ $snap_mode == "slurmd" || $snap_mode = "all" ]]; then
         exit 0
 fi
 
-slurmctld_init()
-{
-        # Arguments:
-        #  -f: Force the check, i.e. ignore if it's currently in setup
-        [ -f "$SLURMCTLD_INIT" ]
-}
 
-wait_for_slurmctld_init()
-{
-        wait_for_command "Waiting for SLURMCTLD to initialize" slurmctld_init "$@"
-}
+. "$SNAP/utilities/common-utilities"
+export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
+export SLURMD_LOG=$SNAP_COMMON/var/log/slurm/slurmd.log
+export SLURMCTLD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
 
+
+# Wait for slurmctld if snap.mode="all"
 if [[ $snap_mode = "all" ]]; then
-    wait_for_slurmctld_init
-    sleep 10
+
+    while ! [[ -f $SLURMCTLD_INIT ]]
+    do
+        pprint "Waiting for SLURMCTLD to initialize";
+	sleep 1
+    done
 fi
+
 
 # Start slurmd only if we have a config file
 if ! [[ -f $SLURM_CONF ]]; then
     pprint "No slurm conf, cannot start process.";
-    exit 1
+    exit -1
 fi
 
 pprint "Starting SLURMD";

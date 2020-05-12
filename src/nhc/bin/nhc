@@ -3,6 +3,16 @@
 set -e
 
 export PATH=$SNAP/bin:$PATH
-export SLURM_CONF=/var/snap/slurm/common/etc/slurm/slurmctld.conf
 
-exec "$SNAP/usr/sbin/nhc" "-D" "$SNAP_COMMON/etc/nhc" "-c" "nhc.conf" "-l" "/tmp/nhc.log" "$@"
+# Slurm
+export SLURM_CONF="/var/snap/slurm/common/etc/slurm/slurmctld.conf"
+export SLURM_SCONTROL="/snap/bin/slurm.scontrol"
+export SLURM_SINFO="/snap/bin/slurm.sinfo"
+
+# Nhc
+export LOG_FILE="/var/snap/slurm/common/var/log/slurm/nhc.log"
+export CONFIG_FILE="/snap/slurm/current/usr/etc/nhc/nhc.conf"
+export CONFIG_DIR="/snap/slurm/current/usr/etc/nhc"
+export HELPERDIR="/snap/slurm/current/usr/lib/nhc"
+
+exec "/snap/slurm/current/usr/sbin/nhc" "-d" "-l" "$LOG_FILE" "-c" "$CONFIG_FILE" -D "$CONFIG_DIR" "HELPERDIR=$HELPERDIR"

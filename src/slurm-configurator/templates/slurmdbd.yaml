@@ -17,11 +17,11 @@ PurgeSuspendAfter: "1month"
 PurgeTXNAfter: "12month"
 PurgeUsageAfter: "24month"
 
-LogFile: "/var/snap/slurm/common/log/slurmdbd.log"
+LogFile: "/var/snap/slurm/common/var/log/slurm/slurmdbd.log"
 PidFile: "/tmp/slurmdbd.pid"
 PluginDir: "/snap/slurm/current/lib/slurm"
 
-SlurmUser: "root"
+SlurmUser: "snap_daemon"
 
 DbdPort: "6819"
 

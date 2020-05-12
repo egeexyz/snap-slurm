@@ -7,7 +7,7 @@ description: |
 adopt-info: slurm
 
 grade: stable
-confinement: classic
+confinement: strict
 
 base: core18
 
@@ -20,167 +20,153 @@ apps:
     stop-command: support-files/mysql.server stop
     daemon: simple
     restart-condition: never
-
-  mysql-client:
-    command: bin/run-mysql
-
-  snap-mysqldump:
-    command: bin/snap-mysqldump
+    plugs: [network, network-bind]
 
   munged:
     daemon: simple
     command: bin/munged
-    restart-condition: always
-
-  munge:
-    command: bin/munge
-  unmunge:
-    command: bin/unmunge
-  remunged:
-    command: bin/remunge
-  mungekey:
-    command: bin/mungekey
+    restart-condition: never
+    plugs: [network, network-bind]
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu/
 
   slurmdbd:
-    command: bin/slurmdbd
+    command: drop-user $SNAP/bin/slurmdbd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment:
+      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurmdbd.conf
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
+
 
   slurmctld:
-    command: bin/slurmctld
+    command: drop-user $SNAP/bin/slurmctld
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment: &environment
+      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
+
 
   slurmd:
-    command: bin/slurmd
+    command: drop-user $SNAP/bin/slurmd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind]
+    environment: *environment
+
 
   slurmrestd:
-    command: bin/slurmrestd
+    command: drop-user $SNAP/bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
+    plugs: [network, network-bind, network-control, physical-memory-control]
+    environment: *environment
 
 
   sacct:
     command: slurm-bins/sacct
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sacctmgr:
     command: slurm-bins/sacctmgr
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   salloc:
     command: slurm-bins/salloc
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sattach:
     command: slurm-bins/sattach
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sbatch:
     command: slurm-bins/sbatch
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sbcast:
     command: slurm-bins/sbcast
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   scancel:
     command: slurm-bins/scancel
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   scontrol:
     command: slurm-bins/scontrol
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sdiag:
     command: slurm-bins/sdiag
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sinfo:
     command: slurm-bins/sinfo
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sprio:
     command: slurm-bins/sprio
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   squeue:
     command: slurm-bins/squeue
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sreport:
     command: slurm-bins/sreport
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   srun:
     command: slurm-bins/srun
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sshare:
     command: slurm-bins/sshare
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   sstat:
     command: slurm-bins/sstat
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   strigger:
     command: slurm-bins/strigger
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
+    plugs: [network, network-bind]
+    environment: *environment
 
   version:
     command: bin/slurm-version
 
+  nhc:
+    command: bin/nhc
+
+
+hooks:
+  configure:
+    plugs: [network, network-bind]
+  pre-refresh:
+    plugs: [network, network-bind]
+  post-refresh:
+    plugs: [network, network-bind]
 
 parts:
-  munge:
-    plugin: dump
-    source: https://github.com/dun/munge.git
-    source-type: git
-    source-depth: 1
-    source-branch: master
-    build-packages:
-      - gcc
-      - libssl-dev
-      - autoconf
-      - make
-      - libtool
-      - zlib1g-dev
-      - libbz2-dev
-    stage:
-      - usr/
-    prime:
-      - usr/
-    override-build: |
-      snapcraftctl build
-      ./bootstrap
-      ./configure --prefix=$SNAPCRAFT_PART_INSTALL/usr/local
-      make
-      make install
-
-  munge-customizations:
-    plugin: dump
-    source: src/munge/
-
   boost:
     plugin: dump
     source: https://github.com/kyrofa/boost_tarball/raw/master/boost_1_59_0.tar.gz
@@ -271,7 +257,40 @@ parts:
     source: src/patches
     plugin: dump
     prime:
-      - -*
+      - -*        
+  munge:
+    plugin: dump
+    source: https://github.com/dun/munge.git
+    source-type: git
+    source-depth: 1
+    source-branch: master
+    build-packages:
+      - gcc
+      - libssl-dev
+      - autoconf
+      - make
+      - libtool
+      - zlib1g-dev
+      - libbz2-dev
+    stage-packages:
+      - libc6
+      - libbz2-1.0
+      - zlib1g
+    stage:
+      - usr/
+      - lib/
+    prime:
+      - usr/
+      - lib/
+    override-build: |
+      snapcraftctl build
+      ./bootstrap
+      ./configure --prefix=$SNAPCRAFT_PART_INSTALL/usr/local
+      make
+      make install
+  munge-customizations:
+    plugin: dump
+    source: src/munge/
 
   common:
     plugin: dump
@@ -281,10 +300,10 @@ parts:
   slurm:
     after:
       - libcurl
-      - munge
       - json-c
       - libyaml
       - http-parser
+      - munge
     plugin: dump
     source: https://download.schedmd.com/slurm/slurm-20.02.1.tar.bz2
     build-packages:
@@ -302,13 +321,13 @@ parts:
       - rrdtool
       - libncurses5-dev
       - libglib2.0-dev
-      # SlurmREST#
     stage-packages:
       - liblua5.3-dev
       - libmysqlclient-dev
       - libaec-dev
       - libhdf5-100
       - mailutils
+      - util-linux
     stage:
       - bin/
       - share/
@@ -341,6 +360,7 @@ parts:
       make -j9
       make install
       ldconfig -n /snap/slurm/current/lib/slurm
+
       snapcraftctl set-version `cat META  | grep Version | awk '{print $2}'`
 
       mkdir $SNAPCRAFT_PART_INSTALL/slurm-bins
@@ -454,12 +474,21 @@ parts:
     organize:
       bin/: snap/hooks/
 
+  drop-user:
+    plugin: make
+    source: src/drop_user
+
+  nhc-bin:
+    plugin: dump
+    source: src/nhc/
+    source-type: local
+
   nhc:
     plugin: dump
     source: https://github.com/omnivector-solutions/nhc.git
     source-type: git
     source-depth: 1
-    source-branch: snap_scontrol
+    source-branch: slurm-hardcode
     build-packages:
       - automake
       - make
@@ -472,11 +501,6 @@ parts:
     override-build: |
       snapcraftctl build
       ./autogen.sh
-      ./configure --prefix=$SNAPCRAFT_PART_INSTALL/usr
+      ./configure --prefix=$SNAPCRAFT_PART_INSTALL/usr --libexecdir=$SNAPCRAFT_PART_INSTALL/usr/lib
       make
       make install
-  
-  nhc-bin:
-    plugin: dump
-    source: src/nhc/
-    source-type: local
