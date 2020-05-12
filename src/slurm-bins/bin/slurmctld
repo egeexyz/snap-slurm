@@ -14,6 +14,7 @@ fi
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 export SLURMCTLD_LOG=$SNAP_COMMON/var/log/slurm/slurmctld.log
 export SLURMDBD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmdbd-init-complete
+export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 
 # Wait for slurmdbd if snap.mode="all"
@@ -37,7 +38,7 @@ fi
 
 
 pprint "Starting SLURMCTLD";
-exec "$SNAP/sbin/slurmctld" \
+exec "$SNAP/slurm-bins/slurmctld" \
     "-f" "$SLURM_CONF" \
     "-L" "$SLURMCTLD_LOG" \
     "-cDvvvvv" "$@"

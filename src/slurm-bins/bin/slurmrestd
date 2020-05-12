@@ -10,8 +10,9 @@ if ! [[ $snap_mode == "slurmrestd" || $snap_mode = "all" ]]; then
 fi
 
 . "$SNAP/utilities/common-utilities"
-SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
-SLURMCTLD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
+export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
+export SLURMCTLD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
+export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 
 # Wait for slurmctld if snap.mode="all"
@@ -31,6 +32,6 @@ if ! [[ -f $SLURM_CONF ]]; then
 fi
 
 pprint "Starting SLURMRESTD";
-exec "$SNAP/sbin/slurmrestd" \
+exec "$SNAP/slurm-bins/slurmrestd" \
     "-f" "$SLURM_CONF" \
     "-vvvvv" `hostname -s`:6820 "$@" 

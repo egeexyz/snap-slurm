@@ -73,3 +73,17 @@ chmod -R 0700 $SNAP_COMMON/var/log/munge
 # The recommended permissions for it are 0755.
 mkdir -p $SNAP_COMMON/var/run/munge
 chmod -R 0755 $SNAP_COMMON/var/run/munge
+
+
+# NHC
+mkdir -p $SNAP_COMMON/etc/nhc
+mkdir -p $SNAP_COMMON/var/log/nhc
+mkdir -p $SNAP_COMMON/usr/lib/nhc
+
+cp $SNAP/templates/nhc.conf $SNAP_COMMON/etc/nhc/
+cp -r $SNAP/usr/lib/nhc/* $SNAP_COMMON/usr/lib/nhc/
+cp -r $SNAP/usr/etc/nhc/* $SNAP_COMMON/etc/nhc/
+
+chown -R snap_daemon $SNAP_COMMON/etc/nhc
+chown -R snap_daemon $SNAP_COMMON/var/log/nhc
+chown -R snap_daemon $SNAP_COMMON/usr/lib/nhc

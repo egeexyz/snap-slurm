@@ -27,143 +27,106 @@ apps:
     command: bin/munged
     restart-condition: never
     plugs: [network, network-bind]
-    environment:
-      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu/
+
 
   slurmdbd:
     command: drop-user $SNAP/bin/slurmdbd
     daemon: simple
     restart-condition: on-failure
     plugs: [network, network-bind]
-    environment:
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurmdbd.conf
-      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
-
 
   slurmctld:
     command: drop-user $SNAP/bin/slurmctld
     daemon: simple
     restart-condition: on-failure
     plugs: [network, network-bind]
-    environment: &environment
-      SLURM_CONF: $SNAP_COMMON/etc/slurm/slurm.conf
-      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
-
 
   slurmd:
     command: drop-user $SNAP/bin/slurmd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind]
-    environment: *environment
-
+    plugs: [network, network-bind, network-control]
 
   slurmrestd:
     command: drop-user $SNAP/bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
     plugs: [network, network-bind, network-control, physical-memory-control]
-    environment: *environment
-
 
   sacct:
-    command: slurm-bins/sacct
+    command: bin/sacct
     plugs: [network, network-bind]
-    environment: *environment
 
   sacctmgr:
-    command: slurm-bins/sacctmgr
+    command: bin/sacctmgr
     plugs: [network, network-bind]
-    environment: *environment
 
   salloc:
-    command: slurm-bins/salloc
+    command: bin/salloc
     plugs: [network, network-bind]
-    environment: *environment
 
   sattach:
-    command: slurm-bins/sattach
+    command: bin/sattach
     plugs: [network, network-bind]
-    environment: *environment
 
   sbatch:
-    command: slurm-bins/sbatch
+    command: bin/sbatch
     plugs: [network, network-bind]
-    environment: *environment
 
   sbcast:
-    command: slurm-bins/sbcast
+    command: bin/sbcast
     plugs: [network, network-bind]
-    environment: *environment
 
   scancel:
-    command: slurm-bins/scancel
+    command: bin/scancel
     plugs: [network, network-bind]
-    environment: *environment
 
   scontrol:
-    command: slurm-bins/scontrol
+    command: bin/scontrol
     plugs: [network, network-bind]
-    environment: *environment
 
   sdiag:
-    command: slurm-bins/sdiag
+    command: bin/sdiag
     plugs: [network, network-bind]
-    environment: *environment
 
   sinfo:
-    command: slurm-bins/sinfo
+    command: bin/sinfo
     plugs: [network, network-bind]
-    environment: *environment
 
   sprio:
-    command: slurm-bins/sprio
+    command: bin/sprio
     plugs: [network, network-bind]
-    environment: *environment
 
   squeue:
-    command: slurm-bins/squeue
+    command: bin/squeue
     plugs: [network, network-bind]
-    environment: *environment
 
   sreport:
-    command: slurm-bins/sreport
+    command: bin/sreport
     plugs: [network, network-bind]
-    environment: *environment
 
   srun:
-    command: slurm-bins/srun
+    command: bin/srun
     plugs: [network, network-bind]
-    environment: *environment
 
   sshare:
-    command: slurm-bins/sshare
+    command: bin/sshare
     plugs: [network, network-bind]
-    environment: *environment
 
   sstat:
-    command: slurm-bins/sstat
+    command: bin/sstat
     plugs: [network, network-bind]
-    environment: *environment
 
   strigger:
-    command: slurm-bins/strigger
+    command: bin/strigger
     plugs: [network, network-bind]
-    environment: *environment
 
   version:
     command: bin/slurm-version
 
-  nhc:
-    command: bin/nhc
-
 
 hooks:
   configure:
-    plugs: [network, network-bind]
-  pre-refresh:
-    plugs: [network, network-bind]
-  post-refresh:
     plugs: [network, network-bind]
 
 parts:
@@ -369,8 +332,14 @@ parts:
          sbatch sbcast scancel scontrol \
          sdiag  sinfo sprio squeue sreport \
          srun sshare sstat strigger; do
-          mv $SNAPCRAFT_PART_INSTALL/bin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/
+          mv $SNAPCRAFT_PART_INSTALL/bin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
       done;
+
+      for slurm_bin in \
+         slurmd slurmdbd slurmctld slurmstepd slurmrestd; do
+          mv $SNAPCRAFT_PART_INSTALL/sbin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
+      done;
+
 
   http-parser:
     source: https://github.com/nodejs/http-parser.git
@@ -485,10 +454,9 @@ parts:
 
   nhc:
     plugin: dump
-    source: https://github.com/omnivector-solutions/nhc.git
+    source: https://github.com/mej/nhc.git
     source-type: git
     source-depth: 1
-    source-branch: slurm-hardcode
     build-packages:
       - automake
       - make

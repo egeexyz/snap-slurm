@@ -9,6 +9,8 @@ if ! [[ $snap_mode == "slurmdbd" || $snap_mode == "slurmctld" || $snap_mode == "
         exit 0
 fi
 
+export LD_LIBRARY_PATH=$SNAP/usr/lib/x86_64-linux-gnu/
+
 
 exec "$SNAP/usr/local/sbin/munged" \
      "--key-file=$SNAP_COMMON/etc/munge/munge.key" \

@@ -13,7 +13,7 @@ fi
 
 . "$SNAP/utilities/common-utilities"
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurmdbd.conf
-
+export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 # Bypass checks, templating and init ops if we are running in manual mode
 if ! [[ $snap_mode = "slurmdbd+manual" ]]; then
@@ -39,4 +39,4 @@ else
 fi
 
 pprint "Starting SLURMDBD";
-exec "$SNAP/sbin/slurmdbd" "-Dvvvvv" "$@"
+exec "$SNAP/slurm-bins/slurmdbd" "-Dvvvvv" "$@"
