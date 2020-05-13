@@ -48,6 +48,21 @@ The above command configures the `snap.mode` to `all` mode. This runs all of the
 
 When the above steps have been completed you will have a Slurm deploy running inside the snap.
 
+At this point you can start executing commands against the cluster. Lets try a few:
+```bash
+$ slurm.sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST 
+debug*       up   infinite      1   idle ubuntu-dev 
+```
+```bash
+$ slurm.scontrol ping
+Slurmctld(primary) at ubuntu-dev is UP
+```
+```bash
+$ slurm.srun -pdebug -n1 -l hostname
+0: ubuntu-dev
+```
+
 
 ## Usage
 This snap supports running different components of slurm depending on what `snap.mode` has been configured. 
@@ -94,12 +109,6 @@ This snap supports running different components of slurm depending on what `snap
 * mysql-client
 * snap-mysqldump
 
-## Remaining Tasks
-
-* [ ] Support strict confinement
-* [ ] Built-in [NHC](https://github.com/mej/nhc) service
-* [ ] Automated builds with TravisCI
-* [ ] Publish to Snap Store
 
 #### Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
