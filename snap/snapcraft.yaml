@@ -51,7 +51,7 @@ apps:
     command: drop-user $SNAP/bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind, network-control, physical-memory-control]
+    plugs: [network, network-bind, network-control]
 
   sacct:
     command: bin/sacct
