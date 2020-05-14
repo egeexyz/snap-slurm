@@ -284,6 +284,8 @@ parts:
       - rrdtool
       - libncurses5-dev
       - libglib2.0-dev
+      - libibmad-dev
+      - libibumad-dev
     stage-packages:
       - liblua5.3-dev
       - libmysqlclient-dev
