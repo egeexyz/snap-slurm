@@ -25,7 +25,6 @@ sudo snap install slurm
 ```
 
 #### Connect Interfaces
-Connect the `network-control` interface:
 ```bash
 sudo snap connect slurm:network-control
 ```
