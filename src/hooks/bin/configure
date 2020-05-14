@@ -22,7 +22,14 @@ SNAP_MODE_PROCESS_MAP = {
     "slurmd": ["munged", "slurmd"],
     "slurmrestd": ["munged", "slurmrestd"],
     "login": [],
-    "all": ["munged", "mysql", "slurmdbd", "slurmctld", "slurmd", "slurmrestd"],
+    "all": [
+        "munged",
+        "mysql",
+        "slurmdbd",
+        "slurmctld",
+        "slurmd",
+        "slurmrestd",
+    ],
     "none": [],
 }
 
@@ -137,7 +144,11 @@ def configure_snap_mode(snap_mode_from_snap_config):
             )
             slurm_conf_file.write_text(out)
             slurm_conf_file.chmod(0o777)
-            shutil.chown(str(slurm_conf_file), user="snap_daemon", group="snap_daemon")
+            shutil.chown(
+                str(slurm_conf_file),
+                user="snap_daemon",
+                group="snap_daemon"
+            )
 
 
 def daemon_starter(snap_mode):

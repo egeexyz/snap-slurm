@@ -8,8 +8,8 @@ install-dependencies:
 .PHONY: lint
 lint:
 	@echo Linting Python files...
-	flake8 ./src/hooks/bin/configure --exit-zero
-	flake8 ./src/slurm-configurator/bin/slurm-configurator --exit-zero
+	flake8 ./src/hooks/bin/
+	flake8 ./src/slurm-configurator/bin/
 
 .PHONY: test
 test:
