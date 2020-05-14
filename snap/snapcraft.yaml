@@ -456,6 +456,7 @@ parts:
     plugin: dump
     source: https://github.com/mej/nhc.git
     source-type: git
+    source-branch: master
     source-depth: 1
     build-packages:
       - automake
