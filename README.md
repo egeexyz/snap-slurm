@@ -21,10 +21,9 @@ sudo snap install slurm
 ```
 
 #### Connect Interfaces
-Connect the `physical-memory-control` and `network-control` interfaces:
+Connect the `network-control` interface:
 ```bash
 sudo snap connect slurm:network-control
-sudo snap connect slurm:physical-memory-control
 ```
 
 #### Set `snap.mode` Config
