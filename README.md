@@ -17,7 +17,7 @@
 
 ## Installation
 
-Upon installation this snap will not try to run any daemons until the `physical-memory-control` and `network-control` interfaces have been connected and `snap.mode` config has been set to a supported value.
+Upon installation this snap will not try to run any daemons until the `network-control` plug has been connected and `snap.mode` config has been set to a supported value.
 
 #### Install form Snapstore
 ```bash
