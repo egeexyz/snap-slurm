@@ -457,8 +457,9 @@ parts:
 
   nhc:
     plugin: dump
-    source: https://github.com/mej/nhc.git
+    source: https://github.com/omnivector-solutions/nhc.git
     source-type: git
+    source-branch: append_to_path
     source-depth: 1
     build-packages:
       - automake

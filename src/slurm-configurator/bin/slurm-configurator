@@ -64,14 +64,13 @@ def main(argv=sys.argv[1:]):
     # This allows the snap to run in "all" mode where we don't have
     # juju to configure us.
     ctxt = {}
-    slurm_config_template = str()
     if args.slurm_node_type == "slurmdbd":
         # The file where mysql writes the slurm user password
-        #slurmdb_password_file = Path(
+        # slurmdb_password_file = Path(
         #    f"{os.environ['SNAP_DATA']}/mysql/slurmdb_password"
-        #)
+        # )
 
-        #if slurmdb_password_file.exists():
+        # if slurmdb_password_file.exists():
         #    slurmdb_password = slurmdb_password_file.read_text()
         ctxt['DbdHost'] = hostname
         ctxt['DbdAddr'] = hostname
@@ -102,8 +101,6 @@ def main(argv=sys.argv[1:]):
     f = slurm_configurator_templates_base_path / f"{args.slurm_node_type}.yaml"
     yaml_ctxt = yaml.load(f.read_text()).items()
     ctxt = {**ctxt, **dict(yaml_ctxt)}
-    slurm_conf_str = render_slurm_conf(ctxt=ctxt)
-
     print(render_slurm_conf(ctxt=ctxt))
 
 

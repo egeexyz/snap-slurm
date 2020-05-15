@@ -1,0 +1,28 @@
+os: linux
+dist: xenial
+language: python
+python: 3.6
+addons:
+  snaps:
+  - name: snapcraft
+    classic: true
+  - name: lxd
+install: make install-dependencies
+script:
+  - make lint
+  - make test
+before_deploy: make build
+
+deploy:
+  provider: snap
+  snap: slurm_20.02.1_amd64.snap
+  channel: edge
+  skip_cleanup: true
+  on:
+    branch: master
+
+notifications:
+  slack:
+    rooms:
+      secure: EfVvPqUeF82toDMiJ0aLjdd6VyaBIij5dCkMie9HHc7VjzgLDtj5SwU8HvnyMUfAIUYzK0pm8cJCfayDBzBtbwa+HUBpE5fCDYT1x5MyOECdg6yW4rmzJm6mCb7qdudpdCwvoEdU8rsGtbRBCkmNaNDh0a95P6Ste6xLzVvH9w/GbMhrdsF92zKJWk74h3zazo8knbDt+tF+S3SMRiZbF+AEQ9yAQx/foICp4YLfy19nFyw0sk2pGWxQLMwtqyJLPhZqJaqyb3BSeg7ls7PbWCoExZ5KPs8K6I+B/YLl2yYp+3Vqen5gEN2PvV/OJI5mGR1cp4MZOlQ1vJSzs7RHGtb9pbYCK2xiBa4fq+A4+1xTwe3k4MwZLLpV6D7/HGYouFj4RTFoQDEH8fTG9eKy4ZkCt8YxGAiKtkJIggCBvEXLMJmxE2dDXAQbq5GoL8ENWJnoewo5ea6pw2n6VOtA6C+H7GGVqho+eiZGtOh7EVU0BNmbwQ4BkptgT8nMwoz2Zt8o5Ra5DXcbqG0p7E9e3N6p1/bQF/qOHVFuz815YbYdVhAk/dawjKQTGQeaWzy2Lsj9TgcFbfUQnLf52zf5c9XqPUaB5kh5GTtqDERhwVvfh0ytNT+B7QFHhn76qJJkuZF/7TEiWBRAnV7KLgUeR4g7weBCSMSMZ/rqsvtNB7M=
+    on_success: always

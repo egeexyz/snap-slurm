@@ -11,9 +11,13 @@
 
 <p align="center">Built & Published with 💝 by <a href="https://www.omnivector.solutions">OmniVector Solutions</a>.</p> -->
 
+[![slurm](https://snapcraft.io//slurm/badge.svg)](https://snapcraft.io/slurm)
+[![slurm](https://snapcraft.io//slurm/trending.svg?name=0)](https://snapcraft.io/slurm)
+[![Build Status](https://travis-ci.com/omnivector-solutions/snap-slurm.svg?branch=master)](https://travis-ci.com/omnivector-solutions/snap-slurm)
+
 ## Installation
 
-Upon installation this snap will not try to run any daemons until the `physical-memory-control` and `network-control` interfaces have been connected and `snap.mode` config has been set to a supported value.
+Upon installation this snap will not try to run any daemons until the `network-control` plug has been connected and `snap.mode` config has been set to a supported value.
 
 #### Install form Snapstore
 ```bash
@@ -21,10 +25,8 @@ sudo snap install slurm
 ```
 
 #### Connect Interfaces
-Connect the `physical-memory-control` and `network-control` interfaces:
 ```bash
 sudo snap connect slurm:network-control
-sudo snap connect slurm:physical-memory-control
 ```
 
 #### Set `snap.mode` Config
