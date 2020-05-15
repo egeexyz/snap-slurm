@@ -124,7 +124,6 @@ apps:
   version:
     command: bin/slurm-version
 
-
 hooks:
   configure:
     plugs: [network, network-bind]
