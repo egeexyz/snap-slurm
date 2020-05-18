@@ -18,17 +18,17 @@ os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 SNAP_MODE_PROCESS_MAP = {
     "slurmdbd": ["munged", "slurmdbd", "mysql"],
+    "slurmctld": ["munged", "slurmctld"],
     "slurmd": ["munged", "slurmd"],
     "slurmrestd": ["munged", "slurmrestd"],
-    "slurmctld": ["munged", "slurmctld"],
     "login": [],
     "all": [
         "munged",
         "mysql",
         "slurmdbd",
+        "slurmctld",
         "slurmd",
         "slurmrestd",
-        "slurmctld",
     ],
     "none": [],
 }
