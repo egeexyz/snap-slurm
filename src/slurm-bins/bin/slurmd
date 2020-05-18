@@ -28,13 +28,12 @@ if [[ $snap_mode = "all" ]]; then
 
 fi
 
-
 # Start slurmd only if we have a config file
 if ! [[ -f $SLURM_CONF ]]; then
     pprint "No slurm conf, cannot start process.";
     exit -1
 else
-        touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmd-init-complete
+    touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmd-init-complete
 fi
 
 pprint "Starting SLURMD";
