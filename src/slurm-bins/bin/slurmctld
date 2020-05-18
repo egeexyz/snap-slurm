@@ -21,7 +21,7 @@ if [[ $snap_mode = "all" ]]; then
 
     while ! [[ -f $SLURMD_INIT ]]
     do
-        pprint "Waiting for SLURMDBD to initialize";
+        pprint "Waiting for SLURMD to initialize";
 	sleep 1
     done
 fi
@@ -35,6 +35,7 @@ else
     touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
 fi
 
+sleep 10
 
 pprint "Starting SLURMCTLD";
 exec "$SNAP/slurm-bins/slurmctld" \
