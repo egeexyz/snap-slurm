@@ -124,7 +124,6 @@ apps:
   version:
     command: bin/slurm-version
 
-
 hooks:
   configure:
     plugs: [network, network-bind]
@@ -284,6 +283,8 @@ parts:
       - rrdtool
       - libncurses5-dev
       - libglib2.0-dev
+      - libibmad-dev
+      - libibumad-dev
     stage-packages:
       - liblua5.3-dev
       - libmysqlclient-dev
@@ -319,7 +320,8 @@ parts:
           --with-yaml=$SNAPCRAFT_STAGE/usr/local \
           --with-json=$SNAPCRAFT_STAGE/usr/local \
           --prefix=$SNAPCRAFT_PART_INSTALL \
-          --localstatedir=/var/snap/slurm/common/etc/slurm
+          --localstatedir=/var/snap/slurm/common/etc/slurm \
+          --with-ofed=$SNAPCRAFT_STAGE/usr/local
       make -j9
       make install
       ldconfig -n /snap/slurm/current/lib/slurm
