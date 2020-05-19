@@ -13,20 +13,19 @@ fi
 . "$SNAP/utilities/common-utilities"
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 export SLURMCTLD_LOG=$SNAP_COMMON/var/log/slurm/slurmctld.log
-export SLURMDBD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmdbd-init-complete
+export SLURMD_LOG=$SNAP_COMMON/var/log/slurm/slurmd.log
+export SLURMD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmd-init-complete
 export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
-
 
 # Wait for slurmdbd if snap.mode="all"
 if [[ $snap_mode = "all" ]]; then
 
-    while ! [[ -f $SLURMDBD_INIT ]]
+    while ! [[ -f $SLURMD_LOG ]]
     do
-        pprint "Waiting for SLURMDBD to initialize";
-	sleep 1
+        pprint "Waiting for SLURMD to initialize";
+	sleep 5
     done
 fi
-
 
 # Start slurmctld only if we have a config file
 if ! [[ -f $SLURM_CONF ]]; then
@@ -35,7 +34,6 @@ if ! [[ -f $SLURM_CONF ]]; then
 else
     touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
 fi
-
 
 pprint "Starting SLURMCTLD";
 exec "$SNAP/slurm-bins/slurmctld" \
