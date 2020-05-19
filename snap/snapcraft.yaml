@@ -45,7 +45,7 @@ apps:
     command: drop-user $SNAP/bin/slurmd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind, network-control]
+    plugs: [network, network-bind, network-control, system-observe, hardware-observe]
 
   slurmrestd:
     command: drop-user $SNAP/bin/slurmrestd
@@ -292,6 +292,8 @@ parts:
       - libhdf5-100
       - mailutils
       - util-linux
+      - libibmad-dev
+      - libibumad-dev
     stage:
       - bin/
       - share/

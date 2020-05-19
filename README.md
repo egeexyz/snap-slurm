@@ -27,6 +27,8 @@ sudo snap install slurm
 #### Connect Interfaces
 ```bash
 sudo snap connect slurm:network-control
+sudo snap connect slurm:system-observe # For NHC health checks
+sudo snap connect slurm:hardware-observe # For NHC health checks
 ```
 
 #### Set `snap.mode` Config
