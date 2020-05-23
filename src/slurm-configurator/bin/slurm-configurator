@@ -81,7 +81,7 @@ def main(argv=sys.argv[1:]):
         # Slurmd and slurmctld need identical config.
         # Thus we only render a single config file to be
         # used by both daemons.
-        cores_per_socket = 6
+        cores_per_socket = os.sysconf("SC_NPROCESSORS_ONLN")
 
         # Define slurm configs specific to slurmd and slurmctld.
         ctxt = {}
