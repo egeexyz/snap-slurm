@@ -1,6 +1,10 @@
 install-dependencies:
 	@echo Installing dependencies for Snapcraft and Python...
 	pip install -r ./requirements/test-requirements.txt
+	sudo apt update
+	sudo apt install snapd -y
+	sudo snap install snapcraft --classic
+	sudo snap install lxd
 	sudo lxd.migrate -yes
 	sudo lxd init --auto
 
