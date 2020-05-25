@@ -21,7 +21,7 @@ build:
 	sudo /snap/bin/snapcraft --use-lxd
 
 install:
-	snap install slurm_20.02.1_amd64.snap --dangerous --classic
+	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
 
 mode-all:
 	sudo snap set slurm snap.mode=all
