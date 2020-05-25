@@ -1,0 +1,25 @@
+version: 2.1
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: "Install Dependencies"
+          command: make install-dependencies
+      - run:
+          name: "Run Tests"
+          command: make lint
+      - run:
+          name: "Build Snap"
+          command: make build
+      - run:
+          name: "Install Snap"
+          command: make install
+      - run:
+          name: "Test Snap"
+          command: make mode-all
+      - run:
+          name: "Debug Snap"
+          command: make snap-debug
