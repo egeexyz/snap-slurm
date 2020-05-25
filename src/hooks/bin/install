@@ -9,7 +9,6 @@ snapctl set snap.mode=$initial_snap_mode
 echo $initial_snap_mode > $SNAP_COMMON/snap_mode
 chmod 777 $SNAP_COMMON/snap_mode
 
-
 ########################### $SNAP_COMMON/var/log and $SNAP_COMMON/var/run dirs ####################
 mkdir -p $SNAP_COMMON/var/log
 mkdir -p $SNAP_COMMON/var/run

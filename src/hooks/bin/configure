@@ -8,12 +8,12 @@ from pathlib import Path
 from time import sleep
 
 
-LD_LIBRARY_PATH = \
-    f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
-    ":"\
-    f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+# LD_LIBRARY_PATH = \
+#     f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+#     ":"\
+#     f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
 
-os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
+# os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 SNAP_MODE_PROCESS_MAP = {
