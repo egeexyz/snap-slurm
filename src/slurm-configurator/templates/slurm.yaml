@@ -8,8 +8,8 @@ HealthCheckNodeState: "ANY"
 SlurmdPort: 6818
 SlurmctldPort: 6817
 
-SlurmUser: "snap_daemon"
-SlurmdUser: "snap_daemon"
+SlurmUser: "root"
+SlurmdUser: "root"
 
 
 #AuthType: "auth/none"
