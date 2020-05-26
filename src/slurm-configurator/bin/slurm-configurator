@@ -100,7 +100,7 @@ def main(argv=sys.argv[1:]):
     # Load, merge and render the yaml and ctxt into the slurmdbd.conf.
     f = slurm_configurator_templates_base_path / f"{args.slurm_node_type}.yaml"
     yaml_ctxt = yaml.load(f.read_text()).items()
-    ctxt = {**ctxt, **dict(yaml_ctxt)}
+    ctxt = {**dict(yaml_ctxt), **ctxt}
     print(render_slurm_conf(ctxt=ctxt))
 
 
