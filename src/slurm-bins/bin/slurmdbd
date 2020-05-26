@@ -6,7 +6,7 @@ set -e
 # Only proceed if the snap.mode is set to one of
 # "slurmdbd", "all", or "slurmdbd+manual"
 snap_mode=$(cat $SNAP_COMMON/snap_mode)
-if ! [[ $snap_mode == "slurmdbd" || $snap_mode = "all" || $snap_mode = "slurmdbd+manual" ]]; then
+if ! [[ $snap_mode == "slurmdbd" || $snap_mode = "all" || $snap_mode = "slurmdbd+mysql" ]]; then
         exit 1
 fi
 
@@ -16,7 +16,7 @@ export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurmdbd.conf
 export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 # Bypass checks, templating and init ops if we are running in manual mode
-if ! [[ $snap_mode = "slurmdbd+manual" ]]; then
+if [[ $snap_mode = "slurmdbd+mysql" ]]; then
 
     SLURMDBD_MYSQL_PASSWORD_FILE=$SNAP_COMMON/slurmdb_password
 
