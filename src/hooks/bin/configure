@@ -147,8 +147,6 @@ def stop_all_daemons():
 def render_slurm_conf(slurm_node_type):
     slurm_conf_str = ""
 
-    args = get_parsed_args(argv)
-
     hostname = socket.gethostname().split(".")[0]
 
     # Base path where the slurm yaml config live.
@@ -196,14 +194,14 @@ def render_slurm_conf(slurm_node_type):
         )
 
     # Load, merge and render the yaml and ctxt into the slurmdbd.conf.
-    f = slurm_configurator_templates_base_path / f"{args.slurm_node_type}.yaml"
+    f = slurm_configurator_templates_base_path / f"{slurm_node_type}.yaml"
     yaml_ctxt = yaml.load(f.read_text()).items()
 
     ctxt = {**ctxt, **dict(yaml_ctxt)}
 
     env = Environment(
         loader=FileSystemLoader(
-            slurm_configurator_templates_base_path
+            str(slurm_configurator_templates_base_path)
         )
     )
 
@@ -241,6 +239,9 @@ def configure_snap_mode_and_render_slurm_config(snap_mode_from_snap_config):
 
         # Write the slurm config files
         for config_type in slurm_config_types:
+            slurm_conf_file = Path(
+                f"{os.environ['SNAP_COMMON']}/etc/slurm/{config_type}.conf"
+            )
             slurm_conf_file.write_text(render_slurm_conf(config_type))
             slurm_conf_file.chmod(0o777)
 
