@@ -38,6 +38,7 @@ The following `snap.mode` values are supported:
 * `login`
 * `munged`
 * `slurmdbd`
+* `slurmdbd+mysql`
 * `slurmctld`
 * `slurmd`
 * `slurmrestd`
