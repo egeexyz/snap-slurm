@@ -1,9 +1,14 @@
 install-dependencies:
 	@echo Installing dependencies for Snapcraft and Python...
-	pip install -r ./requirements/test-requirements.txt
-	pip install -r ./requirements/classic-requirements.txt
+
+	sudo add-apt-repository ppa:deadsnakes/ppa
 	sudo apt update
-	sudo apt install snapd -y
+	sudo apt install snapd python3.8 -y
+	sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+
+	sudo pip install -r ./requirements/test-requirements.txt
+	sudo pip install -r ./requirements/classic-requirements.txt
+	
 	sudo snap install snapcraft --classic
 	sudo snap install lxd
 	sudo lxd.migrate -yes
@@ -11,8 +16,8 @@ install-dependencies:
 
 lint:
 	@echo Linting Python files...
-	flake8 ./src/hooks/bin/
-	flake8 ./src/slurm-configurator/bin/
+	sudo flake8 ./src/hooks/bin/
+	sudo flake8 ./src/slurm-configurator/bin/
 
 test:
 	@echo Running Tests...
@@ -20,11 +25,6 @@ test:
 build:
 	@echo Building Slurm Snap...
 	sudo /snap/bin/snapcraft --use-lxd
-
-install-circleci:
-	sudo rm /usr/bin/python3
-	sudo ln -s /opt/circleci/.pyenv/shims/python3 /usr/bin/python3 
-	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
 
 install:
 	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
