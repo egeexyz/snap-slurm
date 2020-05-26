@@ -6,8 +6,8 @@ install-dependencies:
 	sudo apt install snapd python3.8 -y
 	sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 
-	sudo pip install -r ./requirements/test-requirements.txt
-	sudo pip install -r ./requirements/classic-requirements.txt
+	sudo pip3 install -r ./requirements/test-requirements.txt
+	sudo pip3 install -r ./requirements/classic-requirements.txt
 	
 	sudo snap install snapcraft --classic
 	sudo snap install lxd
