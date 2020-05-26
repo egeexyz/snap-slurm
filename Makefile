@@ -16,8 +16,8 @@ install-dependencies:
 
 lint:
 	@echo Linting Python files...
-	sudo flake8 ./src/hooks/bin/
-	sudo flake8 ./src/slurm-configurator/bin/
+	flake8 ./src/hooks/bin/
+	flake8 ./src/slurm-configurator/bin/
 
 test:
 	@echo Running Tests...
