@@ -199,7 +199,7 @@ def render_slurm_conf(slurm_node_type):
     f = slurm_configurator_templates_base_path / f"{args.slurm_node_type}.yaml"
     yaml_ctxt = yaml.load(f.read_text()).items()
 
-    ctxt = {**dict(yaml_ctxt), **ctxt}
+    ctxt = {**ctxt, **dict(yaml_ctxt)}
 
     env = Environment(
         loader=FileSystemLoader(
