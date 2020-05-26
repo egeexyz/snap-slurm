@@ -1,6 +1,7 @@
 install-dependencies:
 	@echo Installing dependencies for Snapcraft and Python...
 	pip install -r ./requirements/test-requirements.txt
+	pip install -r ./requirements/classic-requirements.txt
 	sudo apt update
 	sudo apt install snapd -y
 	sudo snap install snapcraft --classic
@@ -20,6 +21,11 @@ build:
 	@echo Building Slurm Snap...
 	sudo /snap/bin/snapcraft --use-lxd
 
+install-circleci:
+	sudo rm /usr/bin/python3
+	sudo ln -s /opt/circleci/.pyenv/shims/python3 /usr/bin/python3 
+	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
+
 install:
 	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
 
@@ -32,6 +38,7 @@ mode-none:
 snap-debug:
 	sleep 1
 	sudo journalctl -u  snap.slurm.mysql --no-pager
+	slurm.sinfo
 
 uninstall:
 	sudo snap remove slurm
