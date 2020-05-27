@@ -3,8 +3,8 @@ install-dependencies:
 
 	sudo add-apt-repository ppa:deadsnakes/ppa
 	sudo apt update
-	sudo apt install snapd python3.8 python3-jinja2 -y
-	sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+	sudo apt install snapd python3-jinja2 -y
+	# sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
 
 	pip install -r ./requirements/test-requirements.txt
 	pip install -r ./requirements/classic-requirements.txt
