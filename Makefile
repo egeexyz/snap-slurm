@@ -35,7 +35,7 @@ mode-none:
 
 snap-debug:
 	sleep 10
-	systemctl restart snap.slurm.slurmctld
+	sudo systemctl restart snap.slurm.slurmctld
 	sleep 20
 	sudo systemctl status snap.slurm.* --no-pager
 	slurm.sinfo
