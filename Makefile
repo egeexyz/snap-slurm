@@ -34,9 +34,8 @@ mode-none:
 	sudo snap set slurm snap.mode=none
 
 snap-debug:
-	sleep 1
+	sleep 30
 	sudo systemctl status snap.slurm.* --no-pager
-	sudo journalctl -u  snap.slurm.mysql --no-pager
 	slurm.sinfo
 
 uninstall:
