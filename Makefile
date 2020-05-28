@@ -24,7 +24,7 @@ test:
 
 build:
 	@echo Building Slurm Snap...
-	sudo /snap/bin/snapcraft --use-lxd
+	sudo /snap/bin/snapcraft --use-lxd > /dev/null 2>&1
 
 install:
 	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
