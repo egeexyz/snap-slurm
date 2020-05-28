@@ -34,7 +34,9 @@ mode-none:
 	sudo snap set slurm snap.mode=none
 
 snap-debug:
-	sleep 30
+	sleep 10
+	systemctl restart snap.slurm.slurmctld
+	sleep 20
 	sudo systemctl status snap.slurm.* --no-pager
 	slurm.sinfo
 
