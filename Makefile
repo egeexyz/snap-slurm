@@ -12,7 +12,8 @@ install-dependencies:
 	
 	sudo snap install snapcraft --classic
 	sudo snap install lxd
-	# sudo lxd.migrate -yes
+	sudo lxd.migrate -yes &
+	sleep 15
 	sudo lxd init --auto
 
 lint:
