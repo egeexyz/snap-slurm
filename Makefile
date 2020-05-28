@@ -10,11 +10,11 @@ install-dependencies:
 	pip install -r ./requirements/test-requirements.txt
 	pip install -r ./requirements/classic-requirements.txt
 	
-	sudo snap install snapcraft --classic
-	sudo snap install lxd
-	sudo lxd.migrate -yes &
-	sleep 15
-	sudo lxd init --auto
+	# sudo snap install snapcraft --classic
+	# sudo snap install lxd
+	# sudo lxd.migrate -yes &
+	# sleep 15
+	# sudo lxd init --auto
 
 lint:
 	@echo Linting Python files...
@@ -25,7 +25,7 @@ test:
 
 build:
 	@echo Building Slurm Snap...
-	sudo /snap/bin/snapcraft --use-lxd
+	sudo /snap/bin/snapcraft
 
 install:
 	sudo snap install slurm_20.02.1_amd64.snap --dangerous --classic
