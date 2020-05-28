@@ -7,6 +7,7 @@ addons:
   snaps:
   - name: snapcraft
     classic: true
+  - name: lxd
 install: make install-dependencies
 script:
   - make lint

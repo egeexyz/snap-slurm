@@ -10,11 +10,8 @@ install-dependencies:
 	pip install -r ./requirements/test-requirements.txt
 	pip install -r ./requirements/classic-requirements.txt
 	
-	# sudo snap install snapcraft --classic
-	# sudo snap install lxd
-	# sudo lxd.migrate -yes &
-	# sleep 15
-	# sudo lxd init --auto
+	sudo lxd init --auto
+	sudo lxd.migrate -yes
 
 lint:
 	@echo Linting Python files...
