@@ -7,7 +7,6 @@ import subprocess
 import yaml
 
 from pathlib import Path
-from time import sleep
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -120,7 +119,6 @@ def daemon_starter(snap_mode):
         try:
             process = f"{os.environ['SNAP_INSTANCE_NAME']}.{snapped_process}"
             run_bash(f"snapctl start {process}")
-            sleep(1)
         except Exception:
             sys.exit(1)
 
