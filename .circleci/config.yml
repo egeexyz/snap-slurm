@@ -16,11 +16,18 @@
 #       - run:
 #           name: "Build Snap"
 #           command: make build
+# version: 2.1
+# orbs:
+#   flake8-orb: wearefair/flake8-orb@0.0.2
+# workflows:
+#   lint_and_build:
+#     jobs:
+#       - flake8-orb/run
+#       # - build
 version: 2.1
 orbs:
-  flake8-orb: wearefair/flake8-orb@0.0.2
+  cypress: cypress-io/cypress@1
 workflows:
-  lint_and_build:
+  build:
     jobs:
-      - flake8-orb/run
-      # - build
+      - cypress/run
