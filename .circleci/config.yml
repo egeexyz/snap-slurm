@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  lint:
     machine:
       image: ubuntu-1604:202004-01
     steps:
@@ -11,6 +11,20 @@ jobs:
       - run:
           name: "Run Linters"
           command: make lint
+  build:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: "Install Dependencies"
+          command: make install-dependencies
       - run:
           name: "Build Snap"
           command: make build
+workflows:
+  version: 2.1
+  lint_and_build:
+    jobs:
+      - lint
+      - build
