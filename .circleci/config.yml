@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: "Install Dependencies"
-          command: make install-dependencies
+          command: make install-python-dependencies
       - run:
           name: "Run Linters"
           command: make lint
@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: "Install Dependencies"
-          command: make install-dependencies
+          command: make install-snapcraft-dependencies
       - run:
           name: "Build Snap"
           command: make build
