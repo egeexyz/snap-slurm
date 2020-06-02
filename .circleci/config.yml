@@ -1,27 +1,26 @@
-version: 2.1
-orbs:
-  flake8-orb: wearefair/flake8-orb@0.0.2
-jobs:
-  lint:
-    docker:
-      - image: circleci/python:3.6
-    steps:
-      - checkout
-      - flake8-orb/run
-  build:
-    machine:
-      image: ubuntu-1604:202004-01
-    steps:
-      - checkout
-      - run:
-          name: "Install Dependencies"
-          command: make install-snapcraft-dependencies
-      - run:
-          name: "Build Snap"
-          command: make build
+# version: 2.1
+# orbs:
+#   flake8-orb: wearefair/flake8-orb@0.0.2
+# jobs:
+#   lint:
+#     docker:
+#       - image: circleci/python:3.6
+#     steps:
+#       - checkout
+#   build:
+#     machine:
+#       image: ubuntu-1604:202004-01
+#     steps:
+#       - checkout
+#       - run:
+#           name: "Install Dependencies"
+#           command: make install-snapcraft-dependencies
+#       - run:
+#           name: "Build Snap"
+#           command: make build
 workflows:
   version: 2.1
   lint_and_build:
     jobs:
-      - lint
+      - flake8-orb/run
       # - build
