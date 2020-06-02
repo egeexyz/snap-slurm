@@ -8,7 +8,9 @@ jobs:
       - run:
           command: pip install flake8
       - run:
-          command: flake8 src/hooks/bin/configure
+          command: |
+          flake8 src/hooks/bin/configure
+          flake8 src/slurm-bins/bin/slurm-version
   build:
     machine:
       image: ubuntu-1604:202004-01
