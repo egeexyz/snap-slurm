@@ -39,5 +39,5 @@ workflows:
   craft_snap:
     jobs:
       - lint_python
-      # - shellcheck/check # TODO: Since none of our bash scripts have file extensions, this is rather difficult
+      - slint_bash
       # - build
