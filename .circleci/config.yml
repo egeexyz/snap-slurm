@@ -32,24 +32,21 @@ jobs:
           name: Run Spellcheck
           command: shellcheck src/hooks/bin/install
   snapcraft:
-    docker:
-      - image: snapcore/snapcraft:beta
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - checkout
-      # - run:
-      #     name: "Install Dependencies"
-      #     command: |
-      #       sudo apt-get update
-      #       sudo apt-get upgrade -y
-      #       sudo apt-get install -y snapd
-      #       sudo systemctl enable --now snapd
-      #       sudo snap install lxd
-      #       sudo snap install snapcraft --classic
-      #       sudo lxd init --auto
+      - run:
+          name: "Install Dependencies"
+          command: |
+            	sudo apt update
+              sudo apt upgrade -y
+              sudo snap refresh
+              sudo lxd init --auto
+              sudo snap install lxd
+              sudo lxd.migrate -yes
+              sudo snap install snapcraft --classic
+              sudo lxd init --auto
       - run:
           name: "Build Snap"
-          command: |
-            sudo apt-get update
-            sudo apt-get -y upgrade
-            snapcraft cleanbuild
-            snapcraft
+          command: sudo snapcraft --use-lxd
