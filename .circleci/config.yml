@@ -48,4 +48,4 @@ jobs:
       #       sudo lxd init --auto
       - run:
           name: "Build Snap"
-          command: echo 'test'
+          command: snapcraft
