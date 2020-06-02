@@ -33,7 +33,7 @@ jobs:
           command: shellcheck src/hooks/bin/install
   snapcraft:
     docker:
-      - image: cibuilds/snapcraft:core18
+      - image: snapcore/snapcraft:beta
     steps:
       - checkout
       # - run:
