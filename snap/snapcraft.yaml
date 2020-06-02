@@ -175,6 +175,10 @@ parts:
       - libaio-dev
       - libssl-dev
       - pkg-config
+      - libmecab-dev
+      - libnuma-dev
+      - libncurses5-dev
+      - zlib1g-dev
     stage-packages:
       - libaio1
     stage:
