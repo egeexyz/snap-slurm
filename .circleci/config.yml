@@ -33,19 +33,19 @@ jobs:
           command: shellcheck src/hooks/bin/install
   snapcraft:
     docker:
-      - image: cimg/base:2020.01
+      - image: cibuilds/snapcraft:core18
     steps:
       - checkout
-      - run:
-          name: "Install Dependencies"
-          command: |
-            sudo apt-get update
-            sudo apt-get upgrade -y
-            sudo apt-get install -y snapd
-            sudo systemctl enable --now snapd
-            sudo snap install lxd
-            sudo snap install snapcraft --classic
-            sudo lxd init --auto
+      # - run:
+      #     name: "Install Dependencies"
+      #     command: |
+      #       sudo apt-get update
+      #       sudo apt-get upgrade -y
+      #       sudo apt-get install -y snapd
+      #       sudo systemctl enable --now snapd
+      #       sudo snap install lxd
+      #       sudo snap install snapcraft --classic
+      #       sudo lxd init --auto
       - run:
           name: "Build Snap"
           command: echo 'test'
