@@ -15,6 +15,7 @@ jobs:
   lint_bash:
     docker:
       - image: koalaman/shellcheck:v0.7.1
+        entrypoint: /bin/sh
     steps:
       - checkout
       - run:
