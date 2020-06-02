@@ -3,14 +3,20 @@ jobs:
   lint:
     docker:
       - image: circleci/python:3.6
+      - image: koalaman/shellcheck:v0.7.1
     steps:
       - checkout
       - run:
           command: pip install flake8
       - run:
+          name: Run flake8 linter
           command: |
-          flake8 src/hooks/bin/configure
-          flake8 src/slurm-bins/bin/slurm-version
+            flake8 src/hooks/bin/configure
+            flake8 src/slurm-bins/bin/slurm-version
+      - run:
+          name: Run shellcheck linter
+          command: |
+            shellcheck src/hooks/bin/install
   build:
     machine:
       image: ubuntu-1604:202004-01
