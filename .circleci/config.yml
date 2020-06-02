@@ -1,0 +1,16 @@
+version: 2.1
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: "Install Dependencies"
+          command: make install-dependencies
+      - run:
+          name: "Run Linters"
+          command: make lint
+      - run:
+          name: "Build Snap"
+          command: make build
