@@ -8,7 +8,7 @@ jobs:
       - run:
           command: pip install flake8
       - run:
-          command: flake8 src/hooks/bin/
+          command: flake8 src/hooks/bin/configure
   build:
     machine:
       image: ubuntu-1604:202004-01
