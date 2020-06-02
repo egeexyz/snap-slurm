@@ -51,4 +51,5 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get -y upgrade
+            snapcraft cleanbuild
             snapcraft
