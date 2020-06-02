@@ -8,6 +8,7 @@ install-dependencies:
 	sudo snap install lxd
 	sudo lxd.migrate -yes
 	sudo snap install snapcraft --classic
+	sudo lxd init --auto
 
 lint:
 	@echo Linting Python files...
