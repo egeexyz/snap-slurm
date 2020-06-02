@@ -1,33 +1,28 @@
-# version: 2.1
-# jobs:
-#   lint:
-#     docker:
-#       - image: circleci/python:3.6
-#     steps:
-#       - checkout
-#   build:
-#     machine:
-#       image: ubuntu-1604:202004-01
-#     steps:
-#       - checkout
-#       - run:
-#           name: "Install Dependencies"
-#           command: make install-snapcraft-dependencies
-#       - run:
-#           name: "Build Snap"
-#           command: make build
-# version: 2.1
-# orbs:
-#   flake8-orb: wearefair/flake8-orb@0.0.2
-# workflows:
-#   lint_and_build:
-#     jobs:
-#       - flake8-orb/run
-#       # - build
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@1
-workflows:
+jobs:
+  lint:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          command: pip install flake8
+      - run:
+          command: flake8 src/hooks/bin/
   build:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: "Install Dependencies"
+          command: make install-snapcraft-dependencies
+      - run:
+          name: "Build Snap"
+          command: make build
+workflows:
+  version: 2.1
+  craft_snap:
     jobs:
-      - cypress/run
+      - lint
+      # - build
