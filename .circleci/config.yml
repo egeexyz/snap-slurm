@@ -39,5 +39,5 @@ workflows:
   craft_snap:
     jobs:
       - lint_python
-      - slint_bash
+      - lint_bash
       # - build
