@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  flake8-orb: wearefair/flake8-orb@0.0.2
 jobs:
   lint:
     docker:
