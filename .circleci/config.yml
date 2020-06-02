@@ -1,16 +1,13 @@
 version: 2.1
 jobs:
   lint:
-    machine:
-      image: ubuntu-1604:202004-01
+    docker:
+      image: circleci/python:3.6
     steps:
       - checkout
       - run:
-          name: "Install Dependencies"
-          command: make install-python-dependencies
-      - run:
-          name: "Run Linters"
-          command: make lint
+          name: "Run flake8"
+          command: flake8 ./src/hooks/bin/
   build:
     machine:
       image: ubuntu-1604:202004-01
