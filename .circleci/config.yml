@@ -1,6 +1,10 @@
 version: 2.1
-# orbs:
-#   shellcheck: circleci/shellcheck@1.3.16
+workflows:
+  craft_snap:
+    jobs:
+      - flake8
+      # - shellcheck
+      - snapcraft
 jobs:
   flake8:
     docker:
@@ -27,21 +31,22 @@ jobs:
       - run:
           name: Run Spellcheck
           command: shellcheck src/hooks/bin/install
-  build:
-    machine:
-      image: ubuntu-1604:202004-01
+  snapcraft:
+    docker:
+      - image: cimg/base:2020.01
     steps:
       - checkout
       - run:
           name: "Install Dependencies"
-          command: make install-snapcraft-dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo snap refresh
+            sudo lxd init --auto
+            sudo snap install lxd
+            sudo lxd.migrate -yes
+            sudo snap install snapcraft --classic
+            sudo lxd init --auto
       - run:
           name: "Build Snap"
-          command: make build
-workflows:
-  version: 2.1
-  craft_snap:
-    jobs:
-      - flake8
-      - shellcheck
-      # - build
+          command: echo 'test'
