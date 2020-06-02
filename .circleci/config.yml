@@ -1,6 +1,6 @@
 version: 2.1
-orbs:
-  shellcheck: circleci/shellcheck@1.3.16
+# orbs:
+#   shellcheck: circleci/shellcheck@1.3.16
 jobs:
   lint_python:
     docker:
@@ -14,7 +14,15 @@ jobs:
           command: |
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
-
+  lint_bash:
+    shell: /bin/sh
+    docker:
+      - image: koalaman/shellcheck:v0.7.1
+        entrypoint: ""
+    steps:
+      - checkout
+      - run:
+          command: shellcheck src/hooks/bin/install
   build:
     machine:
       image: ubuntu-1604:202004-01
@@ -31,5 +39,5 @@ workflows:
   craft_snap:
     jobs:
       - lint_python
-      - shellcheck/check
+      # - shellcheck/check # TODO: Since none of our bash scripts have file extensions, this is rather difficult
       # - build
