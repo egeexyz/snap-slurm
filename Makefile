@@ -1,5 +1,8 @@
 install-dependencies:
 	@echo Installing dependencies for Snapcraft and Python...
+	sudo apt update
+	sudo apt upgrade -y
+	snap refresh
 	sudo lxd init --auto
 	sudo snap install lxd
 	sudo lxd.migrate -yes
