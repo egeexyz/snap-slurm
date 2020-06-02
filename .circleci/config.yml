@@ -7,7 +7,7 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - flake8-orb
+      - flake8-orb/run
   build:
     machine:
       image: ubuntu-1604:202004-01
@@ -24,4 +24,4 @@ workflows:
   lint_and_build:
     jobs:
       - lint
-      - build
+      # - build
