@@ -8,6 +8,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Install flake8"
+          command: pip3 install flake8
+      - run:
           name: "Run flake8"
           command: flake8 ./src/hooks/bin/
   build:
