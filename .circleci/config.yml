@@ -15,7 +15,8 @@ jobs:
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
   lint_bash:
-    - shellcheck/check
+    steps:
+      - shellcheck/check
 
   build:
     machine:
