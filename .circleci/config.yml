@@ -3,13 +3,13 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      # - shellcheck
-      # - snapcraft:
-      #     requires:
-      #       - flake8
-      # - terraform_and_test:
-      #     requires:
-      #       - snapcraft
+      - shellcheck
+      - snapcraft:
+          requires:
+            - flake8
+      - terraform_and_test:
+          requires:
+            - snapcraft
 jobs:
   flake8:
     docker:
