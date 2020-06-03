@@ -1,6 +1,6 @@
 version: 2.1
 workflows:
-  craft_snap:
+  build_and_test:
     jobs:
       - flake8
       # - shellcheck
