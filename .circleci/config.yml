@@ -4,7 +4,8 @@ workflows:
     jobs:
       - flake8
       # - shellcheck
-      - snapcraft
+      # - snapcraft
+      - terraform_and_test
 jobs:
   flake8:
     docker:
@@ -49,4 +50,22 @@ jobs:
               sudo lxd init --auto
       - run:
           name: "Build Snap"
-          command: sudo snapcraft --use-lxd
+          command: sudo snapcraft --use-
+  terraform_and_test:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install wget git
+            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+            unzip terraform_0.12.26_linux_amd64.zip
+      - run:
+          name: Test Git
+          command: git clone https://github.com/omnivector-solutions/charm-slurmdbd.git
+      - run:
+          name: Test Terraform
+          command: terraform --version
+  deliver:
