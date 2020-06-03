@@ -3,7 +3,10 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      - shellcheck
+      - shellcheck:
+        requires:
+          - flake8
+
       # - snapcraft:
       #     requires:
       #       - flake8
