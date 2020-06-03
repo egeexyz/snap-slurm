@@ -33,16 +33,18 @@ jobs:
           name: Run Spellcheck
           command: shellcheck src/hooks/bin/install
   snapcraft:
-    machine:
-      image: ubuntu-1604:202004-01
+    # machine:
+    #   image: ubuntu-1604:202004-01
+    docker:
+      - image: snapcore/snapcraft:beta
     steps:
       - checkout
       - run:
           name: "Build Snap"
           command: |
-            sudo snap refresh
-            # snapcraft cleanbuild
-            # snapcraft
+            snap refresh
+            snapcraft cleanbuild
+            snapcraft
       # - run:
       #     name: "Install Dependencies"
       #     command: |
