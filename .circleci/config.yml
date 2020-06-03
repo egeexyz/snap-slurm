@@ -55,6 +55,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup SSH key
+          command: |
+            mkdir -p ~/.ssh
+            base64 -d $KEY > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+      - run:
           name: Install Terraform
           command: |
             wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
