@@ -4,8 +4,8 @@ workflows:
     jobs:
       - flake8
       - shellcheck:
-        requires:
-          - flake8
+          requires:
+            - flake8
 
       # - snapcraft:
       #     requires:
