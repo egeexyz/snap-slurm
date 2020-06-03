@@ -40,7 +40,9 @@ jobs:
       - run:
           name: "Install Dependencies"
           command: |
-              sudo apt-get install --only-upgrade -y snapd
+              #sudo apt-get updat
+              #sudo apt-get install --only-upgrade -y snapd
+              sudo snap refresh
               sudo lxd init --auto
               sudo snap install lxd
               sudo lxd.migrate -yes
