@@ -41,7 +41,7 @@ jobs:
           name: "Install Dependencies"
           command: |
             	sudo apt update
-              sudo apt upgrade -y
+              sudo snap refresh
               sudo lxd init --auto
               sudo snap install lxd
               sudo lxd.migrate -yes
