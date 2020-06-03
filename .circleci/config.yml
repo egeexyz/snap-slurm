@@ -67,5 +67,5 @@ jobs:
           command: git clone https://github.com/omnivector-solutions/charm-slurmdbd.git
       - run:
           name: Test Terraform
-          command: terraform --version
+          command: ./terraform --version
   deliver:
