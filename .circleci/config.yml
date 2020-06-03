@@ -33,30 +33,21 @@ jobs:
           name: Run Spellcheck
           command: shellcheck src/hooks/bin/install
   snapcraft:
-    # machine:
-    #   image: ubuntu-1604:202004-01
-    docker:
-      - image: snapcore/snapcraft:beta
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - checkout
       - run:
-          name: "Build Snap"
+          name: "Install Dependencies"
           command: |
-            snap refresh
-            snapcraft cleanbuild
-            snapcraft
-      # - run:
-      #     name: "Install Dependencies"
-      #     command: |
-      #       	sudo apt update
-      #         sudo snap refresh
-      #         sudo lxd init --auto
-      #         sudo snap install lxd
-      #         sudo lxd.migrate -yes
-      #         sudo snap install snapcraft --classic
-      # - run:
-      #     name: "Build Snap"
-      #     command: sudo snapcraft --use-
+              sudo snap refresh
+              sudo lxd init --auto
+              sudo snap install lxd
+              sudo lxd.migrate -yes
+              sudo snap install snapcraft --classic
+      - run:
+          name: "Build Snap"
+          command: sudo snapcraft --use-
   terraform_and_test:
     docker:
       - image: cimg/base:2020.01
