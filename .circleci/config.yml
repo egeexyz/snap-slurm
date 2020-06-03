@@ -45,6 +45,7 @@ jobs:
               sudo lxd init --auto
               sudo snap install lxd
               sudo lxd.migrate -yes
+              sudo lxd init --auto
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
