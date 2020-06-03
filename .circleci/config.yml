@@ -65,5 +65,5 @@ jobs:
           name: Test Terraform
           command: |
             cd tf
-            ./terraform init
+            ../terraform init
   deliver:
