@@ -65,4 +65,7 @@ jobs:
             cd tf
             ../terraform init
             ../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+      - run:
+          name: Destroy Terraform
+          command: ../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   deliver:
