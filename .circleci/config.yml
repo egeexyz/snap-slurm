@@ -23,10 +23,6 @@ jobs:
           command: |
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
-      - save_cache:
-          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - src/slurm-bins/bin/slurm-version
   shellcheck:
     docker:
       - image: cimg/base:2020.01
@@ -58,7 +54,7 @@ jobs:
           name: "Build Snap"
           command: time sudo snapcraft --use-lxd
       - save_cache:
-          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
+          key: slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - slurm_20.02.1_amd64.snap
   terraform_and_test:
@@ -66,6 +62,11 @@ jobs:
       - image: cimg/base:2020.01
     steps:
       - checkout
+      - restore_cache:
+          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Move slurm-snap
+          command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
