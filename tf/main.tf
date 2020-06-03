@@ -22,11 +22,11 @@ resource "vultr_server" "ubuntu_20_04" {
       private_key = "${chomp(file("/tmp/id_rsa"))}"
     }
     inline = [
-      "snap install slurm --channel=edge"
-      "snap connect slurm:network-control"
-      "snap connect slurm:system-observe" 
-      "sudo snap connect slurm:hardware-observe"
-      "snap set slurm snap.mode=all"
+      "snap install slurm --channel=edge",
+      "snap connect slurm:network-control",
+      "snap connect slurm:system-observe",
+      "sudo snap connect slurm:hardware-observe",
+      "snap set slurm snap.mode=all",
     ]
   }
 }
