@@ -58,7 +58,7 @@ jobs:
           name: Setup SSH key
           command: |
             mkdir -p ~/.ssh
-            base64 -d $KEY > ~/.ssh/id_rsa
+            echo $KEY | base64 --decode > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
       - run:
           name: Install Terraform
