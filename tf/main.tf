@@ -14,6 +14,17 @@ resource "vultr_server" "ubuntu_20_04" {
     os_id = "387" // TODO: put this in an array for programatic creation
     script_id = "724476" // This is where the magic happens
     ssh_key_ids = ["5ec4513d44b0f"]
+  provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      host     = "${vultr_server.ubuntu_20_04.main_ip}"
+      private_key = "${chomp(file("/tmp/id_rsa"))}"
+    }
+    inlin
+    source      = "slurm_20.02.1_amd64.snap"
+    destination = "/tmp/slurm_20.02.1_amd64.snap"
+  }
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
@@ -22,7 +33,7 @@ resource "vultr_server" "ubuntu_20_04" {
       private_key = "${chomp(file("/tmp/id_rsa"))}"
     }
     inline = [
-      "snap install slurm --channel=edge",
+      "snap install --dangerous /tmp/slurm_20.02.1_amd64.snap",
       "snap connect slurm:network-control",
       "snap connect slurm:system-observe",
       "sudo snap connect slurm:hardware-observe",
