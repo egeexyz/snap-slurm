@@ -4,8 +4,12 @@ workflows:
     jobs:
       - flake8
       # - shellcheck
-      - snapcraft
-      - terraform_and_test
+      # - snapcraft:
+      #     requires:
+      #       - flake8
+      # - terraform_and_test:
+      #     requires:
+      #       - snapcraft
 jobs:
   flake8:
     docker:
@@ -19,6 +23,10 @@ jobs:
           command: |
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
+      - save_cache:
+          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - src/slurm-bins/bin/slurm-version
   shellcheck:
     docker:
       - image: cimg/base:2020.01
@@ -49,6 +57,10 @@ jobs:
       - run:
           name: "Build Snap"
           command: time sudo snapcraft --use-lxd
+      - save_cache:
+          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - slurm_20.02.1_amd64.snap
   terraform_and_test:
     docker:
       - image: cimg/base:2020.01
