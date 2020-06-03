@@ -4,7 +4,7 @@ workflows:
     jobs:
       - flake8
       # - shellcheck
-      # - snapcraft
+      - snapcraft
       - terraform_and_test
 jobs:
   flake8:
@@ -40,14 +40,10 @@ jobs:
       - run:
           name: "Install Dependencies"
           command: |
-            	sudo apt update
-              sudo apt upgrade -y
-              sudo snap refresh
               sudo lxd init --auto
               sudo snap install lxd
               sudo lxd.migrate -yes
               sudo snap install snapcraft --classic
-              sudo lxd init --auto
       - run:
           name: "Build Snap"
           command: sudo snapcraft --use-
