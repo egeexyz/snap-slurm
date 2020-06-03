@@ -28,7 +28,7 @@ jobs:
             flake8 src/slurm-bins/bin/slurm-version
       - save_cache:
           name: Store the Snap for the next workflow
-          key: Makefile-{{epoch}}
+          key: Makefile
           paths:
             - ~/project/Makefile
   shellcheck:
@@ -38,7 +38,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm-Snap
-          key: Makefile-
+          key: Makefile
       - run:
           name: Install Shellcheck
           command: |
