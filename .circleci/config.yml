@@ -40,16 +40,15 @@ jobs:
       - run:
           name: "Install Dependencies"
           command: |
-              #sudo apt-get updat
-              #sudo apt-get install --only-upgrade -y snapd
-              sudo snap refresh
-              sudo lxd init --auto
+              time sudo apt-get update
+              time sudo apt-get install --only-upgrade -y snapd
+              time sudo lxd init --auto
               sudo snap install lxd
-              sudo lxd.migrate -yes
+              time sudo lxd.migrate -yes
               sudo snap install snapcraft --classic
-      - run:
-          name: "Build Snap"
-          command: sudo snapcraft --use-lxd
+      # - run:
+      #     name: "Build Snap"
+      #     command: sudo snapcraft --use-lxd
   terraform_and_test:
     docker:
       - image: cimg/base:2020.01
