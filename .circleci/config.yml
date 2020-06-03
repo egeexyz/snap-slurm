@@ -55,6 +55,7 @@ jobs:
     docker:
       - image: cimg/base:2020.01
     steps:
+      - checkout
       - run:
           name: Install Terraform
           command: |
