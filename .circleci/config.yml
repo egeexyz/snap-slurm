@@ -3,16 +3,15 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      - shellcheck:
-          requires:
-            - flake8
-
-      # - snapcraft:
+      # - shellcheck:
       #     requires:
       #       - flake8
-      # - terraform_and_test:
-      #     requires:
-      #       - snapcraft
+      - snapcraft:
+          requires:
+            - flake8
+      - terraform_and_test:
+          requires:
+            - snapcraft
 jobs:
   flake8:
     docker:
@@ -65,7 +64,8 @@ jobs:
           name: "Build Snap"
           command: time sudo snapcraft --use-lxd
       - save_cache:
-          key: slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
+          name: Store Slurm Snap for next workflow
+          key: SlurmSnap
           paths:
             - slurm_20.02.1_amd64.snap
   terraform_and_test:
@@ -74,7 +74,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
