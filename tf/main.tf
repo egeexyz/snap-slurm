@@ -15,6 +15,11 @@ resource "vultr_server" "ubuntu_20_04" {
     script_id = "724476" // This is where the magic happens
     ssh_key_ids = ["5ec4513d44b0f"]
   provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      private_key = "${chomp(file("/tmp/id_rsa"))}"
+    }
     inline = [
       "cat /tmp/firstboot.log"
     ]
