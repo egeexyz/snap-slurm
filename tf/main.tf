@@ -21,7 +21,6 @@ resource "vultr_server" "ubuntu_20_04" {
       host     = "${vultr_server.ubuntu_20_04.main_ip}"
       private_key = "${chomp(file("/tmp/id_rsa"))}"
     }
-    inlin
     source      = "slurm_20.02.1_amd64.snap"
     destination = "/tmp/slurm_20.02.1_amd64.snap"
   }
