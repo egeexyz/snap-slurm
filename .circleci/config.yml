@@ -3,13 +3,13 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      # - shellcheck
-      - snapcraft:
-          requires:
-            - flake8
-      - terraform_and_test:
-          requires:
-            - snapcraft
+      - shellcheck
+      # - snapcraft:
+      #     requires:
+      #       - flake8
+      # - terraform_and_test:
+      #     requires:
+      #       - snapcraft
 jobs:
   flake8:
     docker:
@@ -23,11 +23,17 @@ jobs:
           command: |
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
+      - save_cache:
+          key: slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - Makefile
   shellcheck:
     docker:
       - image: cimg/base:2020.01
     steps:
       - checkout
+      - restore_cache:
+          key: v1-slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Install Shellcheck
           command: |
@@ -63,7 +69,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-assets-{{ .Environment.CIRCLE_SHA1 }}
+          key: v1-slurmsnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
