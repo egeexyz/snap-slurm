@@ -4,7 +4,7 @@ workflows:
     jobs:
       - flake8
       # - shellcheck
-      - snapcraft
+      # - snapcraft
       - terraform_and_test
 jobs:
   flake8:
@@ -64,4 +64,5 @@ jobs:
           command: |
             cd tf
             ../terraform init
+            ../terraform plan -var "api_key=${VULTR_API_KEY}"
   deliver:
