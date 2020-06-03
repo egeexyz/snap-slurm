@@ -14,6 +14,11 @@ resource "vultr_server" "ubuntu_20_04" {
     os_id = "387" // TODO: put this in an array for programatic creation
     script_id = "724476" // This is where the magic happens
     ssh_key_ids = ["5ec4513d44b0f"]
+  provisioner "remote-exec" {
+    inline = [
+      "cat /tmp/firstboot.log"
+    ]
+  }
 }
 
 output "ip_address" {
