@@ -64,5 +64,5 @@ jobs:
           command: |
             cd tf
             ../terraform init
-            ../terraform plan -var "api_key=${VULTR_API_KEY}"
+            ../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
   deliver:
