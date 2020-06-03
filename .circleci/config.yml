@@ -40,9 +40,9 @@ jobs:
       - run:
           name: "Build Snap"
           command: |
-            snap refresh
-            snapcraft cleanbuild
-            snapcraft
+            sudo snap refresh
+            sudo snapcraft cleanbuild
+            sudo snapcraft
       # - run:
       #     name: "Install Dependencies"
       #     command: |
