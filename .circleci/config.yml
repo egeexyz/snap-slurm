@@ -56,16 +56,13 @@ jobs:
       - image: cimg/base:2020.01
     steps:
       - run:
-          name: Install dependencies
+          name: Install Terraform
           command: |
-            sudo apt-get update
-            sudo apt-get install -y wget git
             wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
             unzip terraform_0.12.26_linux_amd64.zip
       - run:
-          name: Test Git
-          command: git clone https://github.com/omnivector-solutions/charm-slurmdbd.git
-      - run:
           name: Test Terraform
-          command: ./terraform --version
+          command: |
+            cd tf
+            ./terraform init
   deliver:
