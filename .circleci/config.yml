@@ -41,9 +41,8 @@ jobs:
           name: "Build Snap"
           command: |
             sudo snap refresh
-            which snapcraft
-            snapcraft cleanbuild
-            snapcraft
+            # snapcraft cleanbuild
+            # snapcraft
       # - run:
       #     name: "Install Dependencies"
       #     command: |
