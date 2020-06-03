@@ -18,6 +18,7 @@ resource "vultr_server" "ubuntu_20_04" {
     connection {
       type     = "ssh"
       user     = "root"
+      host     = "${vultr_server.ubuntu_20_04.main_ip}"
       private_key = "${chomp(file("/tmp/id_rsa"))}"
     }
     inline = [
