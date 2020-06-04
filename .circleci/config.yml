@@ -60,22 +60,22 @@ jobs:
               sudo snap install lxd
               sudo lxd init --auto
               sudo snap install snapcraft --classic
-      - run:
-          name: "Build Snap"
-          command: time sudo snapcraft --use-lxd
-      - save_cache:
-          name: Store Slurm Snap for next workflow
-          key: SlurmSnap
-          paths:
-            - slurm_20.02.1_amd64.snap
+      # - run:
+      #     name: "Build Snap"
+      #     command: time sudo snapcraft --use-lxd
+      # - save_cache:
+      #     name: Store Slurm Snap for next workflow
+      #     key: SlurmSnap
+      #     paths:
+      #       - slurm_20.02.1_amd64.snap
   terraform_and_test:
     docker:
       - image: cimg/base:2020.01
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+      # - restore_cache:
+      #     name: Restore Slurm Snap for deployment
+      #     key: SlurmSnap
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
