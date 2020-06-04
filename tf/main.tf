@@ -15,8 +15,10 @@ locals {
       "snap install --dangerous /tmp/slurm_20.02.1_amd64.snap",
       "snap connect slurm:network-control",
       "snap connect slurm:system-observe",
-      "sudo snap connect slurm:hardware-observe",
-      "snap set slurm snap.mode=all",
+      "snap connect slurm:hardware-observe",
+      "set slurm snap.mode=all",
+      "systemctl status snap.slurm.* --no-pager",
+      "snap.slurm.sinfo"
     ]
   centos8_cmds = [
       "dnf install -y epel-release",
@@ -27,8 +29,10 @@ locals {
       "snap install --dangerous /tmp/slurm_20.02.1_amd64.snap",
       "snap connect slurm:network-control",
       "snap connect slurm:system-observe",
-      "sudo snap connect slurm:hardware-observe",
+      "snap connect slurm:hardware-observe",
       "snap set slurm snap.mode=all",
+      "systemctl status snap.slurm.* --no-pager",
+      "snap.slurm.sinfo"
     ]
 }
 
