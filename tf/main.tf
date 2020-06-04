@@ -44,16 +44,16 @@ resource "vultr_server" "ubuntu_20_04" {
     region_id = local.region_id
     os_id = local.ubuntu_2004
     ssh_key_ids = local.ssh_key_ids
-  # provisioner "file" {
-  #   connection {
-  #     type     = "ssh"
-  #     user     = "root"
-  #     host     = vultr_server.ubuntu_20_04.main_ip
-  #     private_key = file(local.priv_key_path)
-  #   }
-  #   source      = local.filename
-  #   destination = "/tmp/${local.filename}"
-  # }
+  provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      host     = vultr_server.ubuntu_20_04.main_ip
+      private_key = file(local.priv_key_path)
+    }
+    source      = local.filename
+    destination = "/tmp/${local.filename}"
+  }
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
@@ -70,16 +70,16 @@ resource "vultr_server" "ubuntu_18_04" {
     region_id = local.region_id
     os_id = local.ubuntu_1804
     ssh_key_ids = local.ssh_key_ids
-  # provisioner "file" {
-  #   connection {
-  #     type     = "ssh"
-  #     user     = "root"
-  #     host     = vultr_server.ubuntu_18_04.main_ip
-  #     private_key = file(local.priv_key_path)
-  #   }
-  #   source      = local.filename
-  #   destination = "/tmp/${local.filename}"
-  # }
+  provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      host     = vultr_server.ubuntu_18_04.main_ip
+      private_key = file(local.priv_key_path)
+    }
+    source      = local.filename
+    destination = "/tmp/${local.filename}"
+  }
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
@@ -96,16 +96,16 @@ resource "vultr_server" "centos8" {
     region_id = local.region_id
     os_id = local.centos8
     ssh_key_ids = local.ssh_key_ids
-  # provisioner "file" {
-  #   connection {
-  #     type     = "ssh"
-  #     user     = "root"
-  #     host     = vultr_server.centos8.main_ip
-  #     private_key = file(local.priv_key_path)
-  #   }
-  #   source      = local.filename
-  #   destination = "/tmp/${local.filename}"
-  # }
+  provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = "root"
+      host     = vultr_server.centos8.main_ip
+      private_key = file(local.priv_key_path)
+    }
+    source      = local.filename
+    destination = "/tmp/${local.filename}"
+  }
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
