@@ -6,12 +6,15 @@ workflows:
       # - shellcheck:
       #     requires:
       #       - flake8
-      - snapcraft:
+      # - snapcraft:
+      #     requires:
+      #       - flake8
+      # - terraform_and_test:
+      #     requires:
+      #       - snapcraft
+      - deliver:
           requires:
             - flake8
-      - terraform_and_test:
-          requires:
-            - snapcraft
 jobs:
   flake8:
     docker:
@@ -102,3 +105,15 @@ jobs:
             cd tf
             ../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   deliver:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      # - restore_cache:
+      #     name: Restore Slurm Snap for deployment
+      #     key: SlurmSnap
+      - run:
+          name: "Publish to Store"
+          command: |
+            mkdir .snapcraft
+            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
+            snapcraft push *.snap --release beta
