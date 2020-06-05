@@ -106,7 +106,7 @@ jobs:
             ../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   deliver:
     docker:
-      - image: cimg/base:2020.01
+      - image: snapcore/snapcraft:beta
     steps:
       # - restore_cache:
       #     name: Restore Slurm Snap for deployment
