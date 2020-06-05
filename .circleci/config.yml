@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  github-release: h-matsuo/github-release@0.1.1
 workflows:
   build_and_test:
     jobs:
@@ -123,16 +121,14 @@ jobs:
             echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
             snapcraft push slurm_20.02.1_amd64.snap --release beta
   release_github:
-    description: Create dummy file and publish a new release tagged `vX.Y.Z`.
-    executor: github-release/default
+    docker:
+      - image: cimg/go:1.13
     steps:
+      # - restore_cache:
+      #     name: Restore Slurm Snap for deployment
+      #     key: SlurmSnap
       - run:
+          name: "Publish Release on GitHub"
           command: |
-            mkdir artifacts
-            echo dummy > ./artifacts/file
-      - github-release/create:
-          tag: vX.Y.Z
-          title: Version vX.Y.Z
-          description: This release is version vX.Y.Z .
-          file-path: ./artifacts/file
-          pre-release: true
+            VERSION=$(my-binary --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
