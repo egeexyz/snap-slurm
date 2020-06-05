@@ -116,4 +116,4 @@ jobs:
           command: |
             mkdir .snapcraft
             echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push *.snap --release beta
+            snapcraft push slurm_20.02.1_amd64.snap --release beta
