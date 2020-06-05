@@ -132,4 +132,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr 0.0.1 ./Makefile
+            ghr 0.0.1 ./Makefile -t ${GITHUB}
