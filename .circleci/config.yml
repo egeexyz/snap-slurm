@@ -6,9 +6,9 @@ workflows:
       # - shellcheck:
       #     requires:
       #       - flake8
-      # - snapcraft:
-      #     requires:
-      #       - flake8
+      - snapcraft:
+          requires:
+            - flake8
       # - terraform_and_test:
       #     requires:
       #       - snapcraft
@@ -17,7 +17,7 @@ workflows:
       #       - flake8
       - release_github:
           requires:
-            - flake8
+            - snapcraft
 jobs:
   flake8:
     docker:
@@ -124,12 +124,11 @@ jobs:
     docker:
       - image: cimg/go:1.13
     steps:
-      # - restore_cache:
-      #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap
-      - checkout
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap
       - run:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -recreate 20.02.1 ./Makefile
+            ghr -t ${GITHUB} -recreate 20.02.1 slurm_20.02.1_amd64.snap
