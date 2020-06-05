@@ -14,7 +14,10 @@ workflows:
       # - terraform_and_test:
       #     requires:
       #       - snapcraft
-      - release_snapstore:
+      # - release_snapstore:
+      #     requires:
+      #       - flake8
+      - release_github:
           requires:
             - flake8
 jobs:
@@ -132,3 +135,4 @@ jobs:
           title: Version vX.Y.Z
           description: This release is version vX.Y.Z .
           file-path: ./artifacts/file
+          pre-release: true
