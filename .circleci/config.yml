@@ -132,4 +132,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} 0.0.1 ./Makefile
+            ghr -t ${GITHUB} -recreate 20.02.1 ./Makefile
