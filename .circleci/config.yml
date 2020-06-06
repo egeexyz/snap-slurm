@@ -124,6 +124,7 @@ jobs:
     docker:
       - image: cimg/go:1.13
     steps:
+      - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
           key: SlurmSnap
