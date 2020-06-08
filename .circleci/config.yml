@@ -87,7 +87,7 @@ jobs:
           key: SlurmSnap
       - run:
           name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
+          command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
@@ -120,7 +120,7 @@ jobs:
           key: SlurmSnap
       - run:
           name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tf/slurm_20.02.1_amd64.snap
+          command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
