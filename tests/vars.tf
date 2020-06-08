@@ -11,7 +11,7 @@ output ssh_key_ids {
 }
 
 output priv_key_path {
-  value       = "/home/egee/.ssh/id_rsa"
+  value       = "/tmp/id_rsa"
 }
 
 output filename {
