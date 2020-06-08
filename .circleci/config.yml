@@ -9,9 +9,9 @@ workflows:
       - snapcraft:
           requires:
             - flake8
-      # - terraform_and_test:
-      #     requires:
-      #       - snapcraft
+      - terraform_and_test:
+          requires:
+            - snapcraft
       # - release_snapstore:
       #     requires:
       #       - flake8
