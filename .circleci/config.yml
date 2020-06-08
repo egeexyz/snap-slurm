@@ -103,13 +103,13 @@ jobs:
           name: Test Terraform
           command: |
             cd tests/ubuntu1804
-            ../terraform init
-            ../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+            ../../terraform init
+            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
       - run:
           name: Destroy Terraform
           command: |
             cd tests/ubuntu1804
-            ../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   test_ubuntu2004:
     docker:
       - image: cimg/base:2020.01
@@ -136,13 +136,13 @@ jobs:
           name: Test Terraform
           command: |
             cd tests/ubuntu2004
-            ../terraform init
-            ../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+            ../../terraform init
+            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
       - run:
           name: Destroy Terraform
           command: |
             cd tests/ubuntu1804
-            ../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   release_snapstore:
     docker:
       - image: snapcore/snapcraft:beta
