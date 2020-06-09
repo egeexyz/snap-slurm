@@ -20,7 +20,8 @@ workflows:
       #       - flake8
       - release_github:
           requires:
-            - snapcraft
+            - test_ubuntu1804
+            - test_ubuntu2004
 jobs:
   flake8:
     docker:
