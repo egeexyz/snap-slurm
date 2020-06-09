@@ -30,21 +30,6 @@ jobs:
           key: Makefile
           paths:
             - ~/project/Makefile
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Slurm-Snap
-          key: Makefile
-      - run:
-          name: Install Shellcheck
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y shellcheck
-      - run:
-          name: Run Spellcheck
-          command: shellcheck src/hooks/bin/install
   snapcraft:
     machine:
       image: ubuntu-1604:202004-01
