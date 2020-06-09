@@ -72,7 +72,7 @@ jobs:
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
-          command: time /snap/bin/snapcraft --use-lxd
+          command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
           key: SlurmSnap
