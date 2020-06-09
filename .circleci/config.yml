@@ -3,25 +3,15 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      # - shellcheck:
-      #     requires:
-      #       - flake8
       - snapcraft:
           requires:
             - flake8
-      - test_ubuntu1804:
+      - release_snapstore:
           requires:
             - snapcraft
-      - test_ubuntu2004:
-          requires:
-            - snapcraft
-      # - release_snapstore:
-      #     requires:
-      #       - flake8
       - release_github:
           requires:
-            - test_ubuntu1804
-            - test_ubuntu2004
+            - snapcraft
 jobs:
   flake8:
     docker:
@@ -40,7 +30,6 @@ jobs:
           key: Makefile
           paths:
             - ~/project/Makefile
-  shellcheck:
     docker:
       - image: cimg/base:2020.01
     steps:
@@ -78,85 +67,19 @@ jobs:
           key: SlurmSnap
           paths:
             - slurm_20.02.1_amd64.snap
-  test_ubuntu1804:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Slurm Snap for deployment
-          key: SlurmSnap
-      - run:
-          name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tests/ubuntu1804/slurm_20.02.1_amd64.snap
-      - run:
-          name: Setup SSH key
-          command: |
-            mkdir -p ~/.ssh
-            echo $KEY | base64 --decode > /tmp/id_rsa
-            chmod 600 /tmp/id_rsa
-      - run:
-          name: Install Terraform
-          command: |
-            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
-            unzip terraform_0.12.26_linux_amd64.zip
-      - run:
-          name: Test Terraform
-          command: |
-            cd tests/ubuntu1804
-            ../../terraform init
-            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
-      - run:
-          name: Destroy Terraform
-          command: |
-            cd tests/ubuntu1804
-            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
-  test_ubuntu2004:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Slurm Snap for deployment
-          key: SlurmSnap
-      - run:
-          name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
-      - run:
-          name: Setup SSH key
-          command: |
-            mkdir -p ~/.ssh
-            echo $KEY | base64 --decode > /tmp/id_rsa
-            chmod 600 /tmp/id_rsa
-      - run:
-          name: Install Terraform
-          command: |
-            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
-            unzip terraform_0.12.26_linux_amd64.zip
-      - run:
-          name: Test Terraform
-          command: |
-            cd tests/ubuntu2004
-            ../../terraform init
-            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
-      - run:
-          name: Destroy Terraform
-          command: |
-            cd tests/ubuntu1804
-            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   release_snapstore:
     docker:
       - image: snapcore/snapcraft:beta
     steps:
-      # - restore_cache:
-      #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap
       - run:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
             echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push slurm_20.02.1_amd64.snap --release beta
+            # snapcraft push slurm_20.02.1_amd64.snap --release beta
   release_github:
     docker:
       - image: cimg/go:1.13
@@ -169,4 +92,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -recreate 20.02.1 slurm_20.02.1_amd64.snap
+            ghr -t ${GITHUB} -n 'Slurm Snap Classic-Mode 20.02.1' -prerelease -replace -recreate 20.02.1 slurm_20.02.1_amd64.snap
