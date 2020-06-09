@@ -77,4 +77,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n 'Slurm Snap Classic-Mode 20.02.1' -prerelease -replace -recreate 20.02.1 slurm_20.02.1_amd64.snap
+            ghr -t ${GITHUB} -n '20.02.1 Strict-Mode' -replace -recreate 20.02.1-strict slurm_20.02.1_amd64.snap
