@@ -213,11 +213,12 @@ def configure_snap_mode_and_render_slurm_config(snap_mode_from_snap_config):
     # on disk:
     #     - stop all running processes
     #     - start only the processes which are supported by the snap.mode
-    if snap_mode_supported(snap_mode_from_snap_config) and\
-            snap_mode_path.read_text() != snap_mode_from_snap_config:
-
-        # Write out the new snap mode
-        snap_mode_path.write_text(snap_mode_from_snap_config)
+    if not snap_mode_supported(snap_mode_from_snap_config):
+        raise Exception(f"Unsupported value: {snap_mode_from_snap_config}")
+    else:
+        if snap_mode_path.read_text() != snap_mode_from_snap_config:
+            # Write out the new snap mode
+            snap_mode_path.write_text(snap_mode_from_snap_config)
 
         # Render appropriate slurm config files
         #
