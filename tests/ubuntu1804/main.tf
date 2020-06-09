@@ -24,7 +24,7 @@ resource "vultr_server" "ubuntu1804" {
       host     = self.main_ip
       private_key = file(module.test_data.priv_key_path)
     }
-    source      = "${module.test_data.filename}"
+    source      = module.test_data.filename
     destination = "/tmp/${module.test_data.filename}"
   }
   provisioner "remote-exec" {
