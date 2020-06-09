@@ -23,6 +23,7 @@ snap connect slurm:system-observe
 snap connect slurm:hardware-observe
 
 echo 'Beginning Tests...'
+systemctl restart snap.slurm.slurmctld
 sleep 10
 snap set slurm snap.mode=all
 snap services
