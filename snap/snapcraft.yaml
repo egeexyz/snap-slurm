@@ -147,9 +147,13 @@ parts:
       - libncurses5-dev
       - libaio-dev
       - libssl-dev
+      - libnuma-dev
       - pkg-config
+      - libmecab-dev
+      - zlib1g-dev
     stage-packages:
       - libaio1
+      - libnuma-dev
     stage:
       # Remove scripts that we'll be replacing with our own
       - -support-files/mysql.server
