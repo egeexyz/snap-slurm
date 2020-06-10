@@ -3,15 +3,15 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      # - snapcraft:
-      #     requires:
-      #       - flake8
-      - release_snapstore:
+      - snapcraft:
           requires:
             - flake8
-      # - release_github:
-      #     requires:
-      #       - snapcraft
+      - release_snapstore:
+          requires:
+            - snapcraft
+      - release_github:
+          requires:
+            - snapcraft
 jobs:
   flake8:
     docker:
@@ -49,7 +49,7 @@ jobs:
             - slurm_20.02.1_amd64.snap
   release_snapstore:
     machine:
-      image: ubuntu-1604:202004-01
+      image: ubuntu-1604:202004-01 # Snapcraft images currently broken with python3 errors
     steps:
       - run:
           name: "Install Dependencies"
@@ -59,13 +59,13 @@ jobs:
               sudo snap install snapcraft --classic
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push slurm_20.02.1_amd64.snap --release beta
+            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release beta
   release_github:
     docker:
       - image: cimg/go:1.13
