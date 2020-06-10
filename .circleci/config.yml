@@ -71,8 +71,8 @@ jobs:
           name: Restore Slurm Snap for deployment
           key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.*_amd64.snap
       - run:
-        name: "Review Snap"
-        command: review-tools.snap-review slurm_20.02.*_amd64.snap
+          name: "Review Snap"
+          command: review-tools.snap-review slurm_20.02.*_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
