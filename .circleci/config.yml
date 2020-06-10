@@ -44,7 +44,7 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
           paths:
             - slurm_20.02.1_amd64.snap
   release_snapstore:
@@ -53,7 +53,7 @@ jobs:
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
@@ -67,7 +67,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
       - run:
           name: "Publish Release on GitHub"
           command: |
