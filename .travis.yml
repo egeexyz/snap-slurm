@@ -2,23 +2,26 @@ if: branch = master
 os: linux
 dist: xenial
 language: python
-python: '3.6'
+python: 3.6
 addons:
   snaps:
   - name: snapcraft
     classic: true
   - name: lxd
 install: make install-dependencies
-before_script: make lint
-script: make build
+script:
+  - make lint
+  - make test
+before_deploy: make build
+
 deploy:
-  provider: releases
-  token:
-    secure: Bs6gURQUH0uPGKLzY3juTYPcDL+Y8lNEFqXvMlKc5YibVY0wqq0I5KANPXosilfvnZZ4kjjj/IPBkFPhC7ZBqBXIxoLWc66R2jWH67C2M4qeM67a6fRIF6rj264+ZTdTEDYwemOO9l7maRjl0Yyy2nRoswjYyj5jch0C1DD3qY9v+3b/8/h9BuLQLihEbPNKTmsvPhvaf8ioLNtKyG3QlFK4AtYRiKdLc6r1i/r1PT2maaq9XlXDEkAeI8OVdzZ05URZuIOJWLCL1UTVk+2210815K/nxjyVUldzV5MD6EL+HvR7IXcXzuNRIPl2/YEh3zJO0EQ8zJf47/lPh1CF2sYmzpKlLP+RvZXKN6SUwpxXsf7NFie6FPSUKBC+nqmAm6acGHVWNVVMaS3P9uPVJn7OXA6aldgkR0KLsyx1g3Ci25YizSO0FnoD3SdPVXanGkcauQOrc/AJWAEUir/POVhVW/OAlpR4G7NLw2CEu4k4kBntTLqqGsgOYPOSVuSPW0ljx9C0MGnSW1/zcNHZ/1duE5jEIHBoDG6e5VGW07yGqf1PqR7r2IOGNIHdosoBOjRysaG0hw3GxxZ6do6+idw1AlFqqKilAFD3U4yrzFbCPBllt+Tvp2go8zg7w13z/TWmk7gLvsfm/MRrQvNhfuom4muoGLLM4fGD6gyt0W8=
-  file: slurm_*_amd64.snap
+  provider: snap
+  snap: slurm_20.02.1_amd64.snap
+  channel: edge
+  skip_cleanup: true
   on:
-    repo: omnivector-solutions/snap-slurm
-    tags: 'true'
+    branch: master
+
 notifications:
   slack:
     rooms:

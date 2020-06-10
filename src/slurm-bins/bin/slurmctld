@@ -2,7 +2,6 @@
 
 set -e
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm
 
 # Check to see if we should even start
 snap_mode=$(cat $SNAP_COMMON/snap_mode)
@@ -10,43 +9,42 @@ if ! [[ $snap_mode == "slurmctld" || $snap_mode = "all" ]]; then
         exit 0
 fi
 
-. "$SNAP/utilities/common-utilities"
 
+. "$SNAP/utilities/common-utilities"
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 export SLURMCTLD_LOG=$SNAP_COMMON/var/log/slurm/slurmctld.log
-export SLURMDBD_INIT=$SNAP_COMMON/slurmdbd-init-complete
-
-
-slurmdbd_init()
-{
-        # Arguments:
-        #  -f: Force the check, i.e. ignore if it's currently in setup
-        [ -f "$SLURMDBD_INIT" ]
-}
-
-wait_for_slurmdbd_init()
-{
-        wait_for_command "Waiting for SLURMDBD to initialize" slurmdbd_init "$@"
-}
+export SLURMD_LOG=$SNAP_COMMON/var/log/slurm/slurmd.log
+export SLURMD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmd-init-complete
+export SLURMDBD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmdbd-init-complete
+export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 # Wait for slurmdbd if snap.mode="all"
 if [[ $snap_mode = "all" ]]; then
-    wait_for_slurmdbd_init
-fi
 
+    while ! [[ -f $SLURMD_LOG ]]
+    do
+        pprint "Waiting for SLURMD to initialize";
+	sleep 5
+    done
+
+    while ! [[ -f $SLURMDBD_INIT ]]
+    do
+        pprint "Waiting for SLURMDBD to initialize";
+        sleep 1
+    done
+    sleep 5
+fi
 
 # Start slurmctld only if we have a config file
 if ! [[ -f $SLURM_CONF ]]; then
     pprint "No slurm conf, cannot start process.";
-    exit 1
+    exit -1
 else
-    touch $SNAP_COMMON/slurmctld-init-complete
-    sleep 5
+    touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
 fi
 
-
 pprint "Starting SLURMCTLD";
-exec "$SNAP/sbin/slurmctld" \
+exec "$SNAP/slurm-bins/slurmctld" \
     "-f" "$SLURM_CONF" \
     "-L" "$SLURMCTLD_LOG" \
     "-cDvvvvv" "$@"

@@ -3,13 +3,19 @@
 set -e
 
 
-export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
+# Check to see if we should even start
+snap_mode=$(cat $SNAP_COMMON/snap_mode)
+if ! [[ $snap_mode == "slurmdbd" || $snap_mode == "slurmctld" || $snap_mode == "slurmd" || $snap_mode == "slurmrestd" || $snap_mode = "all" ]]; then
+        exit 0
+fi
+
+export LD_LIBRARY_PATH=$SNAP/usr/lib/x86_64-linux-gnu/
 
 
 exec "$SNAP/usr/local/sbin/munged" \
      "--key-file=$SNAP_COMMON/etc/munge/munge.key" \
      "--socket=/tmp/munged.socket.2" \
-     "--pid-file=/tmp/munged.pid" \
+     "--pid-file=$SNAP_COMMON/var/run/munge/munged.pid" \
      "--log-file=$SNAP_COMMON/var/log/munge/munged.log" \
      "--seed-file=$SNAP_COMMON/var/lib/munge/munge.seed" \
      "--num-threads=10" "--force" "--foreground" "--group-check-mtime=0" "$@"

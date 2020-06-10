@@ -1,30 +1,27 @@
 #!/bin/bash
 
+
 set -e
-
-
-export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurmdbd.conf
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm
-
 
 # Only proceed if the snap.mode is set to one of
 # "slurmdbd", "all", or "slurmdbd+manual"
 snap_mode=$(cat $SNAP_COMMON/snap_mode)
-if ! [[ $snap_mode == "slurmdbd" || $snap_mode = "all" || $snap_mode = "slurmdbd+manual" ]]; then
+if ! [[ $snap_mode == "slurmdbd" || $snap_mode = "all" || $snap_mode = "slurmdbd+mysql" ]]; then
         exit 1
 fi
 
 
-# Bypass checks, templating and init ops if we are running in manual mode
-if ! [[ $snap_mode = "slurmdbd+manual" ]]; then
-    . "$SNAP/utilities/mysql-utilities"
-    wait_for_mysql
-    pprint "MySQL ready";
+. "$SNAP/utilities/common-utilities"
+export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurmdbd.conf
+export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
-    SLURMDBD_MYSQL_PASSWORD_FILE=$SNAP_DATA/mysql/slurmdb_password
+# Bypass checks, templating and init ops if we are running in manual mode
+if [[ $snap_mode = "slurmdbd+mysql" ]]; then
+
+    SLURMDBD_MYSQL_PASSWORD_FILE=$SNAP_COMMON/slurmdb_password
 
     # Ensure the mysql slurm_password file exists
-    while [[ ! -f $SLURMDBD_MYSQL_PASSWORD_FILE ]]
+    while ! [[ -f $SLURMDBD_MYSQL_PASSWORD_FILE ]]
     do
         sleep 1
         pprint "Waiting for SLURM MySQL database and user to become available";
@@ -36,11 +33,10 @@ fi
 # Start slurmdbd only if we have a config file
 if ! [[ -f $SLURM_CONF ]]; then
     pprint "No slurm conf, cannot start process.";
-    exit 1
+    exit -1
 else
-    touch $SNAP_COMMON/slurmdbd-init-complete
-    sleep 5
+    touch $SNAP_COMMON/etc/slurm-snap-init-utils/slurmdbd-init-complete
 fi
 
 pprint "Starting SLURMDBD";
-exec "$SNAP/sbin/slurmdbd" "-Dvvvvv" "$@"
+exec "$SNAP/slurm-bins/slurmdbd" "-Dvvvvv" "$@"

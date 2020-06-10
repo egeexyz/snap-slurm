@@ -7,15 +7,18 @@ MYSQL_PIDFILE="$SNAP_COMMON/var/run/mysql/mysql.pid"
 MYSQL_SOCKET="$SNAP_COMMON/var/run/mysql/mysql.sock"
 MYSQL_SETUP_LOCKFILE="$SNAP_COMMON/var/run/mysql-setup"
 
-SLURM_PASSWORD_FILE="$SNAP_DATA/mysql/slurmdb_password"
+SLURM_PASSWORD_FILE="$SNAP_COMMON/slurmdb_password"
 
-mkdir -p "$(dirname "$MYSQL_PIDFILE")"
-mkdir -p "$(dirname "$MYSQL_SOCKET")"
-mkdir -p "$(dirname "$MYSQL_SETUP_LOCKFILE")"
-chmod 750 "$(dirname "$MYSQL_PIDFILE")"
-chmod 750 "$(dirname "$MYSQL_SOCKET")"
-chmod 750 "$(dirname "$MYSQL_SETUP_LOCKFILE")"
 
+init_mysql_dirs()
+{
+    mkdir -p "$(dirname "$MYSQL_PIDFILE")"
+    mkdir -p "$(dirname "$MYSQL_SOCKET")"
+    mkdir -p "$(dirname "$MYSQL_SETUP_LOCKFILE")"
+    chmod 750 "$(dirname "$MYSQL_PIDFILE")"
+    chmod 750 "$(dirname "$MYSQL_SOCKET")"
+    chmod 750 "$(dirname "$MYSQL_SETUP_LOCKFILE")"
+}
 
 
 mysql_is_running()
@@ -60,7 +63,7 @@ mysql_pid()
 mysql_set_slurm_password()
 {
 	echo "$1" > "$SLURM_PASSWORD_FILE"
-	chmod 600 "$SLURM_PASSWORD_FILE"
+	chmod 777 "$SLURM_PASSWORD_FILE"
 }
 
 mysql_get_slurm_password()

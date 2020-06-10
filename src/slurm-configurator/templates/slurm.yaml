@@ -1,7 +1,9 @@
 ClusterName: "SLURM-SNAP-LOCAL"
 PlugStackConfig: "/var/snap/slurm/common/etc/slurm/plugstack.conf"
 
-#HealthCheckProgram: "/snap/slurm/current/bin/nhc"
+HealthCheckProgram: "/snap/slurm/current/bin/nhc"
+HealthCheckInterval: "30"
+HealthCheckNodeState: "ANY"
 
 SlurmdPort: 6818
 SlurmctldPort: 6817
@@ -16,11 +18,12 @@ AuthInfo: "socket=/tmp/munged.socket.2"
 
 #SlurmctldHost: ""
 #ControlMachine: ""
-# AccountingStorageHost: ""
+#AccountingStorageHost: ""
 AccountingStoragePass: "/tmp/munged.socket.2"
 
 AccountingStorageType: "accounting_storage/slurmdbd"
 AccountingStoragePort: 6819
+#AccountingStorageLoc: "/var/snap/slurm/common/etc/slurm/accounting_file.txt"
 
 JobAcctGatherType: "jobacct_gather/linux"
 JobAcctGatherFrequency: 30
@@ -50,7 +53,5 @@ MaxJobCount: 10000
 MinJobAge: 3600
 ReturnToService: 0
 
-
-CheckpointType: "checkpoint/none"
 
 ProcTrackType: "proctrack/linuxproc"

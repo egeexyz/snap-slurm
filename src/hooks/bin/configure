@@ -1,11 +1,48 @@
 #!/usr/bin/env python3
 import os
+import socket
 import sys
 import shutil
 import subprocess
+import yaml
 
 from pathlib import Path
-from time import sleep
+
+from jinja2 import Environment, FileSystemLoader
+
+
+LD_LIBRARY_PATH = \
+    f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+    ":"\
+    f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+
+os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
+
+
+SNAP_MODE_PROCESS_MAP = {
+    "slurmdbd+mysql": ["munged", "slurmdbd", "mysql"],
+    "slurmdbd": ["munged", "slurmdbd"],
+    "slurmctld": ["munged", "slurmctld"],
+    "slurmd": ["munged", "slurmd"],
+    "slurmrestd": ["munged", "slurmrestd"],
+    "login": [],
+    "all": [
+        "munged",
+        "mysql",
+        "slurmdbd",
+        "slurmctld",
+        "slurmd",
+        "slurmrestd",
+    ],
+    "none": [],
+}
+
+
+def snap_mode_supported(snap_mode):
+    if snap_mode is not None and \
+       snap_mode in SNAP_MODE_PROCESS_MAP.keys():
+        return True
+    return False
 
 
 LD_LIBRARY_PATH = f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
@@ -16,7 +53,7 @@ os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 def snapctl_get(snap_config_value):
     """Get snap config from snapctl.
-    
+
     Return python None if snapctl returns the empty string.
     """
 
@@ -42,10 +79,9 @@ def run_bash(bash_string):
     ).decode().rstrip()
 
 
-def configure_munge():
+def configure_munge(munge_key_from_snap_config):
+
     munge_key_path = Path(f"{os.environ['SNAP_COMMON']}/etc/munge/munge.key")
-    munge_key_from_snap_config = snapctl_get("munge.key")
-    munged_process = f"{os.environ['SNAP_INSTANCE_NAME']}.munged"
 
     # Define the events surrounding the configuration of the munge.key snap
     # config.
@@ -56,7 +92,6 @@ def configure_munge():
     # If the munge key in $SNAP_COMMON/etc/munge/munge.key and the key
     # obtained from snapctl get are identical, return.
     if munge_key_path.exists() and munge_key_from_snap_config is not None:
-        munge_key_from_path = munge_key_path.read_text()
         if munge_key_path.read_text() != munge_key_from_snap_config:
             munge_key_path.chmod(0o700)
             munge_key_path.write_text(munge_key_from_snap_config)
@@ -69,7 +104,8 @@ def configure_munge():
         munge_key_path.write_bytes(os.urandom(1024))
     # Alas, if the munge.key is defined and the munge key file does not exist,
     # write the snap munge.key config to the munge key file.
-    elif not munge_key_path.exists() and munge_key_from_snap_config is not None:
+    elif not munge_key_path.exists() and \
+            munge_key_from_snap_config is not None:
         munge_key_path.write_text(munge_key_from_snap_config)
     else:
         return
@@ -77,100 +113,151 @@ def configure_munge():
     # Set perms to 0400
     munge_key_path.chmod(0o400)
 
-    # Restart munged
-    for event in ["stop", "start"]:
+
+def daemon_starter(snap_mode):
+    # Grab processes to start
+    snapped_processes = SNAP_MODE_PROCESS_MAP[snap_mode]
+
+    # Start the processes used by the newly configured snap mode,
+    # throw exception and exit with error code 1 if we cannot start
+    # the process.
+    for snapped_process in snapped_processes:
         try:
-            run_bash(f"snapctl {event} {munged_process}")
+            process = f"{os.environ['SNAP_INSTANCE_NAME']}.{snapped_process}"
+            run_bash(f"snapctl start {process}")
+        except Exception:
+            sys.exit(1)
+
+
+def stop_all_daemons():
+    """Stop all daemons that could be running in this snap
+    prior to running the other configure functions.
+    """
+
+    daemons = [
+        f"{os.environ['SNAP_INSTANCE_NAME']}.munged",
+        f"{os.environ['SNAP_INSTANCE_NAME']}.mysql",
+        f"{os.environ['SNAP_INSTANCE_NAME']}.slurmdbd",
+        f"{os.environ['SNAP_INSTANCE_NAME']}.slurmctld",
+        f"{os.environ['SNAP_INSTANCE_NAME']}.slurmd",
+    ]
+    for daemon in daemons:
+        try:
+            run_bash(f"snapctl stop {daemon}")
         except Exception:
             pass
 
 
-def configure_snap_mode_and_start_restart():
+def render_slurm_conf(slurm_node_type):
+    slurm_conf_str = ""
+
+    hostname = socket.gethostname().split(".")[0]
+
+    # Base path where the slurm yaml config live.
+    slurm_configurator_templates_base_path = Path(
+        f"{os.environ['SNAP_COMMON']}/etc/slurm-configurator"
+    )
+
+    # Determine any node type specific config that need to make
+    # it into the slurm config ctxt.
+    #
+    # This allows the snap to run in "all" mode where we don't have
+    # juju to configure us.
+    ctxt = {}
+    if slurm_node_type == "slurmdbd":
+        # The file where mysql writes the slurm user password
+        # slurmdb_password_file = Path(
+        #    f"{os.environ['SNAP_DATA']}/mysql/slurmdb_password"
+        # )
+
+        # if slurmdb_password_file.exists():
+        #    slurmdb_password = slurmdb_password_file.read_text()
+        ctxt['DbdHost'] = hostname
+        ctxt['DbdAddr'] = hostname
+        ctxt['StorageHost'] = "127.0.0.1"
+        ctxt['StoragePass'] = "changeme"
+
+    else:
+        # Slurmd and slurmctld need identical config.
+        # Thus we only render a single config file to be
+        # used by both daemons.
+        cores_per_socket = os.sysconf("SC_NPROCESSORS_ONLN")
+
+        # Define slurm configs specific to slurmd and slurmctld.
+        ctxt = {}
+        ctxt['AccountingStorageHost'] = hostname
+        ctxt['SlurmctldHost'] = hostname
+        ctxt['NodeName'] = (
+            f"{hostname} NodeAddr={hostname} Weight=16 "
+            "State=UNKNOWN CPUs=1 Boards=1 SocketsPerBoard=1 "
+            f"CoresPerSocket={cores_per_socket} ThreadsPerCore=1"
+        )
+        ctxt['PartitionName'] = (
+            f"debug Nodes={hostname} "
+            "Default=YES State=UP"
+        )
+
+    # Load, merge and render the yaml and ctxt into the slurmdbd.conf.
+    f = slurm_configurator_templates_base_path / f"{slurm_node_type}.yaml"
+    yaml_ctxt = yaml.load(f.read_text()).items()
+
+    ctxt = {**ctxt, **dict(yaml_ctxt)}
+
+    env = Environment(
+        loader=FileSystemLoader(
+            str(slurm_configurator_templates_base_path)
+        )
+    )
+
+    return env.get_template('slurm.conf.tmpl').render(ctxt=ctxt)
+
+
+def configure_snap_mode_and_render_slurm_config(snap_mode_from_snap_config):
     snap_mode_path = Path(f"{os.environ['SNAP_COMMON']}/snap_mode")
-    snap_mode_from_snap_config = snapctl_get("snap.mode")
-
-    snap_mode_process_map = {
-        "slurmdbd": ["slurmdbd", "mysql"],
-        "slurmctld": ["slurmctld"],
-        "slurmd": ["slurmd"],
-        "slurmrestd": ["slurmrestd"],
-        "login": [],
-        "all": ["mysql", "slurmdbd", "slurmctld", "slurmd", "slurmrestd"],
-        "none": [],
-    }
-
-    def snap_mode_supported():
-        if snap_mode_from_snap_config is not None and \
-           snap_mode_from_snap_config in snap_mode_process_map.keys():
-            return True
-        return False
 
     # If the snap.mode has changed AND is different then what we have
     # on disk:
     #     - stop all running processes
     #     - start only the processes which are supported by the snap.mode
-    if snap_mode_supported() and\
-            snap_mode_path.read_text() != snap_mode_from_snap_config:
-
-        # Write out the new snap mode
-        snap_mode_path.write_text(snap_mode_from_snap_config)
-
-        # Kill them all (we may need to be more precise about which
-        # process we kill)
-        for snapped_process in snap_mode_process_map["all"]:
-            try:
-                process = f"{os.environ['SNAP_INSTANCE_NAME']}.{snapped_process}" 
-                run_bash(f"snapctl stop {process}")
-                #sleep(1)
-            except Exception:
-                pass
-
-        # Grab processes to start
-        snapped_processes = \
-            snap_mode_process_map[snap_mode_from_snap_config]
+    if not snap_mode_supported(snap_mode_from_snap_config):
+        raise Exception(f"Unsupported value: {snap_mode_from_snap_config}")
+    else:
+        if snap_mode_path.read_text() != snap_mode_from_snap_config:
+            # Write out the new snap mode
+            snap_mode_path.write_text(snap_mode_from_snap_config)
 
         # Render appropriate slurm config files
         #
-        # slurmdbd.conf for slurmdbd
+        # slurmdbd.conf for slurmdbd or slurdbd+mysql
         # slurm.conf for any other snap.mode configuration
-        slurm_configs = []
+        slurm_config_types = []
         # Find out what config files we need to write
         if snap_mode_from_snap_config == "none":
             pass
         elif snap_mode_from_snap_config == "all":
-            slurm_configs.append("slurm")
-            slurm_configs.append("slurmdbd")
-        elif snap_mode_from_snap_config == "slurmdbd":
-            slurm_configs.append("slurmdbd")
+            slurm_config_types.append("slurm")
+            slurm_config_types.append("slurmdbd")
+        elif snap_mode_from_snap_config in ["slurmdbd+mysql", "slurmdbd"]:
+            slurm_config_types.append("slurmdbd")
         else:
-            slurm_configs.append("slurm")
+            slurm_config_types.append("slurm")
+
         # Write the slurm config files
-        for config in slurm_configs:
-            out = subprocess.check_output([
-                f"{os.environ['SNAP']}/bin/slurm-configurator",
-                "-t",
-                config,
-            ]).decode().rstrip()
+        for config_type in slurm_config_types:
             slurm_conf_file = Path(
-                f"{os.environ['SNAP_COMMON']}/etc/slurm/{config}.conf"
+                f"{os.environ['SNAP_COMMON']}/etc/slurm/{config_type}.conf"
             )
-            slurm_conf_file.write_text(out)
+            slurm_conf_file.write_text(render_slurm_conf(config_type))
             slurm_conf_file.chmod(0o777)
-            shutil.chown(str(slurm_conf_file), user="snap_daemon")
-
-
-        # Start the processes used by the newly configured snap mode,
-        # throw exception and exit with error code 1 if we cannot start the process.
-        for snapped_process in snapped_processes:
-            try:
-                process = f"{os.environ['SNAP_INSTANCE_NAME']}.{snapped_process}" 
-                run_bash(f"snapctl start {process}")
-                sleep(1)
-            except Exception:
-                sys.exit(1)
 
 
 if __name__ == "__main__":
+    snap_mode = snapctl_get("snap.mode")
+    munge_key = snapctl_get("munge.key")
 
-    configure_munge()
-    configure_snap_mode_and_start_restart()
+    stop_all_daemons()
+
+    configure_munge(munge_key)
+    configure_snap_mode_and_render_slurm_config(snap_mode)
+
+    daemon_starter(snap_mode)

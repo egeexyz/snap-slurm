@@ -2,54 +2,56 @@
 
 set -eux
 
-################################## Set initial snap.mode ##############################
+
+######################################## Set initial snap.mode ###################################
 initial_snap_mode="none"
 snapctl set snap.mode=$initial_snap_mode
 echo $initial_snap_mode > $SNAP_COMMON/snap_mode
+chmod 777 $SNAP_COMMON/snap_mode
 
-################################### $SNAP_COMMON/var/log and $SNAP_COMMON/var/run dirs ##################
+
+########################### $SNAP_COMMON/var/log and $SNAP_COMMON/var/run dirs ####################
 mkdir -p $SNAP_COMMON/var/log
 mkdir -p $SNAP_COMMON/var/run
 
-chmod -R 777 $SNAP_COMMON/var/run
-#chown -R snap_daemon $SNAP_COMMON/var/run
-################################### Create SLURM Dirs ###################################
-# SLURM logging dir
+
+################################### CREATE DIRS NEEDED BY SLURM ###################################
+# SLURM LOG DIR
 mkdir -p $SNAP_COMMON/var/log/slurm
-#chmod -R 755 $SNAP_COMMON/log
-chmod -R 770 $SNAP_COMMON/var/log/slurm
-chown -R snap_daemon $SNAP_COMMON/var/log/slurm
+chown -R snap_daemon:snap_daemon $SNAP_COMMON/var/log/slurm
 
-# Make /var dirs
+# CREATE /var dirs
 mkdir -p $SNAP_COMMON/var/spool/slurm/{ctld,d}
-#chmod -R 755 $SNAP_COMMON/var
-chmod -R 770 $SNAP_COMMON/var/spool
-chown -R snap_daemon $SNAP_COMMON/var/spool
+chown -R snap_daemon:snap_daemon $SNAP_COMMON/var/spool
+#chmod -R 755 $SNAP_COMMON/var/spool
+#chown -R snap_daemon:snap_daemon $SNAP_COMMON/var/spool
 
+# SLURM-CONFIGURATOR DIR
+mkdir -p $SNAP_COMMON/etc/slurm-configurator
+chmod -R 755 $SNAP_COMMON/etc/slurm-configurator
 
-# SLURM config dir
+# SLURM CONFIG DIRS
 mkdir -p $SNAP_COMMON/etc/slurm
 mkdir -p $SNAP_COMMON/etc/slurm/plugstack.conf.d
 mkdir -p $SNAP_COMMON/etc/slurm/epilog.d/
 mkdir -p $SNAP_COMMON/etc/slurm/prolog.d/
-#chmod -R 755 $SNAP_COMMON/etc/slurm
-chmod -R 770 $SNAP_COMMON/etc/slurm
-chown -R snap_daemon $SNAP_COMMON/etc/slurm
 
-
-# slurm-configurator dir
-mkdir -p $SNAP_COMMON/etc/slurm-configurator
-#chmod -R 755 $SNAP_COMMON/etc/slurm-configurator
-chmod -R 777 $SNAP_COMMON/etc/slurm-configurator
-
-################################### Copy Configs ########################################
+# Copy slurm yaml configs from $SNAP to $SNAP_COMMON.
 cp $SNAP/templates/slurmdbd.yaml $SNAP_COMMON/etc/slurm-configurator/
 cp $SNAP/templates/slurm.yaml $SNAP_COMMON/etc/slurm-configurator/
 cp $SNAP/templates/slurm.conf.tmpl $SNAP_COMMON/etc/slurm-configurator/
 cp $SNAP/templates/plugstack.conf $SNAP_COMMON/etc/slurm/plugstack.conf.d/
 
+chmod -R 775 $SNAP_COMMON/etc/slurm
+chown -R snap_daemon $SNAP_COMMON/etc/slurm
 
-################################### Create Munge Dirs ###################################
+# SLURM SNAP INIT UTIL DIR
+mkdir -p $SNAP_COMMON/etc/slurm-snap-init-utils
+chown -R snap_daemon:snap_daemon $SNAP_COMMON/etc/slurm-snap-init-utils
+
+
+######################################## Create Munge Dirs #######################################
+#
 # This directory contains the daemon's secret key. The recommended permissions for it are 0700.
 mkdir -p $SNAP_COMMON/etc/munge
 chmod -R 0700 $SNAP_COMMON/etc/munge
@@ -72,6 +74,16 @@ chmod -R 0700 $SNAP_COMMON/var/log/munge
 mkdir -p $SNAP_COMMON/var/run/munge
 chmod -R 0755 $SNAP_COMMON/var/run/munge
 
-# Nhc things
-mkdir -p "$SNAP_COMMON/etc/nhc/"
-cp $SNAP/nhc.conf $SNAP_COMMON/etc/nhc/
+
+# NHC
+mkdir -p $SNAP_COMMON/etc/nhc
+mkdir -p $SNAP_COMMON/var/log/nhc
+mkdir -p $SNAP_COMMON/usr/lib/nhc
+
+cp -r $SNAP/usr/lib/nhc/* $SNAP_COMMON/usr/lib/nhc/
+cp -r $SNAP/usr/etc/nhc/* $SNAP_COMMON/etc/nhc/
+cp $SNAP/templates/nhc.conf $SNAP_COMMON/etc/nhc/
+
+chown -R snap_daemon $SNAP_COMMON/etc/nhc
+chown -R snap_daemon $SNAP_COMMON/var/log/nhc
+chown -R snap_daemon $SNAP_COMMON/usr/lib/nhc

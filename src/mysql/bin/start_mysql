@@ -14,6 +14,8 @@ fi
 # shellcheck source=src/mysql/utilities/mysql-utilities
 . "$SNAP/utilities/mysql-utilities"
 
+init_mysql_dirs
+
 root_option_file="$SNAP_DATA/mysql/root.ini"
 new_install=false
 
