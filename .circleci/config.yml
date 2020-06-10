@@ -3,15 +3,15 @@ workflows:
   build_and_test:
     jobs:
       - flake8
-      - snapcraft:
-          requires:
-            - flake8
+      # - snapcraft:
+      #     requires:
+      #       - flake8
       - release_snapstore:
           requires:
-            - snapcraft
-      - release_github:
-          requires:
-            - snapcraft
+            - flake8
+      # - release_github:
+      #     requires:
+      #       - snapcraft
 jobs:
   flake8:
     docker:
@@ -53,12 +53,13 @@ jobs:
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap
       - run:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
             echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
+            snapcraft login --with .snapcraft/snapcraft.cfg
             snapcraft push slurm_20.02.1_amd64.snap --release beta
   release_github:
     docker:
