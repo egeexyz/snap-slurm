@@ -57,9 +57,8 @@ jobs:
       - run:
           name: "Publish to Store"
           command: |
-            mkdir .snapcraft
-            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft login --with .snapcraft/snapcraft.cfg
+            # echo $SNAP | base64 --decode --ignore-garbage > snapcraft.cfg
+            # snapcraft login --with snapcraft.cfg
             snapcraft push slurm_20.02.1_amd64.snap --release beta
   release_github:
     docker:
