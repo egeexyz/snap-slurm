@@ -8,19 +8,19 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: staging
-  # release:
-  #   jobs:
-  #     - snapcraft
-  #     - release_snapstore:
-  #         requires:
-  #           - snapcraft
-  #     - release_github:
-  #         requires:
-  #           -snapcraft
-    # filters:
-    #   branches:
-    #     only: master
+              only: staging # End-to-end tests only on staging branches
+  release:
+    jobs:
+      - snapcraft:
+          filters:
+            branches:
+              only: 20\.02\.* # Deploy only on versioned branches
+      - release_snapstore:
+          requires:
+            - snapcraft
+      - release_github:
+          requires:
+            - snapcraft
 jobs:
   flake8:
     docker:
