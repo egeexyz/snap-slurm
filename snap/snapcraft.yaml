@@ -5,7 +5,6 @@ description: |
   job scheduling system for large and small Linux clusters.
 
 adopt-info: slurm
-
 grade: stable
 confinement: classic
 
