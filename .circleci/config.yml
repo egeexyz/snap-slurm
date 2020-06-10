@@ -53,9 +53,9 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.*_amd64.snap
           paths:
-            - slurm_20.02.1_amd64.snap
+            - slurm_20.02.*_amd64.snap
   release_snapstore:
     machine:
       image: ubuntu-1604:202004-01 # Snapcraft images currently broken with python3 errors
@@ -69,16 +69,16 @@ jobs:
               sudo snap install review-tools
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.*_amd64.snap
       - run:
         name: "Review Snap"
-        command: review-tools.snap-review slurm_20.02.1_amd64.snap
+        command: review-tools.snap-review slurm_20.02.*_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release edge
+            /snap/bin/snapcraft upload slurm_20.02.*_amd64.snap --release edge
   release_github:
     docker:
       - image: cimg/go:1.13
@@ -86,9 +86,9 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.*_amd64.snap
       - run:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n '20.02.1 Strict-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-strict slurm_20.02.1_amd64.snap
+            ghr -t ${GITHUB} -n '20.02.1 Strict-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-strict slurm_20.02.*_amd64.snap
