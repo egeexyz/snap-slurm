@@ -25,11 +25,6 @@ jobs:
           command: |
             flake8 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
-      - save_cache:
-          name: Store the Snap for the next workflow
-          key: Makefile
-          paths:
-            - ~/project/Makefile
   snapcraft:
     machine:
       image: ubuntu-1604:202004-01
@@ -49,7 +44,7 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap
+          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
           paths:
             - slurm_20.02.1_amd64.snap
   release_snapstore:
@@ -58,7 +53,7 @@ jobs:
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: "Publish to Store"
           command: |
@@ -72,7 +67,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-{{ .Branch }}-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: "Publish Release on GitHub"
           command: |
