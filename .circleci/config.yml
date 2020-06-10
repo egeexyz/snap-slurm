@@ -1,17 +1,26 @@
 version: 2.1
 workflows:
-  build_and_test:
+  lint:
     jobs:
       - flake8
+  build-and-test:
+    jobs:
       - snapcraft:
-          requires:
-            - flake8
-      - release_snapstore:
-          requires:
-            - snapcraft
-      - release_github:
-          requires:
-            - snapcraft
+          filters:
+            branches:
+              only: staging
+  # release:
+  #   jobs:
+  #     - snapcraft
+  #     - release_snapstore:
+  #         requires:
+  #           - snapcraft
+  #     - release_github:
+  #         requires:
+  #           -snapcraft
+    # filters:
+    #   branches:
+    #     only: master
 jobs:
   flake8:
     docker:
@@ -65,7 +74,7 @@ jobs:
           command: |
             mkdir .snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release beta
+            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release edge
   release_github:
     docker:
       - image: cimg/go:1.13
