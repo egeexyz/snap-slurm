@@ -2,7 +2,6 @@
 import os
 import socket
 import sys
-import shutil
 import subprocess
 import yaml
 
@@ -149,8 +148,6 @@ def stop_all_daemons():
 
 
 def render_slurm_conf(slurm_node_type):
-    slurm_conf_str = ""
-
     hostname = socket.gethostname().split(".")[0]
 
     # Base path where the slurm yaml config live.

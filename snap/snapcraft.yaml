@@ -184,8 +184,12 @@ parts:
       - libncurses5-dev
       - libaio-dev
       - libssl-dev
+      - libnuma-dev
       - pkg-config
+      - libmecab-dev
+      - zlib1g-dev
     stage-packages:
+      - libnuma-dev
       - libaio1
       - libgcc1
     stage:
