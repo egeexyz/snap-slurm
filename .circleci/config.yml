@@ -77,7 +77,7 @@ jobs:
           command: |
             mkdir .snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release edge
+            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release candidate
   release_github:
     docker:
       - image: cimg/go:1.13
