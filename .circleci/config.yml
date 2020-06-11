@@ -14,7 +14,7 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: /20\..*/ # Deploy only on versioned branches
+              only: /20\..*/  # Deploy only on versioned branches
       - release_snapstore:
           requires:
             - snapcraft
@@ -53,7 +53,7 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}
           paths:
             - slurm_20.02.1_amd64.snap
   release_snapstore:
@@ -66,12 +66,13 @@ jobs:
               sudo apt-get update
               sudo apt-get install --only-upgrade -y snapd
               sudo snap install snapcraft --classic
+              sudo snap install review-tools
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: "Review Snap"
-          command: review-tools.snap-review slurm_20.02.1_amd64.snap
+          command: /snap/bin/review-tools.snap-review slurm_20.02.1_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
@@ -85,7 +86,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: "Publish Release on GitHub"
           command: |
