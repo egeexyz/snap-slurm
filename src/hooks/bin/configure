@@ -44,6 +44,12 @@ def snap_mode_supported(snap_mode):
     return False
 
 
+LD_LIBRARY_PATH = f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+                  ":"\
+                  f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
+
+
 def snapctl_get(snap_config_value):
     """Get snap config from snapctl.
 

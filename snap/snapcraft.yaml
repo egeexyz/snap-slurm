@@ -16,6 +16,8 @@ system-usernames:
 
 apps:
   mysql:
+    environment: &ld-environment
+      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
     command: bin/start_mysql
     stop-command: support-files/mysql.server stop
     daemon: simple
@@ -128,6 +130,14 @@ hooks:
   configure:
     plugs: [network, network-bind]
 
+hooks:
+  configure:
+    plugs: [network, network-bind]
+  pre-refresh:
+    plugs: [network, network-bind]
+  post-refresh:
+    plugs: [network, network-bind]
+
 parts:
   boost:
     plugin: dump
@@ -179,8 +189,9 @@ parts:
       - libmecab-dev
       - zlib1g-dev
     stage-packages:
-      - libaio1
       - libnuma-dev
+      - libaio1
+      - libgcc1
     stage:
       # Remove scripts that we'll be replacing with our own
       - -support-files/mysql.server
