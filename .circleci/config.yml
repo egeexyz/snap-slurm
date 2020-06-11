@@ -72,7 +72,7 @@ jobs:
           key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: "Review Snap"
-          command: review-tools.snap-review slurm_20.02.1_amd64.snap
+          command: /snap/bin/review-tools.snap-review slurm_20.02.1_amd64.snap
       - run:
           name: "Publish to Store"
           command: |
