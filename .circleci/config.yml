@@ -14,7 +14,7 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: circleci-releases # Deploy only on versioned branches
+              only: /20\..*/  # Deploy only on versioned branches
       - release_snapstore:
           requires:
             - snapcraft
