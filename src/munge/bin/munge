@@ -2,6 +2,4 @@
 
 set -e
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/:$SNAP/usr/local/lib:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm
-
 exec "$SNAP/usr/local/bin/munge" "--socket=/tmp/munged.socket.2" "$@"

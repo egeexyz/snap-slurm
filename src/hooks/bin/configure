@@ -2,7 +2,6 @@
 import os
 import socket
 import sys
-import shutil
 import subprocess
 import yaml
 
@@ -11,12 +10,12 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 
-LD_LIBRARY_PATH = \
-    f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
-    ":"\
-    f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+# LD_LIBRARY_PATH = \
+#     f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+#     ":"\
+#     f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
 
-os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
+# os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 SNAP_MODE_PROCESS_MAP = {
@@ -43,6 +42,12 @@ def snap_mode_supported(snap_mode):
        snap_mode in SNAP_MODE_PROCESS_MAP.keys():
         return True
     return False
+
+
+LD_LIBRARY_PATH = f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+                  ":"\
+                  f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 def snapctl_get(snap_config_value):
@@ -143,8 +148,6 @@ def stop_all_daemons():
 
 
 def render_slurm_conf(slurm_node_type):
-    slurm_conf_str = ""
-
     hostname = socket.gethostname().split(".")[0]
 
     # Base path where the slurm yaml config live.
@@ -213,11 +216,12 @@ def configure_snap_mode_and_render_slurm_config(snap_mode_from_snap_config):
     # on disk:
     #     - stop all running processes
     #     - start only the processes which are supported by the snap.mode
-    if snap_mode_supported(snap_mode_from_snap_config) and\
-            snap_mode_path.read_text() != snap_mode_from_snap_config:
-
-        # Write out the new snap mode
-        snap_mode_path.write_text(snap_mode_from_snap_config)
+    if not snap_mode_supported(snap_mode_from_snap_config):
+        raise Exception(f"Unsupported value: {snap_mode_from_snap_config}")
+    else:
+        if snap_mode_path.read_text() != snap_mode_from_snap_config:
+            # Write out the new snap mode
+            snap_mode_path.write_text(snap_mode_from_snap_config)
 
         # Render appropriate slurm config files
         #

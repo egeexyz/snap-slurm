@@ -1,1 +1,3 @@
 *.snap
+.terraform
+terraform*

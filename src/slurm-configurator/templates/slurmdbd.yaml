@@ -21,7 +21,7 @@ LogFile: "/var/snap/slurm/common/var/log/slurm/slurmdbd.log"
 PidFile: "/tmp/slurmdbd.pid"
 PluginDir: "/snap/slurm/current/lib/slurm"
 
-SlurmUser: "snap_daemon"
+SlurmUser: "root"
 
 DbdPort: "6819"
 
