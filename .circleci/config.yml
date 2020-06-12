@@ -14,7 +14,7 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: classic-mode #/20\..*/  # Deploy only on versioned branches
+              only: /20\..*/  # Deploy only on versioned branches
       - release_github:
           requires:
             - snapcraft
