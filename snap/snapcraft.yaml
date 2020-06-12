@@ -5,14 +5,10 @@ description: |
   job scheduling system for large and small Linux clusters.
 
 adopt-info: slurm
-
 grade: stable
-confinement: strict
+confinement: classic
 
 base: core18
-
-system-usernames:
-  snap_daemon: shared
 
 apps:
   mysql:
@@ -22,106 +18,82 @@ apps:
     stop-command: support-files/mysql.server stop
     daemon: simple
     restart-condition: never
-    plugs: [network, network-bind]
 
   munged:
     daemon: simple
     command: bin/munged
     restart-condition: never
-    plugs: [network, network-bind]
-
 
   slurmdbd:
-    command: drop-user $SNAP/bin/slurmdbd
+    command: $SNAP/bin/slurmdbd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind]
 
   slurmctld:
-    command: drop-user $SNAP/bin/slurmctld
+    command: $SNAP/bin/slurmctld
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind]
 
   slurmd:
-    command: drop-user $SNAP/bin/slurmd
+    command: $SNAP/bin/slurmd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind, network-control, system-observe, hardware-observe]
 
   slurmrestd:
-    command: drop-user $SNAP/bin/slurmrestd
+    command: $SNAP/bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
-    plugs: [network, network-bind, network-control]
 
   sacct:
     command: bin/sacct
-    plugs: [network, network-bind]
 
   sacctmgr:
     command: bin/sacctmgr
-    plugs: [network, network-bind]
 
   salloc:
     command: bin/salloc
-    plugs: [network, network-bind]
 
   sattach:
     command: bin/sattach
-    plugs: [network, network-bind]
 
   sbatch:
     command: bin/sbatch
-    plugs: [network, network-bind]
 
   sbcast:
     command: bin/sbcast
-    plugs: [network, network-bind]
 
   scancel:
     command: bin/scancel
-    plugs: [network, network-bind]
 
   scontrol:
     command: bin/scontrol
-    plugs: [network, network-bind]
 
   sdiag:
     command: bin/sdiag
-    plugs: [network, network-bind]
 
   sinfo:
     command: bin/sinfo
-    plugs: [network, network-bind]
 
   sprio:
     command: bin/sprio
-    plugs: [network, network-bind]
 
   squeue:
     command: bin/squeue
-    plugs: [network, network-bind]
 
   sreport:
     command: bin/sreport
-    plugs: [network, network-bind]
 
   srun:
     command: bin/srun
-    plugs: [network, network-bind]
 
   sshare:
     command: bin/sshare
-    plugs: [network, network-bind]
 
   sstat:
     command: bin/sstat
-    plugs: [network, network-bind]
 
   strigger:
     command: bin/strigger
-    plugs: [network, network-bind]
 
   version:
     command: bin/slurm-version
@@ -461,10 +433,6 @@ parts:
     source: src/hooks/
     organize:
       bin/: snap/hooks/
-
-  drop-user:
-    plugin: make
-    source: src/drop_user
 
   nhc-bin:
     plugin: dump

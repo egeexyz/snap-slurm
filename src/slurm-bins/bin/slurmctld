@@ -16,7 +16,6 @@ export SLURMCTLD_LOG=$SNAP_COMMON/var/log/slurm/slurmctld.log
 export SLURMD_LOG=$SNAP_COMMON/var/log/slurm/slurmd.log
 export SLURMD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmd-init-complete
 export SLURMDBD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmdbd-init-complete
-export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 
 # Wait for slurmdbd if snap.mode="all"
 if [[ $snap_mode = "all" ]]; then
