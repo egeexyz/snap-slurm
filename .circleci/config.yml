@@ -1,15 +1,23 @@
 version: 2.1
 workflows:
-  build_and_test:
+  lint:
     jobs:
       - flake8
+  build-and-test:
+    jobs:
       - snapcraft:
+          filters:
+            branches:
+              only: staging # End-to-end tests only on staging branches
+  release:
+    jobs:
+      - snapcraft:
+          filters:
+            branches:
+              only: /20\..*/  # Deploy only on versioned branches
+      - release_snapstore:
           requires:
-            - flake8
-      # FIXME: Cannot push classic snap to snapstore until approved by Snapcrafters
-      # - release_snapstore:
-      #     requires:
-      #       - snapcraft
+            - snapcraft
       - release_github:
           requires:
             - snapcraft
@@ -24,7 +32,7 @@ jobs:
       - run:
           name: Run flake8
           command: |
-            flake8 src/hooks/bin/configure
+            flake8 --ignore=E501 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
     machine:
@@ -47,16 +55,23 @@ jobs:
             mv slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_classic_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-classic
           paths:
             - slurm_20.02.1_classic_amd64.snap
   release_snapstore:
-    docker:
-      - image: snapcore/snapcraft:beta
+    machine:
+      image: ubuntu-1604:202004-01 # Snapcraft images currently broken with python3 errors
     steps:
+      - run:
+          name: "Install Dependencies"
+          command: |
+              sudo apt-get update
+              sudo apt-get install --only-upgrade -y snapd
+              sudo snap install snapcraft --classic
+              sudo snap install review-tools
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_classic_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-classic
       - run:
           name: "Publish to Store"
           command: |
@@ -70,7 +85,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-slurm_20.02.1_classic_amd64.snap
+          key: SlurmSnap-${CIRCLE_SHA1}-classic
       - run:
           name: "Publish Release on GitHub"
           command: |
