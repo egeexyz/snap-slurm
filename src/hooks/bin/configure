@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/snap/slurm/current/venv/bin/python3
 import os
 import socket
 import sys
@@ -10,12 +10,12 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 
-# LD_LIBRARY_PATH = \
-#     f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
-#     ":"\
-#     f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
+LD_LIBRARY_PATH = \
+    f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
+    ":"\
+    f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
 
-# os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
+os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 SNAP_MODE_PROCESS_MAP = {
@@ -42,12 +42,6 @@ def snap_mode_supported(snap_mode):
        snap_mode in SNAP_MODE_PROCESS_MAP.keys():
         return True
     return False
-
-
-LD_LIBRARY_PATH = f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
-                  ":"\
-                  f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
-os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
 
 
 def snapctl_get(snap_config_value):
@@ -196,9 +190,7 @@ def render_slurm_conf(slurm_node_type):
 
     # Load, merge and render the yaml and ctxt into the slurmdbd.conf.
     f = slurm_configurator_templates_base_path / f"{slurm_node_type}.yaml"
-    yaml_ctxt = yaml.load(f.read_text()).items()
-
-    ctxt = {**ctxt, **dict(yaml_ctxt)}
+    ctxt = {**ctxt, **yaml.load(f.read_text())}
 
     env = Environment(
         loader=FileSystemLoader(
