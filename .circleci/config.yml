@@ -15,9 +15,6 @@ workflows:
           filters:
             branches:
               only: /20\..*/  # Deploy only on versioned branches
-      - release_snapstore:
-          requires:
-            - snapcraft
       - release_github:
           requires:
             - snapcraft
@@ -58,26 +55,6 @@ jobs:
           key: SlurmSnap-${CIRCLE_SHA1}-classic
           paths:
             - slurm_20.02.1_classic_amd64.snap
-  release_snapstore:
-    machine:
-      image: ubuntu-1604:202004-01 # Snapcraft images currently broken with python3 errors
-    steps:
-      - run:
-          name: "Install Dependencies"
-          command: |
-              sudo apt-get update
-              sudo apt-get install --only-upgrade -y snapd
-              sudo snap install snapcraft --classic
-              sudo snap install review-tools
-      - restore_cache:
-          name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}-classic
-      - run:
-          name: "Publish to Store"
-          command: |
-            mkdir .snapcraft
-            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push slurm_20.02.1_classic_amd64.snap --release beta
   release_github:
     docker:
       - image: cimg/go:1.13
