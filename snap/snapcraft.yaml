@@ -12,8 +12,6 @@ base: core18
 
 apps:
   mysql:
-    environment: &ld-environment
-      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
     command: bin/start_mysql
     stop-command: support-files/mysql.server stop
     daemon: simple
