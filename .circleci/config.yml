@@ -73,7 +73,7 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
           paths:
             - slurm_20.02.1_amd64.snap
   test_ubuntu1804:
