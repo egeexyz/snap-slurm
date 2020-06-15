@@ -75,7 +75,7 @@ jobs:
           name: Store Slurm Snap for next workflow
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - LICENSE
+            - slurm_20.02.1_amd64.snap
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01
