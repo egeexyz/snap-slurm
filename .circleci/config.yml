@@ -41,29 +41,8 @@ jobs:
       - run:
           name: Run flake8
           command: |
-            flake8 src/hooks/bin/configure
+            flake8 --ignore=E501 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
-      - save_cache:
-          name: Store the Snap for the next workflow
-          key: Makefile
-          paths:
-            - ~/project/Makefile
-  shellcheck:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Slurm-Snap
-          key: Makefile
-      - run:
-          name: Install Shellcheck
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y shellcheck
-      - run:
-          name: Run Spellcheck
-          command: shellcheck src/hooks/bin/install
   snapcraft:
     # TODO: This lane is not currently used
     machine:
@@ -81,7 +60,9 @@ jobs:
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
-          command: /snap/bin/snapcraft --use-lxd
+          command: | 
+            /snap/bin/snapcraft --use-lxd
+            mv slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
@@ -178,4 +159,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -recreate 20.02.1 slurm_20.02.1_amd64.snap
+            ghr -t ${GITHUB} -n '20.02.1 Classic-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-classic slurm_20.02.1_classic_amd64.snap

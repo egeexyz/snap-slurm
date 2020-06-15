@@ -12,8 +12,6 @@ fi
 . "$SNAP/utilities/common-utilities"
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 export SLURMCTLD_INIT=$SNAP_COMMON/etc/slurm-snap-init-utils/slurmctld-init-complete
-export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
-
 
 # Wait for slurmctld if snap.mode="all"
 if [[ $snap_mode = "all" ]]; then
