@@ -15,9 +15,6 @@ workflows:
       - test_ubuntu2004:
           requires:
             - snapcraft
-      # - release_snapstore:
-      #     requires:
-      #       - flake8
       - release_github:
           requires:
             - test_ubuntu1804
@@ -57,6 +54,7 @@ jobs:
           name: Run Spellcheck
           command: shellcheck src/hooks/bin/install
   snapcraft:
+    # TODO: This lane is not currently used
     machine:
       image: ubuntu-1604:202004-01
     steps:
