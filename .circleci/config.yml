@@ -1,11 +1,17 @@
 version: 2.1
 workflows:
+  lint:
+    jobs:
+      - flake8
+  build-and-test:
+    jobs:
+      - snapcraft:
+          filters:
+            branches:
+              only: /staging.*/ # End-to-end tests only on staging branches
   build_and_test:
     jobs:
       - flake8
-      # - shellcheck:
-      #     requires:
-      #       - flake8
       - snapcraft:
           requires:
             - flake8
@@ -15,10 +21,15 @@ workflows:
       - test_ubuntu2004:
           requires:
             - snapcraft
+  build_and_release:
+    jobs:
+      - snapcraft:
+          filters:
+            branches:
+              only: /20\..*/  # Deploy only on versioned branches
       - release_github:
           requires:
-            - test_ubuntu1804
-            - test_ubuntu2004
+            - snapcraft
 jobs:
   flake8:
     docker:
