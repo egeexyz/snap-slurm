@@ -8,13 +8,13 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: /staging.*/ # End-to-end tests only on staging branches
+              only: /20\..*/ # End-to-end tests only on staging branches
   release:
     jobs:
       - snapcraft:
           filters:
             branches:
-              only: /20\..*/  # Deploy only on versioned branches
+              only: //  # Deploy only on versioned branches
       - release_github:
           requires:
             - snapcraft
