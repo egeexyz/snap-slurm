@@ -83,7 +83,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu1804/slurm_20.02.1_amd64.snap
@@ -116,7 +116,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
@@ -148,7 +148,7 @@ jobs:
     steps:
       # - restore_cache:
       #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap-${CIRCLE_SHA1}
+      #     key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: "Publish to Store"
           command: |
@@ -162,7 +162,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
       - run:
           name: "Publish Release on GitHub"
           command: |
