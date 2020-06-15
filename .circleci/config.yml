@@ -73,7 +73,7 @@ jobs:
           command: /snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap
+          key: SlurmSnap-${CIRCLE_SHA1}
           paths:
             - slurm_20.02.1_amd64.snap
   test_ubuntu1804:
@@ -83,7 +83,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu1804/slurm_20.02.1_amd64.snap
@@ -116,7 +116,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
@@ -148,7 +148,7 @@ jobs:
     steps:
       # - restore_cache:
       #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap
+      #     key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: "Publish to Store"
           command: |
@@ -162,7 +162,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap
+          key: SlurmSnap-${CIRCLE_SHA1}
       - run:
           name: "Publish Release on GitHub"
           command: |
