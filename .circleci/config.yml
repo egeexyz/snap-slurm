@@ -70,12 +70,12 @@ jobs:
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
-          command: /snap/bin/snapcraft --use-lxd
+          command: echo 'test' #/snap/bin/snapcraft --use-lxd
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - slurm_20.02.1_amd64.snap
+            - LICENSE
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01
@@ -83,7 +83,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu1804/slurm_20.02.1_amd64.snap
@@ -116,7 +116,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
@@ -148,7 +148,7 @@ jobs:
     steps:
       # - restore_cache:
       #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
+      #     key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Publish to Store"
           command: |
@@ -162,7 +162,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ checksum "slurm_20.02.1_amd64.snap" }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Publish Release on GitHub"
           command: |
