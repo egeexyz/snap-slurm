@@ -61,14 +61,13 @@ jobs:
       - run:
           name: "Build Snap"
           command: | 
-            echo 'test'
-            # /snap/bin/snapcraft --use-lxd
-            # mv /home/circleci/project/slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
-      # - save_cache:
-      #     name: Store Slurm Snap for next workflow
-      #     key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
-      #     paths:
-      #       - slurm_20.02.1_classic_amd64.snap
+            /snap/bin/snapcraft --use-lxd
+            mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
+      - save_cache:
+          name: Store Slurm Snap for next workflow
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - slurm.snap
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01
@@ -79,7 +78,7 @@ jobs:
           key: SlurmSnap-29a7902c1ae59311cb28b89232a2337c86b2cd8f #SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu1804/
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
       - run:
           name: Setup SSH key
           command: |
@@ -112,7 +111,7 @@ jobs:
           key: SlurmSnap-29a7902c1ae59311cb28b89232a2337c86b2cd8f # SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu2004/
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/
       - run:
           name: Setup SSH key
           command: |
@@ -147,7 +146,7 @@ jobs:
           command: |
             mkdir .snapcraft
             echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push slurm_20.02.1_classic_amd64.snap --release beta
+            snapcraft push slurm.snap --release beta
   release_github:
     docker:
       - image: cimg/go:1.13
@@ -160,4 +159,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n 'Slurm 20.02.1' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm_20.02.1_classic_amd64.snap
+            ghr -t ${GITHUB} -n 'Slurm 20.02.1' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm.snap
