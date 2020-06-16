@@ -3,10 +3,10 @@
 set -e
 
 DISTRO=$(lsb_release -d)
-echo "Distribution under test: $DISTRO"
+SNAP_PATH="/tmp/slurm.snap"
 
 
-if [[ "$DISTRO" == *"Ubuntu"* ]]; then
+if [[ "${DISTRO}" == *"Ubuntu"* ]]; then
   export PATH=$PATH:/snap/bin
 else
   export PATH=$PATH:/var/lib/snapd/snap/bin
@@ -17,7 +17,8 @@ else
   ln -s /var/lib/snapd/snap /snap
 fi
 
-snap install --dangerous --classic /tmp/slurm_20.02.1_classic_amd64.snap
+snap install --dangerous ${SNAP_PATH} || snap install --dangerous --classic ${SNAP_PATH}
+
 # snap connect slurm:network-control
 # snap connect slurm:system-observe
 # snap connect slurm:hardware-observe
