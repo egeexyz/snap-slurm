@@ -79,7 +79,7 @@ jobs:
           key: SlurmSnap-29a7902c1ae59311cb28b89232a2337c86b2cd8f #SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu1804/slurm_20.02.1_classic_amd64.snap
+          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu1804/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
@@ -112,7 +112,7 @@ jobs:
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu2004/slurm_20.02.1_classic_amd64.snap
+          command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu2004/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
