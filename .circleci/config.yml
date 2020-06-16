@@ -76,7 +76,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-ea74e855224e2b065ffc39d3a317452d50e02191 #SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
@@ -109,7 +109,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-ea74e855224e2b065ffc39d3a317452d50e02191 # SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/
@@ -157,7 +157,10 @@ jobs:
           name: Restore Slurm Snap for deployment
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
+          name: "Re-normalize Snap name"
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/slurm_20.02.1_amd64_classic_.snap
+      - run:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n 'Slurm 20.02.1' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm.snap
+            ghr -t ${GITHUB} -n 'Slurm 20.02.1' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm_20.02.1_amd64_classic_.snap
