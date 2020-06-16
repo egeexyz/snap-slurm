@@ -61,9 +61,8 @@ jobs:
       - run:
           name: "Build Snap"
           command: | 
-            echo 'test'
-            # /snap/bin/snapcraft --use-lxd
-            # mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
+            /snap/bin/snapcraft --use-lxd
+            mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
