@@ -29,25 +29,24 @@ sleep 10
 snap services
 
 adduser --disabled-password --gecos "" ubuntu
-
+cd /tmp
 slurm.version
 slurm.sinfo || slurm.sinfo
 
-echo 'Testing: slurm.srun -p debug -n 1 hostname' && slurm.srun -p debug -n 1 hostname
+echo 'Testing: slurm.srun' && slurm.srun -p debug -n 1 hostname
+echo 'Testing: slurm.srun as ubuntu' && slurm.srun --uid 1000 -N1 -l uname -a
 
 echo 'Testing: slurm.scontrol'   && slurm.scontrol show config
 echo 'Testing: slurm.squeue'   && slurm.squeue
 echo 'Testing: slurm.sshare'   && slurm.sshare
 echo 'Testing: slurm.sacct'    && slurm.sacct
 echo 'Testing: slurm.sdiag'    && slurm.sdiag
-echo 'Testing: slurm.sattach'  && slurm.sattach
 
 ## TODO: Need to test the following commands
-# slurm.srun --uid 1000 -N1 -l hostname
+
 
 # echo 'Testing: slurm.sprio'    && slurm.sprio # Requires priority/multifactor plugin
-
-# slurm.sattach
+# echo 'Testing: slurm.sattach'  && slurm.sattach
 # slurm.sacctmgr
 # slurm.salloc
 # slurm.sbatch
