@@ -34,16 +34,16 @@ slurm.version
 # TODO: Enable tests below
 
 # TODO: The || is needed because the first hit always fails
-# slurm.sinfo || slurm.sinfo
-# slurm.sacct
-# slurm.sdiag
-# slurm.sprio
-# slurm.sattach
-# slurm.squeue
-# slurm.srun -p debug -n 1 hostname
+slurm.sinfo || slurm.sinfo
+slurm.sacct
+slurm.sdiag
+slurm.sprio
+slurm.sattach
+slurm.squeue
+slurm.srun -p debug -n 1 hostname
 # slurm.srun --uid 1000 -N1 -l hostname
-# scontrol show config
-# slurm.sshare
+scontrol show config
+slurm.sshare
 
 ## TODO: Need to test the following commands
 
