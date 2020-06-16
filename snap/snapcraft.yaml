@@ -5,15 +5,14 @@ description: |
   job scheduling system for large and small Linux clusters.
 
 adopt-info: slurm
+
 grade: stable
 confinement: classic
 
-base: core18
+base: core20
 
 apps:
   mysql:
-    environment: &ld-environment
-      LD_LIBRARY_PATH: $SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
     command: bin/start_mysql
     stop-command: support-files/mysql.server stop
     daemon: simple
@@ -25,22 +24,22 @@ apps:
     restart-condition: never
 
   slurmdbd:
-    command: $SNAP/bin/slurmdbd
+    command: bin/slurmdbd
     daemon: simple
     restart-condition: on-failure
 
   slurmctld:
-    command: $SNAP/bin/slurmctld
+    command: bin/slurmctld
     daemon: simple
     restart-condition: on-failure
 
   slurmd:
-    command: $SNAP/bin/slurmd
+    command: bin/slurmd
     daemon: simple
     restart-condition: on-failure
 
   slurmrestd:
-    command: $SNAP/bin/slurmrestd
+    command: bin/slurmrestd
     daemon: simple
     restart-condition: on-failure
 
@@ -98,19 +97,92 @@ apps:
   version:
     command: bin/slurm-version
 
-hooks:
-  configure:
-    plugs: [network, network-bind]
-
-hooks:
-  configure:
-    plugs: [network, network-bind]
-  pre-refresh:
-    plugs: [network, network-bind]
-  post-refresh:
-    plugs: [network, network-bind]
-
 parts:
+  slurm:
+    after:
+      - libcurl
+      - json-c
+      - libyaml
+      - http-parser
+      - munge
+    plugin: dump
+    source: https://download.schedmd.com/slurm/slurm-20.02.1.tar.bz2
+    build-packages:
+      - libhdf5-dev
+      - python-dev
+      - libreadline-dev
+      - liblua5.3-dev
+      - libbz2-dev
+      - bzip2
+      - mysql-client
+      - libmysqlclient-dev
+      - liblz4-dev
+      - libpmi1-pmix
+      - freeipmi
+      - rrdtool
+      - libncurses5-dev
+      - libglib2.0-dev
+      - libibmad-dev
+      - libibumad-dev
+    stage-packages:
+      - liblua5.3-dev
+      - libmysqlclient-dev
+      - libaec-dev
+      - libhdf5-103
+      - mailutils
+      - util-linux
+      - libibmad-dev
+      - libibumad-dev
+    stage:
+      - bin/
+      - share/
+      - sbin/
+      - include/
+      - lib/
+      - etc/
+      - usr/
+      - slurm-bins/
+    prime:
+      - bin/
+      - share/
+      - sbin/
+      - include/
+      - lib/
+      - etc/
+      - usr/
+      - slurm-bins/
+    override-build: |
+      snapcraftctl build
+      ./configure \
+          --enable-slurmrestd \
+          --with-munge=$SNAPCRAFT_STAGE/usr/local \
+          --with-libcurl=$SNAPCRAFT_STAGE/usr/local \
+          --with-http-parser=$SNAPCRAFT_STAGE/usr/local \
+          --with-yaml=$SNAPCRAFT_STAGE/usr/local \
+          --with-json=$SNAPCRAFT_STAGE/usr/local \
+          --prefix=$SNAPCRAFT_PART_INSTALL \
+          --localstatedir=/var/snap/slurm/common/etc/slurm \
+          --with-ofed=$SNAPCRAFT_STAGE/usr/local
+      make -j9
+      make install
+      ldconfig -n /snap/slurm/current/lib/slurm
+
+      snapcraftctl set-version `cat META  | grep Version | awk '{print $2}'`
+
+      mkdir $SNAPCRAFT_PART_INSTALL/slurm-bins
+      for slurm_bin in \
+         sacct sacctmgr salloc sattach \
+         sbatch sbcast scancel scontrol \
+         sdiag  sinfo sprio squeue sreport \
+         srun sshare sstat strigger; do
+          mv $SNAPCRAFT_PART_INSTALL/bin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
+      done;
+
+      for slurm_bin in \
+         slurmd slurmdbd slurmctld slurmstepd slurmrestd; do
+          mv $SNAPCRAFT_PART_INSTALL/sbin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
+      done;
+
   boost:
     plugin: dump
     source: https://github.com/kyrofa/boost_tarball/raw/master/boost_1_59_0.tar.gz
@@ -136,7 +208,7 @@ parts:
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
     after: [boost, patches]
-    configflags:
+    cmake-parameters:
       - -DWITH_BOOST=$SNAPCRAFT_STAGE
       - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
       - -DCMAKE_INSTALL_PREFIX=/
@@ -161,9 +233,9 @@ parts:
       - libmecab-dev
       - zlib1g-dev
     stage-packages:
-      - libnuma-dev
       - libaio1
       - libgcc1
+      - libnuma-dev
     stage:
       # Remove scripts that we'll be replacing with our own
       - -support-files/mysql.server
@@ -246,92 +318,6 @@ parts:
     source: src/common/
     source-type: local
 
-  slurm:
-    after:
-      - libcurl
-      - json-c
-      - libyaml
-      - http-parser
-      - munge
-    plugin: dump
-    source: https://download.schedmd.com/slurm/slurm-20.02.1.tar.bz2
-    build-packages:
-      - libhdf5-dev
-      - python-dev
-      - libreadline-dev
-      - liblua5.3-dev
-      - libbz2-dev
-      - bzip2
-      - mysql-client
-      - libmysqlclient-dev
-      - liblz4-dev
-      - libpmi1-pmix
-      - freeipmi
-      - rrdtool
-      - libncurses5-dev
-      - libglib2.0-dev
-      - libibmad-dev
-      - libibumad-dev
-    stage-packages:
-      - liblua5.3-dev
-      - libmysqlclient-dev
-      - libaec-dev
-      - libhdf5-100
-      - mailutils
-      - util-linux
-      - libibmad-dev
-      - libibumad-dev
-    stage:
-      - bin/
-      - share/
-      - sbin/
-      - include/
-      - lib/
-      - etc/
-      - usr/
-      - slurm-bins/
-    prime:
-      - bin/
-      - share/
-      - sbin/
-      - include/
-      - lib/
-      - etc/
-      - usr/
-      - slurm-bins/
-    override-build: |
-      snapcraftctl build
-      ./configure \
-          --enable-slurmrestd \
-          --with-munge=$SNAPCRAFT_STAGE/usr/local \
-          --with-libcurl=$SNAPCRAFT_STAGE/usr/local \
-          --with-http-parser=$SNAPCRAFT_STAGE/usr/local \
-          --with-yaml=$SNAPCRAFT_STAGE/usr/local \
-          --with-json=$SNAPCRAFT_STAGE/usr/local \
-          --prefix=$SNAPCRAFT_PART_INSTALL \
-          --localstatedir=/var/snap/slurm/common/etc/slurm \
-          --with-ofed=$SNAPCRAFT_STAGE/usr/local
-      make -j9
-      make install
-      ldconfig -n /snap/slurm/current/lib/slurm
-
-      snapcraftctl set-version `cat META  | grep Version | awk '{print $2}'`
-
-      mkdir $SNAPCRAFT_PART_INSTALL/slurm-bins
-      for slurm_bin in \
-         sacct sacctmgr salloc sattach \
-         sbatch sbcast scancel scontrol \
-         sdiag  sinfo sprio squeue sreport \
-         srun sshare sstat strigger; do
-          mv $SNAPCRAFT_PART_INSTALL/bin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
-      done;
-
-      for slurm_bin in \
-         slurmd slurmdbd slurmctld slurmstepd slurmrestd; do
-          mv $SNAPCRAFT_PART_INSTALL/sbin/$slurm_bin $SNAPCRAFT_PART_INSTALL/slurm-bins/;
-      done;
-
-
   http-parser:
     source: https://github.com/nodejs/http-parser.git
     plugin: dump
@@ -381,7 +367,7 @@ parts:
     source-type: git
     source-depth: 1
     source-branch: master
-    configflags:
+    cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/local
     stage:
       - usr/
@@ -412,16 +398,17 @@ parts:
       make install
 
   slurm-configurator:
-    plugin: dump
+    plugin: dump 
     source: src/slurm-configurator/
     source-type: local
-    stage-packages:
-      - python3-pip
+    build-packages:
       - python3-all
-      - python3-setuptools
+      - python3-pip
+      - python3-venv
     override-build: |
       snapcraftctl build
-      pip3 install jinja2 pyyaml
+      python3 -m venv $SNAPCRAFT_PART_INSTALL/venv
+      $SNAPCRAFT_PART_INSTALL/venv/bin/pip3 install -U pyyaml jinja2
 
   slurm-bins:
     plugin: dump
