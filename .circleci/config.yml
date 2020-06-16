@@ -108,7 +108,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-cff12561c2f6e7821dd1685db6f1769b45cd0a51{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-cff12561c2f6e7821dd1685db6f1769b45cd0a51 #{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/
