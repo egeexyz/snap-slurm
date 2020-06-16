@@ -19,9 +19,9 @@ fi
 
 snap install --dangerous ${SNAP_PATH} || snap install --dangerous --classic ${SNAP_PATH}
 
-# snap connect slurm:network-control
-# snap connect slurm:system-observe
-# snap connect slurm:hardware-observe
+snap connect slurm:network-control  || echo 'Plug not supported, passing...'
+snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
+snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
 echo 'Beginning Tests...'
 systemctl restart snap.slurm.slurmctld
