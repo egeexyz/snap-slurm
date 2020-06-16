@@ -18,9 +18,9 @@ else
 fi
 
 snap install --dangerous --classic /tmp/slurm_20.02.1_classic_amd64.snap
-snap connect slurm:network-control
-snap connect slurm:system-observe
-snap connect slurm:hardware-observe
+# snap connect slurm:network-control
+# snap connect slurm:system-observe
+# snap connect slurm:hardware-observe
 
 echo 'Beginning Tests...'
 systemctl restart snap.slurm.slurmctld
