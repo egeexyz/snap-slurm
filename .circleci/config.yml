@@ -61,13 +61,14 @@ jobs:
       - run:
           name: "Build Snap"
           command: | 
-            /snap/bin/snapcraft --use-lxd
-            mv /home/circleci/project/slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
-      - save_cache:
-          name: Store Slurm Snap for next workflow
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - slurm_20.02.1_classic_amd64.snap
+            echo 'test'
+            # /snap/bin/snapcraft --use-lxd
+            # mv /home/circleci/project/slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
+      # - save_cache:
+      #     name: Store Slurm Snap for next workflow
+      #     key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      #     paths:
+      #       - slurm_20.02.1_classic_amd64.snap
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01
@@ -75,7 +76,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-29a7902c1ae59311cb28b89232a2337c86b2cd8f #SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm_20.02.1_classic_amd64.snap /home/circleci/project/tests/ubuntu1804/slurm_20.02.1_classic_amd64.snap
@@ -159,4 +160,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n '20.02.1 Classic-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm_20.02.1_classic_amd64.snap
+            ghr -t ${GITHUB} -n 'Slurm 20.02.1' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm_20.02.1_classic_amd64.snap
