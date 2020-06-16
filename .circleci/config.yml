@@ -65,7 +65,7 @@ jobs:
             mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-#{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - slurm.snap
   test_ubuntu1804:
