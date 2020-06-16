@@ -23,7 +23,7 @@ snap connect slurm:network-control  || echo 'Plug not supported, passing...'
 snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
 snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
-echo 'Beginning Tests...'
+echo 'Beginning Test Suite'
 systemctl restart snap.slurm.slurmctld
 sleep 10
 snap set slurm snap.mode=all
@@ -31,21 +31,18 @@ snap services
 
 slurm.version
 
-# TODO: Enable tests below
-
-# TODO: The || is needed because the first hit always fails
 slurm.sinfo || slurm.sinfo
-slurm.sacct
-slurm.sdiag
-slurm.sprio
-slurm.sattach
-slurm.squeue
-slurm.srun -p debug -n 1 hostname
-# slurm.srun --uid 1000 -N1 -l hostname
-scontrol show config
-slurm.sshare
+slurm.sacct                       && echo 'Testing: slurm.sacct'
+slurm.sdiag                       && echo 'Testing: slurm.sdiag'
+slurm.sprio                       && echo 'Testing: slurm.sprio'
+slurm.sattach                     && echo 'Testing: slurm.sattach'
+slurm.squeue                      && echo 'Testing: slurm.squeue'
+slurm.srun -p debug -n 1 hostname && echo 'Testing: slurm.srun -p debug -n 1 hostname'
+slurm.scontrol show config        && echo 'Testing: slurm.scontrol show config'
+slurm.sshare                      && echo 'Testing: slurm.sshare'
 
 ## TODO: Need to test the following commands
+# slurm.srun --uid 1000 -N1 -l hostname
 
 # slurm.sattach
 # slurm.sacctmgr
