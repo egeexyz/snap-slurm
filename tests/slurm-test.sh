@@ -40,7 +40,7 @@ echo 'Testing: slurm.squeue'   && slurm.squeue
 echo 'Testing: slurm.sshare'   && slurm.sshare
 echo 'Testing: slurm.sacct'    && slurm.sacct
 echo 'Testing: slurm.sdiag'    && slurm.sdiag
-# echo 'Testing: slurm.sprio'    && slurm.sprio
+echo 'Testing: slurm.sprio'    && slurm.sprio
 # echo 'Testing: slurm.sattach'  && slurm.sattach
 
 ## TODO: Need to test the following commands
