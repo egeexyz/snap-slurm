@@ -62,7 +62,7 @@ jobs:
           name: "Build Snap"
           command: | 
             /snap/bin/snapcraft --use-lxd
-            mv slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
+            mv /home/circleci/project/slurm_20.02.1_amd64.snap slurm_20.02.1_classic_amd64.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
@@ -78,7 +78,7 @@ jobs:
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tests/ubuntu1804/slurm_20.02.1_amd64.snap
+          command: mv /home/circleci/project/ /home/circleci/project/tests/ubuntu1804/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
@@ -111,7 +111,7 @@ jobs:
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Move slurm-snap
-          command: mv slurm_20.02.1_amd64.snap tests/ubuntu2004/slurm_20.02.1_amd64.snap
+          command: mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/tests/ubuntu2004/slurm_20.02.1_amd64.snap
       - run:
           name: Setup SSH key
           command: |
@@ -138,9 +138,9 @@ jobs:
     docker:
       - image: snapcore/snapcraft:beta
     steps:
-      # - restore_cache:
-      #     name: Restore Slurm Snap for deployment
-      #     key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Publish to Store"
           command: |
@@ -159,4 +159,4 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n '20.02.1 Classic-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-classic slurm_20.02.1_classic_amd64.snap
+            ghr -t ${GITHUB} -n '20.02.1 Classic-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1 /home/circleci/project/slurm_20.02.1_amd64.snap
