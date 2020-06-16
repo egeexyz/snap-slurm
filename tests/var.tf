@@ -15,7 +15,7 @@ output priv_key_path {
 }
 
 output filename {
-  value       = "slurm_20.02.1_amd64.snap"
+  value       = "slurm_20.02.1_classic_amd64.snap"
 }
 
 output centos8 {
