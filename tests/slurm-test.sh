@@ -33,7 +33,7 @@ slurm.version
 
 slurm.sinfo || slurm.sinfo
 
-# echo 'Testing: slurm.srun -p debug -n 1 hostname' && slurm.srun -p debug -n 1 hostname
+echo 'Testing: slurm.srun -p debug -n 1 hostname' && slurm.srun -p debug -n 1 hostname
 
 # echo 'Testing: slurm.scontrol show config'        && slurm.scontrol show config
 # echo 'Testing: slurm.squeue'                      && slurm.squeue
