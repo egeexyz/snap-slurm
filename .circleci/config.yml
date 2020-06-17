@@ -135,7 +135,7 @@ jobs:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
-            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
+            echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
             snapcraft push /home/circleci/project/slurm.snap --release edge  
   release_github:
     docker:
