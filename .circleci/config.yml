@@ -127,7 +127,7 @@ jobs:
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-59f6081d6df8c4af4395361fe75c283892cf9b66 #{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-59f6081d6df8c4af4395361fe75c283892cf9b66  #{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Publish to Store"
           command: |
