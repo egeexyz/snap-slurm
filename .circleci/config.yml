@@ -18,6 +18,9 @@ workflows:
       - release_github:
           requires:
             - test_ubuntu2004
+      - release_snapstore:
+          requires:
+            - test_ubuntu2004
 jobs:
   flake8:
     docker:
@@ -110,17 +113,17 @@ jobs:
           command: |
             wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
             unzip terraform_0.12.26_linux_amd64.zip
-      - run:
-          name: Test Terraform
-          command: |
-            cd tests/ubuntu2004
-            ../../terraform init
-            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
-      - run:
-          name: Destroy Terraform
-          command: |
-            cd tests/ubuntu2004
-            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+      # - run:
+      #     name: Test Terraform
+      #     command: |
+      #       cd tests/ubuntu2004
+      #       ../../terraform init
+      #       ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+      # - run:
+      #     name: Destroy Terraform
+      #     command: |
+      #       cd tests/ubuntu2004
+      #       ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   release_snapstore:
     docker:
       - image: snapcore/snapcraft:beta
@@ -141,7 +144,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-59f6081d6df8c4af4395361fe75c283892cf9b66
       - run:
           name: "Re-normalize Snap name"
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/slurm_20.02.1_amd64_strict.snap
