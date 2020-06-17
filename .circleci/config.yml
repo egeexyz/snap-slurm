@@ -1,24 +1,13 @@
 version: 2.1
 workflows:
-  lint:
+  build-test-release:
     jobs:
       - flake8
-  build-and-test:
-    jobs:
       - snapcraft:
           filters:
             branches:
-              only: staging # End-to-end tests only on staging branches
-  release:
-    jobs:
-      - snapcraft:
-          filters:
-            branches:
-              only: /20\..*/  # Deploy only on versioned branches
+              only: strict-mode
       - release_snapstore:
-          requires:
-            - snapcraft
-      - release_github:
           requires:
             - snapcraft
 jobs:
@@ -79,16 +68,3 @@ jobs:
             mkdir .snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
             /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release candidate
-  release_github:
-    docker:
-      - image: cimg/go:1.13
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}
-      - run:
-          name: "Publish Release on GitHub"
-          command: |
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB} -n '20.02.1 Strict-Mode' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-strict slurm_20.02.1_amd64.snap
