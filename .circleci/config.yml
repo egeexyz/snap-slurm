@@ -35,7 +35,6 @@ jobs:
             flake8 --ignore=E501 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
-    # TODO: This lane is not currently used
     machine:
       image: ubuntu-1604:202004-01
     steps:
