@@ -8,16 +8,7 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: /staging.*/ # End-to-end tests only on staging branches
-  build_and_test:
-    jobs:
-      - flake8
-      - snapcraft:
-          requires:
-            - flake8
-          filters:
-            branches:
-              only: develop  # Deploy only on versioned branches
+              only: develop
       # - test_ubuntu1804:
       #     requires:
       #       - snapcraft
