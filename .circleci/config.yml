@@ -15,9 +15,9 @@ workflows:
       - test_ubuntu2004:
           requires:
             - snapcraft
-      - release_github:
-          requires:
-            - test_ubuntu2004
+      # - release_github:
+      #     requires:
+      #       - test_ubuntu2004
       - release_snapstore:
           requires:
             - test_ubuntu2004
@@ -126,7 +126,7 @@ jobs:
       #       ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   release_snapstore:
     docker:
-      - image: snapcore/snapcraft:beta
+      - image: cibuilds/snapcraft:core18
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
