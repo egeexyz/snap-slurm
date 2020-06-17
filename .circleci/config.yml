@@ -1,8 +1,10 @@
 version: 2.1
 workflows:
-  build-test-release:
+  lint:
     jobs:
       - flake8
+  build-test-release:
+    jobs:
       - snapcraft:
           filters:
             branches:
