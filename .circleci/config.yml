@@ -5,10 +5,7 @@ workflows:
       - flake8
   build-and-test:
     jobs:
-      - snapcraft:
-      # - test_ubuntu1804: # TODO: Bugfix
-      #     requires:
-      #       - snapcraft
+      - snapcraft
       - test_ubuntu2004:
           requires:
             - snapcraft
