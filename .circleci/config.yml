@@ -8,7 +8,7 @@ workflows:
       - snapcraft:
           filters:
             branches:
-              only: develop
+              only: circleci
       # - test_ubuntu1804:
       #     requires:
       #       - snapcraft
