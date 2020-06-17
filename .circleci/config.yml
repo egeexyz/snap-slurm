@@ -9,7 +9,7 @@ workflows:
               only: strict-mode
       - release_snapstore:
           requires:
-            - snapcraft
+            - test_ubuntu2004
 jobs:
   flake8:
     docker:
