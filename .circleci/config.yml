@@ -47,7 +47,7 @@ jobs:
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
-          command: |
+          command: echo test
       #       /snap/bin/snapcraft --use-lxd
       #       mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
       # - save_cache:
