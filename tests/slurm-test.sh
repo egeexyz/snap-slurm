@@ -24,7 +24,7 @@ snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
 snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
 echo 'Beginning Test Suite'
-snap set slurm snap.mode=all
+snap set slurm snap.mode=all || snap set slurm snap.mode=all
 sleep 10
 snap services
 
