@@ -6,9 +6,6 @@ workflows:
   build-and-test:
     jobs:
       - snapcraft:
-          filters:
-            branches:
-              only: develop
       # - test_ubuntu1804: # TODO: Bugfix
       #     requires:
       #       - snapcraft
