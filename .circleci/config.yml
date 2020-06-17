@@ -3,7 +3,13 @@ workflows:
   build-test-release:
     jobs:
       - flake8
-      - snapcraft
+      - snapcraft:
+          filters:
+            branches:
+              only: develop
+      # - test_ubuntu1804:
+      #     requires:
+      #       - snapcraft
       - test_ubuntu2004:
           requires:
             - snapcraft
@@ -113,6 +119,19 @@ jobs:
           command: |
             cd tests/ubuntu2004
             ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+  release_snapstore:
+    docker:
+      - image: snapcore/snapcraft:beta
+    steps:
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: "Publish to Store"
+          command: |
+            mkdir .snapcraft
+            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
+            snapcraft push slurm.snap --release beta  
   release_github:
     docker:
       - image: cimg/go:1.13
