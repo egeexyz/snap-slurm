@@ -10,12 +10,6 @@ workflows:
       - release_github:
           requires:
             - test_ubuntu2004
-  build_and_release:
-    jobs:
-      - snapcraft
-      - release_github:
-          requires:
-            - snapcraft
 jobs:
   flake8:
     docker:
