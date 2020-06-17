@@ -34,7 +34,7 @@ slurm.version
 slurm.sinfo || slurm.sinfo
 
 echo 'Testing: slurm.srun' && slurm.srun -p debug -n 1 hostname
-echo 'Testing: slurm.srun as ubuntu' && slurm.srun --uid 1000 -N1 -l uname -a
+# echo 'Testing: slurm.srun as ubuntu' && slurm.srun --uid 1000 -N1 -l uname -a # Cannot test due to limitation with Snap: https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid 
 
 echo 'Testing: slurm.scontrol'   && slurm.scontrol show config
 echo 'Testing: slurm.squeue'   && slurm.squeue
