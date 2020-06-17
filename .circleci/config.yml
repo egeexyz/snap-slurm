@@ -1,13 +1,21 @@
 version: 2.1
 workflows:
-  build-test-release:
+  lint:
     jobs:
       - flake8
+  build-test-release:
+    jobs:
       - snapcraft:
           filters:
             branches:
               only: strict-mode
-      - release_snapstore:
+      # - test_ubuntu1804:
+      #     requires:
+      #       - snapcraft
+      - test_ubuntu2004:
+          requires:
+            - snapcraft
+      - release_github:
           requires:
             - test_ubuntu2004
 jobs:
@@ -21,7 +29,7 @@ jobs:
       - run:
           name: Run flake8
           command: |
-            flake8 src/hooks/bin/configure
+            flake8 --ignore=E501 src/hooks/bin/configure
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
     machine:
@@ -39,32 +47,106 @@ jobs:
               sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
-          command: /snap/bin/snapcraft --use-lxd
+          command: |
+            /snap/bin/snapcraft --use-lxd
+            mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - slurm_20.02.1_amd64.snap
-  release_snapstore:
-    machine:
-      image: ubuntu-1604:202004-01 # Snapcraft images currently broken with python3 errors
+            - slurm.snap
+  test_ubuntu1804:
+    docker:
+      - image: cimg/base:2020.01
     steps:
-      - run:
-          name: "Install Dependencies"
-          command: |
-              sudo apt-get update
-              sudo apt-get install --only-upgrade -y snapd
-              sudo snap install snapcraft --classic
-              sudo snap install review-tools
+      - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-${CIRCLE_SHA1}
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: "Review Snap"
-          command: /snap/bin/review-tools.snap-review slurm_20.02.1_amd64.snap
+          name: Move slurm-snap
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
+      - run:
+          name: Setup SSH key
+          command: |
+            mkdir -p ~/.ssh
+            echo $KEY | base64 --decode > /tmp/id_rsa
+            chmod 600 /tmp/id_rsa
+      - run:
+          name: Install Terraform
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+            unzip terraform_0.12.26_linux_amd64.zip
+      - run:
+          name: Test Terraform
+          command: |
+            cd tests/ubuntu1804
+            ../../terraform init
+            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+      - run:
+          name: Destroy Terraform
+          command: |
+            cd tests/ubuntu1804
+            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+  test_ubuntu2004:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Move slurm-snap
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/
+      - run:
+          name: Setup SSH key
+          command: |
+            mkdir -p ~/.ssh
+            echo $KEY | base64 --decode > /tmp/id_rsa
+            chmod 600 /tmp/id_rsa
+      - run:
+          name: Install Terraform
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+            unzip terraform_0.12.26_linux_amd64.zip
+      - run:
+          name: Test Terraform
+          command: |
+            cd tests/ubuntu2004
+            ../../terraform init
+            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+      - run:
+          name: Destroy Terraform
+          command: |
+            cd tests/ubuntu2004
+            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
+  release_snapstore:
+    docker:
+      - image: snapcore/snapcraft:beta
+    steps:
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Publish to Store"
           command: |
             mkdir .snapcraft
-            echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            /snap/bin/snapcraft upload slurm_20.02.1_amd64.snap --release candidate
+            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
+            snapcraft push slurm.snap --release edge  
+  release_github:
+    docker:
+      - image: cimg/go:1.13
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: "Re-normalize Snap name"
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/slurm_20.02.1_amd64_strict.snap
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            go get github.com/tcnksm/ghr
+            ghr -t ${GITHUB} -n 'Slurm 20.02.1-strict' -c ${CIRCLE_SHA1} -replace -recreate 20.02.1-strict /home/circleci/project/slurm_20.02.1_amd64_strict.snap
