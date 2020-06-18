@@ -42,9 +42,24 @@ echo 'Testing: slurm.sshare'   && slurm.sshare
 echo 'Testing: slurm.sacct'    && slurm.sacct
 echo 'Testing: slurm.sdiag'    && slurm.sdiag
 
+echo 'Beginning manual aliasing...'
+
+snap alias srun slurm.srun
+snap alias srun slurm.scontrol
+snap alias srun slurm.sshare
+snap alias srun slurm.sacct
+snap alias srun slurm.sdiag
+
+echo 'Testing: srun'           && srun -p debug -n 1 hostname
+echo 'Testing: srun as ubuntu' && srun --uid 1000 -N1 -l uname -a
+
+echo 'Testing: scontrol'       && scontrol show config
+echo 'Testing: squeue'         && squeue
+echo 'Testing: sshare'         && sshare
+echo 'Testing: sacct'          && sacct
+echo 'Testing: sdiag'          && sdiag
+
 ## TODO: Need to test the following commands
-
-
 # echo 'Testing: slurm.sprio'    && slurm.sprio # Requires priority/multifactor plugin
 # echo 'Testing: slurm.sattach'  && slurm.sattach
 # slurm.sacctmgr
