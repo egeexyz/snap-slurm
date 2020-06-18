@@ -149,11 +149,11 @@ $ systemctl status snap.slurm.slurmd
 
 Note that all services are prefixed with `snap.slurm`.
 
-* munged
-* mysql
-* slurmctld
-* slurmd
-* slurmrestd
+* `munged`
+* `mysql`
+* `slurmctld`
+* `slurmd`
+* `slurmrestd`
 
 ### User Commands available from the Snap
 
@@ -163,24 +163,24 @@ Currently, all commands must be namespaced with `slurm.`. Example:
 $ slurm.srun -p debug -n 1 uname -a
 ```
 
-* sacct
-* sacctmgr
-* salloc
-* sattach
-* sbatch
-* sbcast
-* scancel
-* scontrol
-* sdiag
-* sinfo
-* sprio
-* squeue
-* sreport
-* srun
-* sshare
-* sstat
-* strigger
-* version
+* `sacct`
+* `sacctmgr`
+* `salloc`
+* `sattach`
+* `sbatch`
+* `sbcast`
+* `scancel`
+* `scontrol`
+* `sdiag`
+* `sinfo`
+* `sprio`
+* `squeue`
+* `sreport`
+* `srun`
+* `sshare`
+* `sstat`
+* `strigger`
+* `version`
 
 ### Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
