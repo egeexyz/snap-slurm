@@ -44,11 +44,12 @@ echo 'Testing: slurm.sdiag'    && slurm.sdiag
 
 echo 'Beginning manual aliasing...'
 
-snap alias srun slurm.srun
-snap alias srun slurm.scontrol
-snap alias srun slurm.sshare
-snap alias srun slurm.sacct
-snap alias srun slurm.sdiag
+snap alias slurm.srun srun
+snap alias slurm.scontrol scontrol
+snap alias slurm.scontrol squeue
+snap alias slurm.sshare sshare
+snap alias slurm.sacct sacct
+snap alias slurm.sdiag sdiag
 
 echo 'Testing: srun'           && srun -p debug -n 1 hostname
 echo 'Testing: srun as ubuntu' && srun --uid 1000 -N1 -l uname -a
