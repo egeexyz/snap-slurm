@@ -105,8 +105,23 @@ $ slurm.srun --uid 1000 -N1 -l uname -r
 0: 5.4.0-31-generic
 ```
 
-### Custom Configuration
-User defined configuration for slurm can be added to the `slurm.yaml` file.
+### Logging
+
+The application logs can be found in under `$SNAP_COMMON/var/log`. For example, the log for slurmctld can be found at:
+
+    /var/snap/slurm/common/var/log/slurm/slurmctld.log
+
+Service logs can be accessed using `snap logs slurm` or by using journalctl:
+
+    $ journalctl -eu snap.slurm.slurmrestd
+
+### Configuration
+
+The default Slurm configuration is adequate for development and testing. In production deployments, you will need to adjust the Slurm configuration files to match your hardware.
+
+For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, _any_ changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
+
+Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `$SNAP_COMMON/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
 
     /var/snap/slurm/common/etc/slurm-configurator/slurm.yaml
 
@@ -116,8 +131,15 @@ To apply any configuration changes to the above file, you need to restart the sl
 
 This will render the slurm.yaml -> slurm.conf and restart the appropriate daemons.
 
+To modify the Node Healthcheck configuration, edit the file located here:
 
-**Daemons included in the Snap**
+/var/snap/slurm/common/etc/nhc/nhc.conf
+
+NHC is run automatically by Slurmd and changes to `nhc.conf` take effect immediately.
+
+## Appendix
+
+### Daemons included in the Snap
 
 You can interact with individual services using `systemctl`. Example:
 
@@ -133,7 +155,7 @@ Note that all services are prefixed with `snap.slurm`.
 * slurmd
 * slurmrestd
 
-**User Commands available from the Snap**
+### User Commands available from the Snap
 
 All commands must be namespaced with `slurm.`. Example:
 
@@ -160,5 +182,5 @@ $ slurm.srun -p debug -n 1 uname -a
 * strigger
 * version
 
-## Copyright
+### Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
