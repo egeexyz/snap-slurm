@@ -21,9 +21,9 @@ We currently support two different versions of the Slurm Snap: `strict` and `cla
 
 The `strict` Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
 
-The `classic` Snap is for advanced uses-cases where switching UID is required as the `strict` Snap cannot assume other UID's effectively.
+The `classic` Snap is for advanced uses-cases where switching UID is required as the `strict` Snap [cannot assume other UID](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid)'s effectively.
 
-If you need to run Slurm jobs under the context of a [different user](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid), use the `classic` version.
+If you need to run Slurm jobs under the context of a different user, use the `classic` version.
 
 ## Install
 
