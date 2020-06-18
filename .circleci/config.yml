@@ -45,16 +45,16 @@ jobs:
               sudo snap install lxd
               sudo lxd init --auto
               sudo snap install snapcraft --classic
-      - run:
-          name: "Build Snap"
-          command: |
-            /snap/bin/snapcraft --use-lxd
-            mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
-      - save_cache:
-          name: Store Slurm Snap for next workflow
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - slurm.snap
+      # - run:
+      #     name: "Build Snap"
+      #     command: |
+      #       /snap/bin/snapcraft --use-lxd
+      #       mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
+      # - save_cache:
+      #     name: Store Slurm Snap for next workflow
+      #     key: SlurmSnap-1fe96d3a1e2add875e307915cd4d16e9390cafdc
+      #     paths:
+      #       - slurm.snap
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01
@@ -62,7 +62,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1fe96d3a1e2add875e307915cd4d16e9390cafdc
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
@@ -95,7 +95,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1fe96d3a1e2add875e307915cd4d16e9390cafdc
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/
@@ -127,7 +127,7 @@ jobs:
     steps:
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1fe96d3a1e2add875e307915cd4d16e9390cafdc
       - run:
           name: "Publish to Store"
           command: |
@@ -141,7 +141,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1fe96d3a1e2add875e307915cd4d16e9390cafdc
       - run:
           name: "Re-normalize Snap name"
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/slurm_20.02.1_amd64_classic_.snap
