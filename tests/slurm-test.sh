@@ -46,10 +46,16 @@ echo 'Beginning manual aliasing...'
 
 snap alias slurm.srun srun
 snap alias slurm.scontrol scontrol
-snap alias slurm.scontrol squeue
+snap alias slurm.squeue squeue
 snap alias slurm.sshare sshare
 snap alias slurm.sacct sacct
 snap alias slurm.sdiag sdiag
+
+snap set slurm snap.mode=none
+snap set slurm snap.mode=all
+sleep 10
+
+echo 'Testing aliases'
 
 echo 'Testing: srun'           && srun -p debug -n 1 hostname
 echo 'Testing: srun as ubuntu' && srun --uid 1000 -N1 -l uname -a
