@@ -119,8 +119,6 @@ Service logs can be accessed using `snap logs slurm` or by using journalctl:
 
 Configuration files can be found in under `$SNAP_COMMON/var/etc`.
 
-The default Slurm configuration is adequate for development and testing. In production deployments, you will need to adjust the Slurm configuration files to match your hardware.
-
 For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, **any** changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
 
 Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `$SNAP_COMMON/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
