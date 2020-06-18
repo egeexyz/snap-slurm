@@ -27,7 +27,7 @@ If you need to run Slurm jobs under the context of a different user, use the **c
 
 ## Install
 
-### Install from Snapstore
+### Snapstore
 
 [Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
 
@@ -37,7 +37,7 @@ sudo snap install slurm
 
 If you need the *classic* Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
 
-### Install from Github
+### Github
 
 Both versions of the Snap are available to download from Github under [Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
 
@@ -98,7 +98,7 @@ $ slurm.srun -pdebug -n1 -l hostname
 0: ubuntu-dev
 ```
 
-This example will run under uid 1000, it will only work with the `classic` version of the Slurm Snap:
+The following example will run under uid 1000, it will only work with the `classic` version of the Slurm Snap:
 
 ```bash
 $ slurm.srun --uid 1000 -N1 -l uname -r
@@ -117,9 +117,11 @@ Service logs can be accessed using `snap logs slurm` or by using journalctl:
 
 ### Configuration
 
+Configuration files can be found in under `$SNAP_COMMON/var/etc`.
+
 The default Slurm configuration is adequate for development and testing. In production deployments, you will need to adjust the Slurm configuration files to match your hardware.
 
-For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, _any_ changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
+For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, **any** changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
 
 Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `$SNAP_COMMON/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
 
@@ -133,7 +135,7 @@ This will render the slurm.yaml -> slurm.conf and restart the appropriate daemon
 
 To modify the Node Healthcheck configuration, edit the file located here:
 
-/var/snap/slurm/common/etc/nhc/nhc.conf
+    /var/snap/slurm/common/etc/nhc/nhc.conf
 
 NHC is run automatically by Slurmd and changes to `nhc.conf` take effect immediately.
 
@@ -144,7 +146,7 @@ NHC is run automatically by Slurmd and changes to `nhc.conf` take effect immedia
 You can interact with individual services using `systemctl`. Example:
 
 ```bash
-$ status snap.slurm.slurmd
+$ systemctl status snap.slurm.slurmd
 ```
 
 Note that all services are prefixed with `snap.slurm`.
@@ -157,7 +159,7 @@ Note that all services are prefixed with `snap.slurm`.
 
 ### User Commands available from the Snap
 
-All commands must be namespaced with `slurm.`. Example:
+Currently, all commands must be namespaced with `slurm.`. Example:
 
 ```bash
 $ slurm.srun -p debug -n 1 uname -a
