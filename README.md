@@ -15,23 +15,51 @@
 [![slurm](https://snapcraft.io//slurm/trending.svg?name=0)](https://snapcraft.io/slurm)
 [![CircleCI](https://circleci.com/gh/omnivector-solutions/snap-slurm.svg?style=svg)](https://circleci.com/gh/omnivector-solutions/snap-slurm)
 
-## Installation Note
+## Classic or Strict?
 
-Upon installation this snap will not try to run any daemons until the `network-control` plug has been connected and `snap.mode` config has been set to a supported value.
+We currently support two different versions of the Slurm Snap: `strict` and `classic`.
 
-#### Install form Snapstore
+The `strict` Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
+
+The `classic` Snap is for advanced uses-cases where switching UID is required as the `strict` Snap cannot assume other UID's effectively.
+
+If you need to run Slurm jobs under the context of a [different user](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid), use the `classic` version.
+
+## Install
+
+### Install from Snapstore
+
+Currently, only the `strict` Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
+
 ```bash
 sudo snap install slurm
 ```
 
-#### Connect Interfaces
+If you need the `classic` Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+
+### Install from Github
+
+Both versions of the Snap are available to download from Github under [Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+
+Keep in mind that if you install the Slurm Snap from a Github Release, you will **not** recieve automatic updates.
+
+### Connect Interfaces
+
+Snap interfaces are used by _strictly confined_ Snaps to communicate with various parts of the system outside the Snap sandbox.
+
+Our `strict` Snap requires these interfaces to be connected but our `classic` Snap does not.
+
 ```bash
 sudo snap connect slurm:network-control
 sudo snap connect slurm:system-observe # For NHC health checks
 sudo snap connect slurm:hardware-observe # For NHC health checks
 ```
 
-#### Set `snap.mode` Config
+## Basic Usage
+
+This snap supports running different components of slurm depending on what `snap.mode` has been configured.
+
+### Set `snap.mode` Config
 The following `snap.mode` values are supported:
 * `none`
 * `all`
@@ -51,7 +79,9 @@ The above command configures the `snap.mode` to `all` mode. This runs all of the
 
 `all` mode is a core feature of this software, as there currently exists no other way to provision a fully functioning slurm cluster for development use.
 
-When the above steps have been completed you will have a Slurm deploy running inside the snap.
+When the above steps have been completed you will have a Slurm deploy running inside the snap. Try running `snap services` to verify all of the daemons are `active`.
+
+### Examples
 
 At this point you can start executing commands against the cluster. Lets try a few:
 ```bash
@@ -68,9 +98,12 @@ $ slurm.srun -pdebug -n1 -l hostname
 0: ubuntu-dev
 ```
 
+This example will run under uid 1000, it will only work with the `classic` version of the Slurm Snap:
 
-## Usage
-This snap supports running different components of slurm depending on what `snap.mode` has been configured. 
+```bash
+$ slurm.srun --uid 1000 -N1 -l uname -r
+0: 5.4.0-31-generic
+```
 
 ### Custom Configuration
 User defined configuration for slurm can be added to the `slurm.yaml` file.
@@ -84,14 +117,29 @@ To apply any configuration changes to the above file, you need to restart the sl
 This will render the slurm.yaml -> slurm.conf and restart the appropriate daemons.
 
 
-#### Supported Daemons
+**Daemons included in the Snap**
 
-* slurmdbd/mysql
+You can interact with individual services using `systemctl`. Example:
+
+```bash
+$ status snap.slurm.slurmd
+```
+
+Note that all services are prefixed with `snap.slurm`.
+
+* munged
+* mysql
 * slurmctld
 * slurmd
 * slurmrestd
 
-### Supported User Commands
+**User Commands available from the Snap**
+
+All commands must be namespaced with `slurm.`. Example:
+
+```bash
+$ slurm.srun -p debug -n 1 uname -a
+```
 
 * sacct
 * sacctmgr
@@ -110,23 +158,7 @@ This will render the slurm.yaml -> slurm.conf and restart the appropriate daemon
 * sshare
 * sstat
 * strigger
+* version
 
-### Other Components
-
-##### Daemons
-
-* munged
-
-##### User Commands
-
-* slurm-version
-* mungekey
-* munge
-* unmunge
-* mysql-client
-* snap-mysqldump
-
-## Remaining Tasks
-
-#### Copyright
+## Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
