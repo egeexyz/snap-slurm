@@ -17,25 +17,25 @@
 
 ## Classic or Strict?
 
-We currently support two different versions of the Slurm Snap: `strict` and `classic`.
+We currently support two different versions of the Slurm Snap: **strict** and **classic**.
 
-The `strict` Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
+The **strict** Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
 
-The `classic` Snap is for advanced uses-cases where switching UID is required as the `strict` Snap [cannot assume other UID](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid)'s effectively.
+The **classic** Snap is for advanced uses-cases where switching UID is required as the **strict** Snap [cannot assume other UID](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid)'s effectively.
 
-If you need to run Slurm jobs under the context of a different user, use the `classic` version.
+If you need to run Slurm jobs under the context of a different user, use the **classic** version.
 
 ## Install
 
 ### Install from Snapstore
 
-Currently, only the `strict` Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
+[Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
 
 ```bash
 sudo snap install slurm
 ```
 
-If you need the `classic` Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+If you need the *classic* Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
 
 ### Install from Github
 
@@ -47,7 +47,7 @@ Keep in mind that if you install the Slurm Snap from a Github Release, you will 
 
 Snap interfaces are used by _strictly confined_ Snaps to communicate with various parts of the system outside the Snap sandbox.
 
-Our `strict` Snap requires these interfaces to be connected but our `classic` Snap does not.
+A _strictly confined_ Snap requires these interfaces to be connected but the _Classic_ Snap does not.
 
 ```bash
 sudo snap connect slurm:network-control
