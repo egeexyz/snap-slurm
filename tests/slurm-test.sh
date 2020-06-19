@@ -23,7 +23,7 @@ snap connect slurm:network-control  || echo 'Plug not supported, passing...'
 snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
 snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
-echo 'Beginning Test Suite'
+echo 'Setting Snap Mode...'
 snap set slurm snap.mode=all
 sleep 10
 snap services
@@ -32,15 +32,6 @@ adduser --disabled-password --gecos "" ubuntu
 cd /tmp
 slurm.version
 slurm.sinfo || slurm.sinfo
-
-echo 'Testing: slurm.srun' && slurm.srun -p debug -n 1 hostname
-echo 'Testing: slurm.srun as ubuntu' && slurm.srun --uid 1000 -N1 -l uname -a
-
-echo 'Testing: slurm.scontrol'   && slurm.scontrol show config
-echo 'Testing: slurm.squeue'   && slurm.squeue
-echo 'Testing: slurm.sshare'   && slurm.sshare
-echo 'Testing: slurm.sacct'    && slurm.sacct
-echo 'Testing: slurm.sdiag'    && slurm.sdiag
 
 echo 'Beginning manual aliasing...'
 
@@ -53,27 +44,23 @@ snap alias slurm.sdiag sdiag
 
 snap set slurm snap.mode=none
 snap set slurm snap.mode=all
-sleep 10
+sleep 5
 
-echo 'Testing aliases'
+echo 'Beginning Test Suite'
 
 echo 'Testing: srun'           && srun -p debug -n 1 hostname
 echo 'Testing: srun as ubuntu' && srun --uid 1000 -N1 -l uname -a
 
+echo 'Testing: sacctmgr'       && sacctmgr show problem
 echo 'Testing: scontrol'       && scontrol show config
-echo 'Testing: squeue'         && squeue
-echo 'Testing: sshare'         && sshare
-echo 'Testing: sacct'          && sacct
-echo 'Testing: sdiag'          && sdiag
-
-## TODO: Need to test the following commands
-# echo 'Testing: slurm.sprio'    && slurm.sprio # Requires priority/multifactor plugin
-# echo 'Testing: slurm.sattach'  && slurm.sattach
-# slurm.sacctmgr
-# slurm.salloc
-# slurm.sbatch
-# slurm.sbcast
-# slurm.scancel
-# slurm.scontrol
-# slurm.sreport
-# slurm.strigger
+echo 'Testing: squeue'         && slurm.squeue --long
+echo 'Testing: sshare'         && sshare -al
+echo 'Testing: sacct'          && slurm.sacct -al
+echo 'Testing: sdiag'          && sdiag -a
+echo 'Testing: salloc'          && salloc --usage
+echo 'Testing: sbatch'          && sbatch --usage
+echo 'Testing: sbcast'          && sbcast -V
+echo 'Testing: scancel'         && scancel -fA 1
+echo 'Testing: scontrol'        && scontrol all
+echo 'Testing: sreport'         && sreport verbose
+echo 'Testing: strigger'        && strigger --get
