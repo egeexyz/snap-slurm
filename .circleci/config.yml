@@ -6,9 +6,9 @@ workflows:
   build-and-test:
     jobs:
       - snapcraft
-      # - test_centos8:
-      #     requires:
-      #       - snapcraft
+      - test_centos8:
+          requires:
+            - snapcraft
       - test_ubuntu1804:
           requires:
             - snapcraft
@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Test Terraform
           command: |
-            cd tests/ubuntu1804
+            cd tests/centos8
             ../../terraform init
             ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
       - run:
@@ -119,7 +119,7 @@ jobs:
       - run:
           name: Test Terraform
           command: |
-            cd tests/centos8
+            cd tests/ubuntu1804
             ../../terraform init
             ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
       - run:
