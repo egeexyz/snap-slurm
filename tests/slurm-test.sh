@@ -5,7 +5,6 @@ set -e
 DISTRO=$(uname -r)
 SNAP_PATH="/tmp/slurm.snap"
 
-
 if [[ "${DISTRO}" == *"el8_1"* ]]; then
   export PATH=$PATH:/var/lib/snapd/snap/bin
   dnf install -y epel-release
@@ -28,7 +27,8 @@ snap set slurm snap.mode=all
 sleep 10
 snap services
 
-adduser --disabled-password --gecos "" ubuntu
+useradd -m -s /bin/bash slurmuser
+
 cd /tmp
 slurm.version
 slurm.sinfo || slurm.sinfo
