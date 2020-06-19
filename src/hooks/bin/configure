@@ -1,8 +1,12 @@
 #!/snap/slurm/current/venv/bin/python3
 import os
-import socket
 import sys
+sys.path.append(f"{os.environ['SNAP']}/venv/lib/python3.8/site-packages")
+
+import socket
 import subprocess
+
+
 import yaml
 
 from pathlib import Path

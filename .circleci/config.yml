@@ -6,6 +6,9 @@ workflows:
   build-and-test:
     jobs:
       - snapcraft
+      - test_ubuntu1804:
+          requires:
+            - snapcraft
       - test_ubuntu2004:
           requires:
             - snapcraft
@@ -25,11 +28,11 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pip install flake8
+          command: pip install -r requirements/test-requirements.txt
       - run:
-          name: Run flake8
+          name: Run Flake8
           command: |
-            flake8 --ignore=E501 src/hooks/bin/configure
+            flake8 --ignore=E402 src/hooks/bin/configure src/slurm-bins/bin/slurm-version
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
     machine:

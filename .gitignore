@@ -1,3 +1,5 @@
 *.snap
 .terraform
 terraform*
+.tox/
+venv/
