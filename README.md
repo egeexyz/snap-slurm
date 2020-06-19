@@ -13,25 +13,53 @@
 
 [![slurm](https://snapcraft.io//slurm/badge.svg)](https://snapcraft.io/slurm)
 [![slurm](https://snapcraft.io//slurm/trending.svg?name=0)](https://snapcraft.io/slurm)
-[![Build Status](https://travis-ci.com/omnivector-solutions/snap-slurm.svg?branch=master)](https://travis-ci.com/omnivector-solutions/snap-slurm)
+[![CircleCI](https://circleci.com/gh/omnivector-solutions/snap-slurm.svg?style=svg)](https://circleci.com/gh/omnivector-solutions/snap-slurm)
 
-## Installation
+## Classic or Strict?
 
-Upon installation this snap will not try to run any daemons until the `network-control` plug has been connected and `snap.mode` config has been set to a supported value.
+We currently support two different versions of the Slurm Snap: **strict** and **classic**.
 
-#### Install form Snapstore
+The **strict** Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
+
+The **classic** Snap is for advanced uses-cases where switching UID is required as the **strict** Snap [cannot assume other UID](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid)'s effectively.
+
+If you need to run Slurm jobs under the context of a different user, use the **classic** version.
+
+## Install
+
+### Snapstore
+
+[Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
+
 ```bash
 sudo snap install slurm
 ```
 
-#### Connect Interfaces
+If you need the *classic* Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+
+### Github
+
+Both versions of the Snap are available to download from Github under [Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+
+Keep in mind that if you install the Slurm Snap from a Github Release, you will **not** recieve automatic updates.
+
+### Connect Interfaces
+
+Snap interfaces are used by _strictly confined_ Snaps to communicate with various parts of the system outside the Snap sandbox.
+
+A _strictly confined_ Snap requires these interfaces to be connected but the _Classic_ Snap does not.
+
 ```bash
 sudo snap connect slurm:network-control
 sudo snap connect slurm:system-observe # For NHC health checks
 sudo snap connect slurm:hardware-observe # For NHC health checks
 ```
 
-#### Set `snap.mode` Config
+## Basic Usage
+
+This snap supports running different components of slurm depending on what `snap.mode` has been configured.
+
+### Set `snap.mode` Config
 The following `snap.mode` values are supported:
 * `none`
 * `all`
@@ -51,7 +79,9 @@ The above command configures the `snap.mode` to `all` mode. This runs all of the
 
 `all` mode is a core feature of this software, as there currently exists no other way to provision a fully functioning slurm cluster for development use.
 
-When the above steps have been completed you will have a Slurm deploy running inside the snap.
+When the above steps have been completed you will have a Slurm deploy running inside the snap. Try running `snap services` to verify all of the daemons are `active`.
+
+### Examples
 
 At this point you can start executing commands against the cluster. Lets try a few:
 ```bash
@@ -68,12 +98,30 @@ $ slurm.srun -pdebug -n1 -l hostname
 0: ubuntu-dev
 ```
 
+The following example will run under uid 1000, it will only work with the `classic` version of the Slurm Snap:
 
-## Usage
-This snap supports running different components of slurm depending on what `snap.mode` has been configured. 
+```bash
+$ slurm.srun --uid 1000 -N1 -l uname -r
+0: 5.4.0-31-generic
+```
 
-### Custom Configuration
-User defined configuration for slurm can be added to the `slurm.yaml` file.
+### Logging
+
+The application logs can be found in under `$SNAP_COMMON/var/log`. For example, the log for slurmctld can be found at:
+
+    /var/snap/slurm/common/var/log/slurm/slurmctld.log
+
+Service logs can be accessed using `snap logs slurm` or by using journalctl:
+
+    $ journalctl -eu snap.slurm.slurmrestd
+
+### Configuration
+
+Configuration files can be found in under `$SNAP_COMMON/var/etc`.
+
+For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, **any** changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
+
+Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `$SNAP_COMMON/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
 
     /var/snap/slurm/common/etc/slurm-configurator/slurm.yaml
 
@@ -83,50 +131,56 @@ To apply any configuration changes to the above file, you need to restart the sl
 
 This will render the slurm.yaml -> slurm.conf and restart the appropriate daemons.
 
+To modify the Node Healthcheck configuration, edit the file located here:
 
-#### Supported Daemons
+    /var/snap/slurm/common/etc/nhc/nhc.conf
 
-* slurmdbd/mysql
-* slurmctld
-* slurmd
-* slurmrestd
+NHC is run automatically by Slurmd and changes to `nhc.conf` take effect immediately.
 
-### Supported User Commands
+## Appendix
 
-* sacct
-* sacctmgr
-* salloc
-* sattach
-* sbatch
-* sbcast
-* scancel
-* scontrol
-* sdiag
-* sinfo
-* sprio
-* squeue
-* sreport
-* srun
-* sshare
-* sstat
-* strigger
+### Daemons included in the Snap
 
-### Other Components
+You can interact with individual services using `systemctl`. Example:
 
-##### Daemons
+```bash
+$ systemctl status snap.slurm.slurmd
+```
 
-* munged
+Note that all services are prefixed with `snap.slurm`.
 
-##### User Commands
+* `munged`
+* `mysql`
+* `slurmctld`
+* `slurmd`
+* `slurmrestd`
 
-* slurm-version
-* mungekey
-* munge
-* unmunge
-* mysql-client
-* snap-mysqldump
+### User Commands available from the Snap
 
-## Remaining Tasks
+Currently, all commands must be namespaced with `slurm.`. Example:
 
-#### Copyright
+```bash
+$ slurm.srun -p debug -n 1 uname -a
+```
+
+* `sacct`
+* `sacctmgr`
+* `salloc`
+* `sattach`
+* `sbatch`
+* `sbcast`
+* `scancel`
+* `scontrol`
+* `sdiag`
+* `sinfo`
+* `sprio`
+* `squeue`
+* `sreport`
+* `srun`
+* `sshare`
+* `sstat`
+* `strigger`
+* `version`
+
+### Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
