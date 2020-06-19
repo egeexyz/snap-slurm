@@ -71,7 +71,7 @@ jobs:
           key: SlurmSnap-1416ed6fb236ee5400c5c268b2c65a15abce21da
       - run:
           name: Move slurm-snap
-          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/centos8/
       - run:
           name: Setup SSH key
           command: |
@@ -92,7 +92,7 @@ jobs:
       - run:
           name: Destroy Terraform
           command: |
-            cd tests/ubuntu1804
+            cd tests/centos8
             ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   test_ubuntu1804:
     docker:
