@@ -125,7 +125,7 @@ jobs:
       - run:
           name: Destroy Terraform
           command: |
-            cd tests/centos8
+            cd tests/ubuntu1804
             ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   test_ubuntu2004:
     docker:

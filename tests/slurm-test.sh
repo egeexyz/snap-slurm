@@ -2,19 +2,19 @@
 
 set -e
 
-DISTRO=$(lsb_release -d)
+DISTRO=$(uname -r)
 SNAP_PATH="/tmp/slurm.snap"
 
 
-if [[ "${DISTRO}" == *"Ubuntu"* ]]; then
-  export PATH=$PATH:/snap/bin
-else
+if [[ "${DISTRO}" == *"el8_1"* ]]; then
   export PATH=$PATH:/var/lib/snapd/snap/bin
   dnf install -y epel-release
   dnf upgrade -y
   dnf install -y snapd
   systemctl enable --now snapd.socket
   ln -s /var/lib/snapd/snap /snap
+else
+  export PATH=$PATH:/snap/bin
 fi
 
 snap install --dangerous ${SNAP_PATH} || snap install --dangerous --classic ${SNAP_PATH}
