@@ -6,6 +6,9 @@ workflows:
   build-and-test:
     jobs:
       - snapcraft
+      - test_centos8:
+          requires:
+            - snapcraft
       - test_ubuntu1804:
           requires:
             - snapcraft
