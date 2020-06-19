@@ -51,16 +51,16 @@ jobs:
               sudo snap install lxd
               sudo lxd init --auto
               sudo snap install snapcraft --classic
-      - run:
-          name: "Build Snap"
-          command: |
-            /snap/bin/snapcraft --use-lxd
-            mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
-      - save_cache:
-          name: Store Slurm Snap for next workflow
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - slurm.snap
+      # - run:
+      #     name: "Build Snap"
+      #     command: |
+      #       /snap/bin/snapcraft --use-lxd
+      #       mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
+      # - save_cache:
+      #     name: Store Slurm Snap for next workflow
+      #     key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      #     paths:
+      #       - slurm.snap
   test_centos8:
     docker:
       - image: cimg/base:2020.01
@@ -101,7 +101,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1416ed6fb236ee5400c5c268b2c65a15abce21da
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu1804/
@@ -134,7 +134,7 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
-          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+          key: SlurmSnap-1416ed6fb236ee5400c5c268b2c65a15abce21da
       - run:
           name: Move slurm-snap
           command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/ubuntu2004/

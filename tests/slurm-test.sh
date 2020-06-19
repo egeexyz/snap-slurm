@@ -41,6 +41,14 @@ snap alias slurm.squeue squeue
 snap alias slurm.sshare sshare
 snap alias slurm.sacct sacct
 snap alias slurm.sdiag sdiag
+snap alias slurm.sacctmgr sacctmgr
+snap alias slurm.salloc salloc
+snap alias slurm.sbatch sbatch
+snap alias slurm.sbcast sbcast
+snap alias slurm.scancel scancel
+snap alias slurm.scontrol scontrol
+snap alias slurm.sreport sreport
+snap alias slurm.strigger strigger
 
 snap set slurm snap.mode=none
 snap set slurm snap.mode=all
