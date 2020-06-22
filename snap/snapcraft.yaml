@@ -341,7 +341,7 @@ parts:
     source: https://github.com/yaml/libyaml.git
     plugin: dump
     source-type: git
-    source-tag: v0.2.5
+    source-tag: 0.2.5
     build-packages:
       - make
       - gcc
