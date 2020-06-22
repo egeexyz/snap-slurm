@@ -202,8 +202,8 @@ parts:
   mysql:
     plugin: cmake
     source: https://github.com/mysql/mysql-server.git
-    source-tag: mysql-5.7.28
-    source-depth: 1
+    source-type: git
+    source-tag: mysql-5.7.30
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
@@ -283,8 +283,7 @@ parts:
     plugin: dump
     source: https://github.com/dun/munge.git
     source-type: git
-    source-depth: 1
-    source-branch: master
+    source-tag: munge-0.5.14
     build-packages:
       - gcc
       - libssl-dev
@@ -362,11 +361,9 @@ parts:
       make install
 
   json-c:
-    source: https://github.com/json-c/json-c.git
     plugin: cmake
-    source-type: git
-    source-depth: 1
-    source-branch: master
+    source: https://github.com/json-c/json-c.git
+    source-tag: json-c-0.14-20200419
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/local
     stage:
