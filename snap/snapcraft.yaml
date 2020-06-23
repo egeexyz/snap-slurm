@@ -94,6 +94,15 @@ apps:
   strigger:
     command: bin/strigger
 
+  munge:
+    command: bin/munge
+  unmunge:
+    command: bin/unmunge
+  remunged:
+    command: bin/remunge
+  mungekey:
+    command: bin/mungekey
+
   version:
     command: bin/slurm-version
 
