@@ -292,8 +292,7 @@ parts:
     plugin: dump
     source: https://github.com/dun/munge.git
     source-type: git
-    source-depth: 1
-    source-branch: master
+    source-tag: munge-0.5.14
     build-packages:
       - gcc
       - libssl-dev
@@ -331,8 +330,7 @@ parts:
     source: https://github.com/nodejs/http-parser.git
     plugin: dump
     source-type: git
-    source-depth: 1
-    source-branch: master
+    source-tag: v2.9.4
     build-packages:
       - make
       - gcc
@@ -352,8 +350,7 @@ parts:
     source: https://github.com/yaml/libyaml.git
     plugin: dump
     source-type: git
-    source-depth: 1
-    source-branch: master
+    source-tag: 0.2.5
     build-packages:
       - make
       - gcc
@@ -437,8 +434,7 @@ parts:
   nhc:
     plugin: dump
     source: https://github.com/omnivector-solutions/nhc.git
-    source-type: git
-    source-branch: append_to_path
+    source-tag: 1.4.2-omni
     source-depth: 1
     build-packages:
       - automake
