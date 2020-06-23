@@ -202,8 +202,8 @@ parts:
   mysql:
     plugin: cmake
     source: https://github.com/mysql/mysql-server.git
-    source-type: git
-    source-tag: mysql-5.7.30
+    source-tag: mysql-5.7.28
+    source-depth: 1
     override-pull: |
       snapcraftctl pull
       git apply $SNAPCRAFT_STAGE/mysql-support-compile-time-disabling-of-setpriority.patch
@@ -283,7 +283,8 @@ parts:
     plugin: dump
     source: https://github.com/dun/munge.git
     source-type: git
-    source-tag: munge-0.5.14
+    source-depth: 1
+    source-branch: master
     build-packages:
       - gcc
       - libssl-dev
@@ -321,7 +322,8 @@ parts:
     source: https://github.com/nodejs/http-parser.git
     plugin: dump
     source-type: git
-    source-tag: v2.9.4
+    source-depth: 1
+    source-branch: master
     build-packages:
       - make
       - gcc
@@ -341,7 +343,8 @@ parts:
     source: https://github.com/yaml/libyaml.git
     plugin: dump
     source-type: git
-    source-tag: 0.2.5
+    source-depth: 1
+    source-branch: master
     build-packages:
       - make
       - gcc
@@ -359,8 +362,9 @@ parts:
       make install
 
   json-c:
-    plugin: cmake
     source: https://github.com/json-c/json-c.git
+    plugin: cmake
+    source-type: git
     source-tag: json-c-0.14-20200419
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/local
@@ -425,7 +429,8 @@ parts:
     plugin: dump
     source: https://github.com/omnivector-solutions/nhc.git
     source-type: git
-    source-tag: 1.4.2-omni
+    source-branch: append_to_path
+    source-depth: 1
     build-packages:
       - automake
       - make
