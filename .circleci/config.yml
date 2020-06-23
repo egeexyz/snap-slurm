@@ -6,6 +6,9 @@ workflows:
   build-and-test:
     jobs:
       - snapcraft
+      - test_centos8:
+          requires:
+            - snapcraft
       - test_ubuntu1804:
           requires:
             - snapcraft
@@ -58,6 +61,39 @@ jobs:
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - slurm.snap
+  test_centos8:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Slurm Snap for deployment
+          key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Move slurm-snap
+          command: mv /home/circleci/project/slurm.snap /home/circleci/project/tests/centos8/
+      - run:
+          name: Setup SSH key
+          command: |
+            mkdir -p ~/.ssh
+            echo $KEY | base64 --decode > /tmp/id_rsa
+            chmod 600 /tmp/id_rsa
+      - run:
+          name: Install Terraform
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip
+            unzip terraform_0.12.26_linux_amd64.zip
+      - run:
+          name: Test Terraform
+          command: |
+            cd tests/centos8
+            ../../terraform init
+            ../../terraform apply -auto-approve -var "api_key=${VULTR_API_KEY}"
+      - run:
+          name: Destroy Terraform
+          command: |
+            cd tests/centos8
+            ../../terraform destroy -auto-approve -var "api_key=${VULTR_API_KEY}"
   test_ubuntu1804:
     docker:
       - image: cimg/base:2020.01

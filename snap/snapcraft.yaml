@@ -365,8 +365,7 @@ parts:
     source: https://github.com/json-c/json-c.git
     plugin: cmake
     source-type: git
-    source-depth: 1
-    source-branch: master
+    source-tag: json-c-0.14-20200419
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr/local
     stage:
