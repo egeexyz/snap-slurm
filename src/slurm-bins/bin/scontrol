@@ -5,7 +5,6 @@ set -e
 export SNAP=/snap/slurm/current
 export SNAP_COMMON=/var/snap/slurm/common
 
-export LD_LIBRARY_PATH=$SNAP/usr/lib/:$SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/lib/slurm/:$SNAP/usr/local/lib/:$SNAP/lib/x86_64-linux-gnu/:$SNAP/lib/
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 
 
