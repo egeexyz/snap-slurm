@@ -101,7 +101,7 @@ apps:
     command: bin/munge
   unmunge:
     command: bin/unmunge
-  remunged:
+  remunge:
     command: bin/remunge
   mungekey:
     command: bin/mungekey

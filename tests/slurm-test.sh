@@ -52,7 +52,7 @@ snap alias slurm.strigger strigger
 
 snap alias slurm.munge munge
 snap alias slurm.unmunge unmunge
-snap alias slurm.remunged remunged
+snap alias slurm.remunge remunge
 snap alias slurm.mungekey mungekey
 
 snap set slurm snap.mode=none
@@ -80,5 +80,5 @@ echo 'Testing: strigger'        && strigger --get
 
 echo 'Testing: munge'           && slurm.munge -s test
 echo 'Testing: unmunge'         && unmunge -K
-echo 'Testing: remunged'        && slurm.remunged -Z
+echo 'Testing: remunge'        && slurm.remunge -Z
 echo 'Testing: mungekey'        && slurm.mungekey -v -c -k /tmp/test-the-munge.key
