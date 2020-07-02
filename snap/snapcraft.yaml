@@ -94,9 +94,6 @@ apps:
   strigger:
     command: bin/strigger
 
-  sacct:
-    command: bin/nhc
-
   munge:
     command: bin/munge
   unmunge:
