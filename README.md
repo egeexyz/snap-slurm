@@ -107,7 +107,7 @@ $ slurm.srun --uid 1000 -N1 -l uname -r
 
 ### Logging
 
-The application logs can be found in under `$SNAP_COMMON/var/log`. For example, the log for slurmctld can be found at:
+The application logs can be found in under `/var/snap/slurm/common/var/log`. For example, the log for slurmctld can be found at:
 
     /var/snap/slurm/common/var/log/slurm/slurmctld.log
 
@@ -117,11 +117,11 @@ Service logs can be accessed using `snap logs slurm` or by using journalctl:
 
 ### Configuration
 
-Configuration files can be found in under `$SNAP_COMMON/var/etc`.
+Configuration files can be found in under `/var/snap/slurm/common/var/etc`.
 
-For testing purposes, you can manually edit the `.conf` files located under `$SNAP_COMMON/etc/log`. However, **any** changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
+For testing purposes, you can manually edit the `.conf` files located under `/var/snap/slurm/common/etc/`. However, **any** changes you make to `slurm.conf` or `slurmdbd.conf` will be overwritten when the `snap.mode` is changed.
 
-Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `$SNAP_COMMON/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
+Persistent changes to the Slurm configuration files are made using the `.yaml` files located under `/var/snap/slurm/common/etc/slurm-configurator`. For example, if you wanted to change the port slurmd runs on, you would edit the `slurm.yaml` file here:
 
     /var/snap/slurm/common/etc/slurm-configurator/slurm.yaml
 
