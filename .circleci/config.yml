@@ -3,6 +3,7 @@ workflows:
   lint:
     jobs:
       - flake8
+      - shellcheck
   build-test:
     jobs:
       - snapcraft
@@ -38,6 +39,19 @@ workflows:
           requires:
             - snapcraft
 jobs:
+  shellcheck:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - run:
+          name: Install Shellcheck
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y shellcheck
+      - run:
+          name: Run Spellcheck
+          command: shellcheck src/hooks/bin/install
   flake8:
     docker:
       - image: circleci/python:3.6
@@ -48,7 +62,7 @@ jobs:
       - run:
           name: Run Flake8
           command: |
-            flake8 --ignore=E402 src/hooks/bin/configure src/slurm-bins/bin/slurm-version
+            flake8 --ignore=E402,E501 src/hooks/bin/configure src/slurm-bins/bin/slurm-version
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
     machine:

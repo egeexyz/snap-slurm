@@ -1,4 +1,5 @@
 #!/snap/slurm/current/venv/bin/python3
+import re
 import os
 import sys
 sys.path.append(f"{os.environ['SNAP']}/venv/lib/python3.8/site-packages")
@@ -176,16 +177,27 @@ def render_slurm_conf(slurm_node_type):
         # Slurmd and slurmctld need identical config.
         # Thus we only render a single config file to be
         # used by both daemons.
-        cores_per_socket = os.sysconf("SC_NPROCESSORS_ONLN")
+
+        lscpu = open("/tmp/lscpu", "r").read().replace("(s)", "")
+        node_attributes = {'CPU:': '', 'Thread per core:': '', 'Core per socket:': '', 'Socket:': ''}
+        try:
+            for key in node_attributes:
+                attributeMatch = re.search(f"{key}.*", lscpu).group()
+                attributeType = attributeMatch.replace(f"{key}", "").replace(" ", "")
+                node_attributes[key] = attributeType
+        except Exception as error:
+            print(f"Unable to set Node configuration: {error}")
 
         # Define slurm configs specific to slurmd and slurmctld.
         ctxt = {}
         ctxt['AccountingStorageHost'] = hostname
         ctxt['SlurmctldHost'] = hostname
         ctxt['NodeName'] = (
-            f"{hostname} NodeAddr={hostname} Weight=16 "
-            "State=UNKNOWN CPUs=1 Boards=1 SocketsPerBoard=1 "
-            f"CoresPerSocket={cores_per_socket} ThreadsPerCore=1"
+            f"{hostname} NodeAddr={hostname} "
+            f"CPUs={node_attributes['CPU:']} "
+            f"ThreadsPerCore={node_attributes['Thread per core:']} "
+            f"CoresPerSocket={node_attributes['Core per socket:']} "
+            f"Sockets={node_attributes['Socket:']} "
         )
         ctxt['PartitionName'] = (
             f"debug Nodes={hostname} "

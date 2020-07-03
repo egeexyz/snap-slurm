@@ -6,74 +6,77 @@ set -eux
 ######################################## Set initial snap.mode ###################################
 initial_snap_mode="none"
 snapctl set snap.mode=$initial_snap_mode
-echo $initial_snap_mode > $SNAP_COMMON/snap_mode
-chmod 777 $SNAP_COMMON/snap_mode
+echo $initial_snap_mode > "$SNAP_COMMON/snap_mode"
+chmod 777 "$SNAP_COMMON/snap_mode"
 
 ########################### $SNAP_COMMON/var/log and $SNAP_COMMON/var/run dirs ####################
-mkdir -p $SNAP_COMMON/var/log
-mkdir -p $SNAP_COMMON/var/run
+mkdir -p "$SNAP_COMMON/var/log"
+mkdir -p "$SNAP_COMMON/var/run"
 
 
 ################################### CREATE DIRS NEEDED BY SLURM ###################################
 # SLURM LOG DIR
-mkdir -p $SNAP_COMMON/var/log/slurm
+mkdir -p "$SNAP_COMMON/var/log/slurm"
 
 # CREATE /var dirs
-mkdir -p $SNAP_COMMON/var/spool/slurm/{ctld,d}
+mkdir -p "$SNAP_COMMON"/var/spool/slurm/{ctld,d}
 #chmod -R 755 $SNAP_COMMON/var/spool
 
 # SLURM-CONFIGURATOR DIR
-mkdir -p $SNAP_COMMON/etc/slurm-configurator
-chmod -R 755 $SNAP_COMMON/etc/slurm-configurator
+mkdir -p "$SNAP_COMMON/etc/slurm-configurator"
+chmod -R 755 "$SNAP_COMMON/etc/slurm-configurator"
 
 # SLURM CONFIG DIRS
-mkdir -p $SNAP_COMMON/etc/slurm
-mkdir -p $SNAP_COMMON/etc/slurm/plugstack.conf.d
-mkdir -p $SNAP_COMMON/etc/slurm/epilog.d/
-mkdir -p $SNAP_COMMON/etc/slurm/prolog.d/
+mkdir -p "$SNAP_COMMON/etc/slurm"
+mkdir -p "$SNAP_COMMON/etc/slurm/plugstack.conf.d"
+mkdir -p "$SNAP_COMMON/etc/slurm/epilog.d/"
+mkdir -p "$SNAP_COMMON/etc/slurm/prolog.d/"
 
 # Copy slurm yaml configs from $SNAP to $SNAP_COMMON.
-cp $SNAP/templates/slurmdbd.yaml $SNAP_COMMON/etc/slurm-configurator/
-cp $SNAP/templates/slurm.yaml $SNAP_COMMON/etc/slurm-configurator/
-cp $SNAP/templates/slurm.conf.tmpl $SNAP_COMMON/etc/slurm-configurator/
-cp $SNAP/templates/plugstack.conf $SNAP_COMMON/etc/slurm/plugstack.conf.d/
+cp "$SNAP/templates/slurmdbd.yaml" "$SNAP_COMMON/etc/slurm-configurator/"
+cp "$SNAP/templates/slurm.yaml" "$SNAP_COMMON/etc/slurm-configurator/"
+cp "$SNAP/templates/slurm.conf.tmpl" "$SNAP_COMMON/etc/slurm-configurator/"
+cp "$SNAP/templates/plugstack.conf" "$SNAP_COMMON/etc/slurm/plugstack.conf.d/"
 
-chmod -R 775 $SNAP_COMMON/etc/slurm
+chmod -R 775 "$SNAP_COMMON/etc/slurm"
 
 # SLURM SNAP INIT UTIL DIR
-mkdir -p $SNAP_COMMON/etc/slurm-snap-init-utils
+mkdir -p "$SNAP_COMMON/etc/slurm-snap-init-utils"
 
 
 ######################################## Create Munge Dirs #######################################
 #
 # This directory contains the daemon's secret key. The recommended permissions for it are 0700.
-mkdir -p $SNAP_COMMON/etc/munge
-chmod -R 0700 $SNAP_COMMON/etc/munge
+mkdir -p "$SNAP_COMMON/etc/munge"
+chmod -R 0700 "$SNAP_COMMON/etc/munge"
 
 # This directory contains the daemon's PRNG seed file. It is also where the daemon
 # creates pipes for authenticating clients via file-descriptor-passing. If the
 # file-descriptor-passing authentication method is being used, this directory must
 # allow execute permissions for all; however, it should not expose read permissions.
 # The recommended permissions for it are 0711.
-mkdir -p $SNAP_COMMON/var/lib/munge
-chmod -R 0711 $SNAP_COMMON/var/lib/munge
+mkdir -p "$SNAP_COMMON/var/lib/munge"
+chmod -R 0711 "$SNAP_COMMON/var/lib/munge"
 
 # This directory contains the daemon's log file. The recommended permissions for it are 0700.
-mkdir -p $SNAP_COMMON/var/log/munge
-chmod -R 0700 $SNAP_COMMON/var/log/munge
+mkdir -p "$SNAP_COMMON/var/log/munge"
+chmod -R 0700 "$SNAP_COMMON/var/log/munge"
 
 # This directory contains the Unix domain socket for clients to communicate with the daemon.
 # It also contains the daemon's pid file. This directory must allow execute permissions for all.
 # The recommended permissions for it are 0755.
-mkdir -p $SNAP_COMMON/var/run/munge
-chmod -R 0755 $SNAP_COMMON/var/run/munge
+mkdir -p "$SNAP_COMMON/var/run/munge"
+chmod -R 0755 "$SNAP_COMMON/var/run/munge"
 
 
 # NHC
-mkdir -p $SNAP_COMMON/etc/nhc
-mkdir -p $SNAP_COMMON/var/log/nhc
-mkdir -p $SNAP_COMMON/usr/lib/nhc
+mkdir -p "$SNAP_COMMON/etc/nhc"
+mkdir -p "$SNAP_COMMON/var/log/nhc"
+mkdir -p "$SNAP_COMMON/usr/lib/nhc"
 
-cp -r $SNAP/usr/lib/nhc/* $SNAP_COMMON/usr/lib/nhc/
-cp -r $SNAP/usr/etc/nhc/* $SNAP_COMMON/etc/nhc/
-cp $SNAP/templates/nhc.conf $SNAP_COMMON/etc/nhc/
+cp -r "$SNAP"/usr/lib/nhc/* "$SNAP_COMMON/usr/lib/nhc/"
+cp -r "$SNAP"/usr/etc/nhc/* "$SNAP_COMMON/etc/nhc/"
+cp "$SNAP/templates/nhc.conf" "$SNAP_COMMON/etc/nhc/"
+
+# Info for Slurm node configuration
+lscpu > /tmp/lscpu
