@@ -172,7 +172,7 @@ parts:
           --prefix=$SNAPCRAFT_PART_INSTALL \
           --localstatedir=/var/snap/slurm/common/etc/slurm \
           --with-ofed=$SNAPCRAFT_STAGE/usr/local
-      make -j9
+      make -j$(nproc)
       make install
       ldconfig -n /snap/slurm/current/lib/slurm
 

@@ -22,18 +22,18 @@ snap connect slurm:network-control  || echo 'Plug not supported, passing...'
 snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
 snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
-echo 'Setting Snap Mode...'
+echo '!!SETTING INITIAL SNAP MODE!!'
 snap set slurm snap.mode=all
 sleep 10
-snap services
 
 useradd -m -s /bin/bash slurmuser
 
 cd /tmp
 slurm.version
+snap services
 slurm.sinfo || slurm.sinfo
 
-echo 'Beginning manual aliasing...'
+echo '!!MANUAL ALIASING!!'
 
 snap alias slurm.srun srun
 snap alias slurm.scontrol scontrol
@@ -55,14 +55,20 @@ snap alias slurm.unmunge unmunge
 snap alias slurm.remunge remunge
 snap alias slurm.mungekey mungekey
 
-snap set slurm snap.mode=none
-snap set slurm snap.mode=all
-sleep 5
+echo '!!TESTING SNAP MODES!!'
 
-echo 'Beginning Test Suite'
+snap set slurm snap.mode=none
+snap set slurm snap.mode=slurmd
+snap set slurm snap.mode=slurmdbd
+snap set slurm snap.mode=slurmrestd
+snap set slurm snap.mode=slurmdbd+mysql
+snap set slurm snap.mode=all
+sleep 1
+
+echo '!!EXECUTING USER COMMANDS!!'
 
 echo 'Testing: srun'            && srun -p debug -n 1 hostname
-echo 'Testing: srun as ubuntu'  && srun --uid 1000 -N1 -l uname -a
+echo 'Testing: srun as slurmuser'  && srun --uid 1000 -N1 -l uname -a
 
 echo 'Testing: sacctmgr'        && sacctmgr show problem
 echo 'Testing: scontrol'        && scontrol show config

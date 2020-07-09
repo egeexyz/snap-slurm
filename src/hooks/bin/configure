@@ -138,6 +138,7 @@ def stop_all_daemons():
         f"{os.environ['SNAP_INSTANCE_NAME']}.slurmdbd",
         f"{os.environ['SNAP_INSTANCE_NAME']}.slurmctld",
         f"{os.environ['SNAP_INSTANCE_NAME']}.slurmd",
+        f"{os.environ['SNAP_INSTANCE_NAME']}.slurmrestd",
     ]
     for daemon in daemons:
         try:
