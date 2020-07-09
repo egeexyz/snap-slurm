@@ -17,6 +17,7 @@ resource "vultr_server" "centos8" {
   region_id = module.test_data.region_id
   os_id = module.test_data.centos8
   ssh_key_ids = module.test_data.ssh_key_ids
+  tag = module.test_data.tag
   provisioner "file" {
     connection {
       type     = "ssh"

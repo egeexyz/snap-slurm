@@ -17,6 +17,7 @@ resource "vultr_server" "ubuntu2004" {
   region_id = module.test_data.region_id
   os_id = module.test_data.ubuntu_2004
   ssh_key_ids = module.test_data.ssh_key_ids
+  tag = module.test_data.tag
   provisioner "file" {
     connection {
       type     = "ssh"

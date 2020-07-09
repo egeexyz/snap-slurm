@@ -1,3 +1,7 @@
+output tag {
+  value       = "slurmci"
+}
+
 output plan_id {
   value       = "400"
 }
