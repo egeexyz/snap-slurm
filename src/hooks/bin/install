@@ -58,10 +58,6 @@ chmod -R 0700 "$SNAP_COMMON/etc/munge"
 mkdir -p "$SNAP_COMMON/var/lib/munge"
 chmod -R 0711 "$SNAP_COMMON/var/lib/munge"
 
-# This directory contains the daemon's log file. The recommended permissions for it are 0700.
-mkdir -p "$SNAP_COMMON/var/log/munge"
-chmod -R 0700 "$SNAP_COMMON/var/log/munge"
-
 # This directory contains the Unix domain socket for clients to communicate with the daemon.
 # It also contains the daemon's pid file. This directory must allow execute permissions for all.
 # The recommended permissions for it are 0755.
