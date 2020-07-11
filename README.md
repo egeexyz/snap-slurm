@@ -13,7 +13,6 @@
 
 [![slurm](https://snapcraft.io//slurm/badge.svg)](https://snapcraft.io/slurm)
 [![slurm](https://snapcraft.io//slurm/trending.svg?name=0)](https://snapcraft.io/slurm)
-[![CircleCI](https://circleci.com/gh/omnivector-solutions/snap-slurm.svg?style=svg)](https://circleci.com/gh/omnivector-solutions/snap-slurm)
 
 ## Classic or Strict?
 
@@ -29,7 +28,7 @@ If you need to run Slurm jobs under the context of a different user, use the **c
 
 ### Snapstore
 
-[Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd.
+[Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd and are automatically aliased.
 
 ```bash
 sudo snap install slurm
@@ -39,9 +38,9 @@ If you need the *classic* Snap, download and install it from [Github Releases](h
 
 ### Github
 
-Both versions of the Snap are available to download from Github under [Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+The classic is built and released to Github [Releases](https://github.com/omnivector-solutions/snap-slurm/releases) nightly.
 
-Keep in mind that if you install the Slurm Snap from a Github Release, you will **not** recieve automatic updates.
+Keep in mind that if you install the Slurm Snap from a Github Release, you will **not** recieve automatic updates or automatic Snap aliasing.
 
 ### Connect Interfaces
 
@@ -67,7 +66,6 @@ The following `snap.mode` values are supported:
 * `munged`
 * `slurmdbd`
 * `slurmdbd+mysql`
-* `slurmctld`
 * `slurmd`
 * `slurmrestd`
 
@@ -75,30 +73,25 @@ To configure this snap to run a different set of daemons, just set the `snap.mod
 ```bash
 sudo snap set slurm snap.mode=all
 ```
-The above command configures the `snap.mode` to `all` mode. This runs all of the Slurm daemons including MySQL and Munged in a all in one local development mode.
+The above command configures the `snap.mode` to `all` mode. This runs all of the Slurm daemons including MySQL and Munged in an all in one local development mode.
 
-`all` mode is a core feature of this software, as there currently exists no other way to provision a fully functioning slurm cluster for development use.
+### Example Usage
 
-When the above steps have been completed you will have a Slurm deploy running inside the snap. Try running `snap services` to verify all of the daemons are `active`.
-
-### Examples
-
-At this point you can start executing commands against the cluster. Lets try a few:
 ```bash
 $ slurm.sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST 
-debug*       up   infinite      1   idle ubuntu-dev 
+debug*       up   infinite      1   idle slurm-dev 
 ```
 ```bash
 $ slurm.scontrol ping
-Slurmctld(primary) at ubuntu-dev is UP
+Slurmctld(primary) at slurm-dev is UP
 ```
 ```bash
 $ slurm.srun -pdebug -n1 -l hostname
-0: ubuntu-dev
+0: slurm-dev
 ```
 
-The following example will run under uid 1000, it will only work with the `classic` version of the Slurm Snap:
+The following example will only work with the `classic` Snap:
 
 ```bash
 $ slurm.srun --uid 1000 -N1 -l uname -r
@@ -107,13 +100,24 @@ $ slurm.srun --uid 1000 -N1 -l uname -r
 
 ### Logging
 
-The application logs can be found in under `/var/snap/slurm/common/var/log`. For example, the log for slurmctld can be found at:
+All services log their stdout to journald. The logs can be accessed `snap logs`, example:
 
-    /var/snap/slurm/common/var/log/slurm/slurmctld.log
+    $ snap logs slurm.slurmrestd
 
-Service logs can be accessed using `snap logs slurm` or by using journalctl:
+or by using using the journal directly:
 
     $ journalctl -eu snap.slurm.slurmrestd
+
+Certain services also write to log files which is only readble by root for security purposes. The following services write to log files:
+
+- nhc
+- slurmd
+- slurmdbd
+- slurmctld
+
+Log files are found at `/var/snap/slurm/common/var/log/`. For example, the log for slurmctld can be found at:
+
+    /var/snap/slurm/common/var/log/slurm/slurmctld.log
 
 ### Configuration
 
@@ -137,32 +141,32 @@ To modify the Node Healthcheck configuration, edit the file located here:
 
 NHC is run automatically by Slurmd and changes to `nhc.conf` take effect immediately.
 
+When configuring Slurm to run as part of a large-scale compute cluster, remember to adjust the system configuration files according. More information about this can be found [here](https://slurm.schedmd.com/big_sys.html). 
+
 ## Appendix
 
 ### Daemons included in the Snap
 
-You can interact with individual services using `systemctl`. Example:
+You can interact with individual services using `snap services`. Example:
 
 ```bash
-$ systemctl status snap.slurm.slurmd
+$ snap services slurm
+Service           Startup  Current  Notes
+slurm.munged      enabled  active   -
+slurm.mysql       enabled  active   -
+slurm.slurmctld   enabled  active   -
+slurm.slurmd      enabled  active   -
+slurm.slurmdbd    enabled  active   -
+slurm.slurmrestd  enabled  active   -
+
 ```
-
-Note that all services are prefixed with `snap.slurm`.
-
-* `munged`
-* `mysql`
-* `slurmctld`
-* `slurmd`
-* `slurmrestd`
 
 ### User Commands available from the Snap
 
-Currently, all commands must be namespaced with `slurm.`. Example:
+The following commands are available from the snap:
 
-```bash
-$ slurm.srun -p debug -n 1 uname -a
-```
-
+* `munge`
+* `remunge`
 * `sacct`
 * `sacctmgr`
 * `salloc`
@@ -181,6 +185,12 @@ $ slurm.srun -p debug -n 1 uname -a
 * `sstat`
 * `strigger`
 * `version`
+
+If you are using the Classic Snap, all commands must be namespaced with `slurm.`. Example:
+
+```bash
+$ slurm.srun -p debug -n 1 uname -a
+```
 
 ### Copyright
 * OmniVector Solutions <admin@omnivector.solutions>
