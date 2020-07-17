@@ -232,29 +232,27 @@ def configure_snap_mode_and_render_slurm_config(snap_mode_from_snap_config):
             # Write out the new snap mode
             snap_mode_path.write_text(snap_mode_from_snap_config)
 
-        # Render appropriate slurm config files
-        #
-        # slurmdbd.conf for slurmdbd or slurdbd+mysql
-        # slurm.conf for any other snap.mode configuration
-        slurm_config_types = []
-        # Find out what config files we need to write
-        if snap_mode_from_snap_config == "none":
-            pass
-        elif snap_mode_from_snap_config == "all":
-            slurm_config_types.append("slurm")
-            slurm_config_types.append("slurmdbd")
-        elif snap_mode_from_snap_config in ["slurmdbd+mysql", "slurmdbd"]:
-            slurm_config_types.append("slurmdbd")
-        else:
-            slurm_config_types.append("slurm")
-
-        # Write the slurm config files
+    def render_config_for_config_type(slurm_config_types):
         for config_type in slurm_config_types:
             slurm_conf_file = Path(
                 f"{os.environ['SNAP_COMMON']}/etc/slurm/{config_type}.conf"
             )
             slurm_conf_file.write_text(render_slurm_conf(config_type))
             slurm_conf_file.chmod(0o777)
+
+    # Render appropriate slurm config files
+    #
+    # slurmdbd.conf for slurmdbd or slurdbd+mysql
+    # slurm.conf for any other snap.mode configuration
+    slurm_config_types = []
+    # Find out what config files we need to write
+    if snap_mode_from_snap_config == "all":
+        slurm_config_types.append("slurm")
+        slurm_config_types.append("slurmdbd")
+        render_config_for_config_type(slurm_config_types)
+    elif snap_mode_from_snap_config == "slurmdbd+mysql":
+        slurm_config_types.append("slurmdbd")
+        render_config_for_config_type(slurm_config_types)
 
 
 if __name__ == "__main__":
