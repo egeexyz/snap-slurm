@@ -406,14 +406,8 @@ parts:
     plugin: dump 
     source: src/slurm-configurator/
     source-type: local
-    build-packages:
+    stage-packages:
       - python3-all
-      - python3-pip
-      - python3-venv
-    override-build: |
-      snapcraftctl build
-      python3 -m venv $SNAPCRAFT_PART_INSTALL/venv
-      $SNAPCRAFT_PART_INSTALL/venv/bin/pip3 install -U pyyaml jinja2
 
   slurm-bins:
     plugin: dump
