@@ -32,9 +32,8 @@ mkdir -p "$SNAP_COMMON/etc/slurm/plugstack.conf.d"
 mkdir -p "$SNAP_COMMON/etc/slurm/epilog.d/"
 mkdir -p "$SNAP_COMMON/etc/slurm/prolog.d/"
 
-# Copy slurm yaml configs from $SNAP to $SNAP_COMMON.
-cp "$SNAP/templates/slurmdbd.yaml" "$SNAP_COMMON/etc/slurm-configurator/"
-cp "$SNAP/templates/slurm.yaml" "$SNAP_COMMON/etc/slurm-configurator/"
+# Copy slurm configs from $SNAP to $SNAP_COMMON.
+cp "$SNAP/templates/slurmdbd.conf.tmpl" "$SNAP_COMMON/etc/slurm-configurator/"
 cp "$SNAP/templates/slurm.conf.tmpl" "$SNAP_COMMON/etc/slurm-configurator/"
 cp "$SNAP/templates/plugstack.conf" "$SNAP_COMMON/etc/slurm/plugstack.conf.d/"
 
