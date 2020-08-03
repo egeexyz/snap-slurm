@@ -163,7 +163,7 @@ The following commands are available from the snap:
 * `strigger`
 * `version`
 
-If you are using the Classic Snap, all commands must be namespaced with `slurm.`. Example:
+If you are using the Slurm Snap installed from the Github Release, all commands must be namespaced with `slurm.`. Example:
 
 ```bash
 $ slurm.srun -p debug -n 1 uname -a
