@@ -16,16 +16,7 @@ workflows:
       - test_ubuntu2004:
           requires:
             - snapcraft
-  build-release-snapstore-edge:
-    jobs:
-      - snapcraft:
-          filters:
-            branches:
-              only: strict # Deploy only on strict branch
-      - release_snapstore:
-          requires:
-            - snapcraft
-  build-release-github-classic:
+  build-release-edge:
     triggers:
       - schedule:
           cron: "0 4 * * *" # Deploy edge every day at 0400 UTC
@@ -37,6 +28,9 @@ workflows:
       - clean_orphaned_vms
       - snapcraft
       - release_github:
+          requires:
+            - snapcraft
+      - release_snapstore:
           requires:
             - snapcraft
 jobs:
@@ -200,15 +194,17 @@ jobs:
     docker:
       - image: snapcore/snapcraft:beta
     steps:
+      - checkout
       - restore_cache:
           name: Restore Slurm Snap for deployment
           key: SlurmSnap-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: "Publish to Store"
+          name: "Upload snap to Snap Store"
+          working_directory: /home/circleci/project
           command: |
-            mkdir .snapcraft
-            echo $SNAP | base64 --decode --ignore-garbage > .snapcraft/snapcraft.cfg
-            snapcraft push slurm.snap --release edge
+            mkdir -p /home/circleci/project/.snapcraft
+            echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > /home/circleci/project/.snapcraft/snapcraft.cfg
+            python3 /root/project/snap/snapstore.py edge
   release_github:
     docker:
       - image: cimg/go:1.13
@@ -227,4 +223,3 @@ jobs:
             mv /home/circleci/project/slurm.snap /home/circleci/project/slurm_20.02.1_amd64_${CONFINEMENT}.snap
             go get github.com/tcnksm/ghr
             ghr -t ${GITHUB} -n 'Slurm 20.02' -c ${CIRCLE_SHA1} -replace 20.02 /home/circleci/project/slurm_20.02.1_amd64_${CONFINEMENT}.snap
-  

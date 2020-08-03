@@ -183,9 +183,9 @@ def render_slurm_conf(slurm_node_type):
         node_attributes = {'CPU:': '', 'Thread per core:': '', 'Core per socket:': '', 'Socket:': ''}
         try:
             for key in node_attributes:
-                attributeMatch = re.search(f"{key}.*", lscpu).group()
-                attributeType = attributeMatch.replace(f"{key}", "").replace(" ", "")
-                node_attributes[key] = attributeType
+                attribute_match = re.search(f"{key}.*", lscpu).group()
+                attribute_type = attribute_match.replace(f"{key}", "").replace(" ", "")
+                node_attributes[key] = attribute_type
         except Exception as error:
             print(f"Unable to set Node configuration: {error}")
 
