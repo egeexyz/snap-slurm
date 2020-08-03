@@ -2,57 +2,35 @@
 
 <p align="center"><b>This is the snap for the Slurm Workload Manager</b>, <i>"The Slurm Workload Manager (formerly known as Simple Linux Utility for Resource Management or SLURM), or Slurm, is a free and open-source job scheduler for Linux and Unix-like kernels, used by many of the world's supercomputers and computer clusters."</i></p>
 
-<!-- Re-add the section below once we have a delivery method -->
-<!-- # Install
-
-    sudo snap install slurm
-
-([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
-
-<p align="center">Built & Published with 💝 by <a href="https://www.omnivector.solutions">OmniVector Solutions</a>.</p> -->
-
-[![slurm](https://snapcraft.io//slurm/badge.svg)](https://snapcraft.io/slurm)
-[![slurm](https://snapcraft.io//slurm/trending.svg?name=0)](https://snapcraft.io/slurm)
-
-## Classic or Strict?
-
-We currently support two different versions of the Slurm Snap: **strict** and **classic**.
-
-The **strict** Snap is the default _stable_ version and supports basic use-cases and Slurm functionality.
-
-The **classic** Snap is for advanced uses-cases where switching UID is required as the **strict** Snap [cannot assume other UID](https://forum.snapcraft.io/t/can-a-confined-snap-run-as-a-different-uid-and-or-guid)'s effectively.
-
-If you need to run Slurm jobs under the context of a different user, use the **classic** version.
-
 ## Install
 
-### Snapstore
+### Snap Store
 
-[Currently](https://forum.snapcraft.io/t/request-for-classic-confinement-slurm), only the **strict** Snap is available from the Snapstore. All Snaps installed from the Snapstore receive automatic updates via Snapd and are automatically aliased.
+Slurm is available to download from the [Snap Store](https://snapcraft.io/slurm). All Snaps installed from the Snap Store receive automatic updates via Snapd and are automatically aliased.
 
 ```bash
-sudo snap install slurm
+snap install slurm --classic
 ```
 
-If you need the *classic* Snap, download and install it from [Github Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
+The Snap Store has multiple channels for different release candidates (edge, beta, stable, etc).
 
 ### Github
 
-The classic is built and released to Github [Releases](https://github.com/omnivector-solutions/snap-slurm/releases) nightly.
+The Slurm Snap is also released nightly to Github [Releases](https://github.com/omnivector-solutions/snap-slurm/releases).
 
 Keep in mind that if you install the Slurm Snap from a Github Release, you will **not** recieve automatic updates or automatic Snap aliasing.
 
-### Connect Interfaces
-
+<!-- TODO: Re-add interfaces section when relevant -->
+<!-- ### Connect Interfaces
 Snap interfaces are used by _strictly confined_ Snaps to communicate with various parts of the system outside the Snap sandbox.
 
 A _strictly confined_ Snap requires these interfaces to be connected but the _Classic_ Snap does not.
 
 ```bash
-sudo snap connect slurm:network-control
-sudo snap connect slurm:system-observe # For NHC health checks
-sudo snap connect slurm:hardware-observe # For NHC health checks
-```
+snap connect slurm:network-control
+snap connect slurm:system-observe # For NHC health checks
+snap connect slurm:hardware-observe # For NHC health checks
+``` -->
 
 ## Basic Usage
 
@@ -71,30 +49,30 @@ The following `snap.mode` values are supported:
 
 To configure this snap to run a different set of daemons, just set the `snap.mode`:
 ```bash
-sudo snap set slurm snap.mode=all
+snap set slurm snap.mode=all
 ```
-The above command configures the `snap.mode` to `all` mode. This runs all of the Slurm daemons including MySQL and Munged in an all in one local development mode.
+The above command configures the `snap.mode` to `all` mode. This runs all of the Slurm daemons including MySQL and Munged in an all-in-one local development mode.
 
 ### Example Usage
 
 ```bash
-$ slurm.sinfo
+$ sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST 
 debug*       up   infinite      1   idle slurm-dev 
 ```
 ```bash
-$ slurm.scontrol ping
+$ scontrol ping
 Slurmctld(primary) at slurm-dev is UP
 ```
 ```bash
-$ slurm.srun -pdebug -n1 -l hostname
+$ srun -pdebug -n1 -l hostname
 0: slurm-dev
 ```
 
 The following example will only work with the `classic` Snap:
 
 ```bash
-$ slurm.srun --uid 1000 -N1 -l uname -r
+$ srun --uid 1000 -N1 -l uname -r
 0: 5.4.0-31-generic
 ```
 
@@ -131,7 +109,7 @@ Persistent changes to the Slurm configuration files are made using the `.yaml` f
 
 To apply any configuration changes to the above file, you need to restart the slurm daemons that run inside the snap. Assuming the `snap.mode=all`, run the following command:
 
-    sudo snap set slurm snap.mode=all
+    snap set slurm snap.mode=all
 
 This will render the slurm.yaml -> slurm.conf and restart the appropriate daemons.
 
@@ -158,7 +136,6 @@ slurm.slurmctld   enabled  active   -
 slurm.slurmd      enabled  active   -
 slurm.slurmdbd    enabled  active   -
 slurm.slurmrestd  enabled  active   -
-
 ```
 
 ### User Commands available from the Snap
