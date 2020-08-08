@@ -7,21 +7,12 @@ import subprocess
 from pathlib import Path
 
 
-LD_LIBRARY_PATH = \
-    f"{os.environ['SNAP']}/usr/share/gdb/auto-load/lib/x86_64-linux-gnu/"\
-    ":"\
-    f"{os.environ['SNAP']}/lib/x86_64-linux-gnu/"
-
-os.environ['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH
-
-
 SNAP_MODE_PROCESS_MAP = {
     "slurmdbd+mysql": ["munged", "slurmdbd", "mysql"],
     "slurmdbd": ["munged", "slurmdbd"],
     "slurmctld": ["munged", "slurmctld"],
     "slurmd": ["munged", "slurmd"],
     "slurmrestd": ["munged", "slurmrestd"],
-    "login": [],
     "all": [
         "munged",
         "mysql",
