@@ -406,6 +406,12 @@ parts:
   slurm-configurator:
     plugin: python
     source: src/slurm-configurator/
+    stage:
+      - -lib64/
+      - templates/
+    override-build: |
+      snapcraftctl build
+      cp -r $SNAPCRAFT_PART_BUILD/templates $SNAPCRAFT_PART_INSTALL/
 
   slurm-bins:
     plugin: dump
