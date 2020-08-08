@@ -403,13 +403,6 @@ parts:
       make -j9
       make install
 
-  python3:
-    plugin: python
-    source: https://github.com/yaml/pyyaml.git
-    source-type: git
-    stage:
-      - -lib64
-
   slurm-configurator:
     plugin: python
     source: src/slurm-configurator/
