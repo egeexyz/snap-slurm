@@ -164,6 +164,7 @@ parts:
       snapcraftctl build
       ./configure \
           --enable-slurmrestd \
+          --enable-front-end \
           --with-munge=$SNAPCRAFT_STAGE/usr/local \
           --with-libcurl=$SNAPCRAFT_STAGE/usr/local \
           --with-http-parser=$SNAPCRAFT_STAGE/usr/local \
@@ -402,12 +403,17 @@ parts:
       make -j9
       make install
 
+  python3:
+    plugin: python
+    source: https://github.com/yaml/pyyaml.git
+    source-type: git
+    stage:
+      - -lib64
+
   slurm-configurator:
-    plugin: dump 
+    plugin: dump
     source: src/slurm-configurator/
     source-type: local
-    stage-packages:
-      - python3-all
 
   slurm-bins:
     plugin: dump
