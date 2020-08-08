@@ -411,9 +411,8 @@ parts:
       - -lib64
 
   slurm-configurator:
-    plugin: dump
+    plugin: python
     source: src/slurm-configurator/
-    source-type: local
 
   slurm-bins:
     plugin: dump

@@ -1,4 +1,4 @@
-#!/snap/slurm/current/usr/bin/python3
+#!/snap/slurm/current/bin/python3
 import re
 import os
 import sys
