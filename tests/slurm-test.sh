@@ -16,11 +16,8 @@ else
   export PATH=$PATH:/snap/bin
 fi
 
-snap install --dangerous ${SNAP_PATH} || snap install --dangerous --classic ${SNAP_PATH}
+snap install --dangerous --classic ${SNAP_PATH}
 
-snap connect slurm:network-control  || echo 'Plug not supported, passing...'
-snap connect slurm:system-observe   || echo 'Plug not supported, passing...'
-snap connect slurm:hardware-observe || echo 'Plug not supported, passing...'
 
 echo '!!SETTING INITIAL SNAP MODE!!'
 snap set slurm snap.mode=all
