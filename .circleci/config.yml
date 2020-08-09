@@ -204,7 +204,7 @@ jobs:
           command: |
             mkdir -p /home/circleci/project/.snapcraft
             echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > /home/circleci/project/.snapcraft/snapcraft.cfg
-            python3 /root/project/snap/snapstore.py edge
+            python3 /root/project/snapstore.py edge
   release_github:
     docker:
       - image: cimg/go:1.13
