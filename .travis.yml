@@ -24,4 +24,4 @@ script:
   - sudo /snap/bin/lxd waitready
   - sudo /snap/bin/lxd init --auto
   - mkdir -p "$TRAVIS_BUILD_DIR/snaps-cache"
-  - sudo snapcraft --use-lxd
+  - snapcraft --use-lxd
