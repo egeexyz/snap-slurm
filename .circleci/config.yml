@@ -61,7 +61,7 @@ jobs:
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
     docker:
-      - image: snapcore/snapcraft:latest
+      - image: snapcore/snapcraft:edge
     # machine:
     #   image: ubuntu-1604:202004-01
     steps:
