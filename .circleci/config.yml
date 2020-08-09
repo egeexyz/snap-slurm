@@ -60,23 +60,25 @@ jobs:
             flake8 --ignore=E402,E501 src/hooks/bin/configure src/slurm-bins/bin/slurm-version
             flake8 src/slurm-bins/bin/slurm-version
   snapcraft:
-    machine:
-      image: ubuntu-1604:202004-01
+    docker:
+      - image: cibuilds/snapcraft:stable
+    # machine:
+    #   image: ubuntu-1604:202004-01
     steps:
       - checkout
-      - run:
-          name: "Install Dependencies"
-          command: |
-              sudo apt-get update
-              sudo apt-get install --only-upgrade -y snapd
-              sudo apt-get purge lxd lxd-client lxcfs
-              sudo snap install lxd
-              sudo lxd init --auto
-              sudo snap install snapcraft --classic
+      # - run:
+      #     name: "Install Dependencies"
+      #     command: |
+      #         sudo apt-get update
+      #         sudo apt-get install --only-upgrade -y snapd
+      #         sudo apt-get purge lxd lxd-client lxcfs
+      #         sudo snap install lxd
+      #         sudo lxd init --auto
+      #         sudo snap install snapcraft --classic
       - run:
           name: "Build Snap"
           command: |
-            /snap/bin/snapcraft --use-lxd
+            snapcraft
             mv /home/circleci/project/slurm_20.02.1_amd64.snap /home/circleci/project/slurm.snap
       - save_cache:
           name: Store Slurm Snap for next workflow
