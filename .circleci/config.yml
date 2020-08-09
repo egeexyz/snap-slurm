@@ -70,9 +70,9 @@ jobs:
               sudo apt-get update
               sudo apt-get install --only-upgrade -y snapd
               sudo apt-get purge lxd lxd-client lxcfs
-              sudo snap install lxd
+              sudo snap install lxd --edge
               sudo lxd init --auto
-              sudo snap install snapcraft --classic
+              sudo snap install snapcraft --classic --edge
       - run:
           name: "Build Snap"
           command: |
